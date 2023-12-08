@@ -1,0 +1,176 @@
+{
+  "main": {
+    "id": "0d20f84ea8b06182",
+    "type": "split",
+    "children": [
+      {
+        "id": "9e6b9465b73bb966",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7f66fdf5738f7817",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Thesis/0 Can I take your subdomain?.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "0f573635d56f2f42",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Thesis/0 Can I take your subdomain?.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d4e56b8d51eaf5fd",
+    "type": "split",
+    "children": [
+      {
+        "id": "5e00d1345f0c7d4c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6561b5b41094bcaf",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "bf27513645a5b6d9",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:#Principali",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "687f828a96a14c33",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "c65d9ed5f40a54f1",
+    "type": "split",
+    "children": [
+      {
+        "id": "249687244390aef2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "feee844afc255a49",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Thesis/0 Can I take your subdomain?.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "8104aa218631ac02",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Thesis/0 Can I take your subdomain?.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "f356166e43aab2b6",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "6ee7f1e4f0b58717",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Thesis/0 Can I take your subdomain?.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "6561b5b41094bcaf",
+  "lastOpenFiles": [
+    "Pasted image 20231208155659.png",
+    "Cyber Offense and defense/sss.md",
+    "Pasted image 20231208152025.png",
+    "Cyber Offense and defense",
+    "Thesis/0 Can I take your subdomain?.md",
+    "Thesis/Untitled.md",
+    "Pasted image 20231208150847.png",
+    "Pasted image 20231208145114.png",
+    "Untitled.canvas",
+    "2023-12-08.md",
+    "Thesis"
+  ]
+}
