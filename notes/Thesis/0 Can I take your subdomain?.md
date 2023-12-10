@@ -94,7 +94,7 @@ Un altro modo per ottenere una posizione di aggressore di dominio correlato è l
 
 <mark style="background: #FF5582A6;">Se la vulnerabilità sfruttata è un XSS, gli aggressori potrebbero sfruttare la capacità di eseguire codice JavaScript da una posizione privilegiata.</mark>
 
-## Web Threats
+# Web Threats
 ## Minacce intrinseche
 Qui gli attaccanti si trovano sullo stesso sito dell'applicazione web bersaglio. Questo è più debole della condivisione della stessa origine dell'obiettivo, che è il confine tradizionale della sicurezza web, ma è sufficiente per abusare della fiducia riposta dai fornitori di browser e dagli utenti finali nei contenuti dello stesso sito. 
 
@@ -160,7 +160,8 @@ Se l'attaccante può nel sotto dominio:
 - usare https allora può modificare il DOM della pagina
 
 
-## Abusing CORS
+## Abusing CORS 
+
 <mark style="background: #BBFABBA6;">Cross-Origin Resource Sharing (CORS) è l'approccio standard per allentare le restrizioni imposte da SOP sulle comunicazioni cross-origin.</mark>
 
 
@@ -188,3 +189,155 @@ Gli attaccanti possono tentare di abusare della propria posizione per annullare 
 ### Capabilities
 Se l'attaccante può eseguire js allora potrebbe comunicare con una pagina vulnerabile untilizzando postMessage API.
 
+
+
+## Abusing domain relaxation
+<mark style="background: #BBFABBA6;">Il rilassamento dei domini è il modo tradizionale per implementare la comunicazione tra finestre i cui domini condividono un antenato comune.</mark>
+
+Supponiamo che una pagina su a.example.com apra una pagina su b.example.com all'interno di un frame.
+
+==I due frame possono comunicare rilassando la loro proprietà document.domain su un antenato comune tipo example.com . ==
+
+Il rilassamento del dominio può essere abusato da related-domain attackers, che possono cercare pagine disposte a impegnarsi in un meccanismo di comunicazione così pericoloso e abusarne.
+
+### Capabilities
+L'attaccante deve avere accesso a js per modificare il DOM dell'altra pagina e devono avere accesso allo stesso protocollo dell'altra pagina, quindi può essere richiesto https.
+
+
+# Analysis Methodology
+![[Pasted image 20231209160603.png]]
+## DNS data collection
+La fase di enumerazione si è basata su amass, un tool.
+
+Nella nostra configurazione, abbiamo estratto i sottodomini utilizzando i seguenti approcci:
+- recuperare dati da fonti disponibili al pubblico, come Censys, registri di trasparenza dei certificati , motori di ricerca, ecc.; 
+- tentare il trasferimento di zona DNS per ottenere l'elenco completo degli RR definiti per una determinata zona DNS; 
+- ispezionare i campi dei certificati TLS, ad esempio Nome alternativo soggetto e Nome comune.
+
+Per i record CNAME e NS, eseguiamo ricorsivamente una risoluzione DNS finché non viene rilevato un RR A/AAAA.
+
+Per garantire la correttezza dei risultati, ricalcoliamo le catene di risoluzione DNS non terminate utilizzando l'utilità dig.
+
+
+## RDScan
+==Dopo aver popolato un database con i record DNS dei sottodomini scoperti, il framework rileva i record pendenti e verifica che siano soddisfatte tutte le precondizioni per sferrare un attacco di subdomain takeover. ==
+
+### Expired domains
+Il rilevamento dei domini scaduti viene effettuato secondo la seguente procedura: 
+- <mark style="background: #BBFABBA6;">data una catena risolutiva che inizia con un record CNAME, il nostro strumento verifica se punta a una risorsa irrisolvibile ed estrae l'eTLD+1 del nome canonico al fine della catena</mark>
+- <mark style="background: #BBFABBA6;">se il comando whois sul dominio apex non restituisce alcuna corrispondenza, RDScan interroga GoDaddy per rilevare se il dominio può essere acquistato.</mark>
+
+
+### Discontinued Services
+Questo passaggio viene implementato in base alla documentazione fornita dai singoli servizi e in genere si basa sulla verifica della presenza di 
+- (i) un record A che si risolve in un indirizzo IP specifico, 
+- (ii) il nome canonico di un CNAME record corrispondente a un dato host 
+- (iii) l'esistenza di un record NS che punta al server DNS di un servizio. 
+
+I (sotto)domini associati ai servizi vengono quindi controllati per verificare se sono presenti collegamenti tra gli account utente e i (sotto)domini.
+
+RDScan esegue anche il rilevamento dei caratteri jolly DNS. 
+Un carattere jolly DNS per un dominio come test.example.com può essere facilmente rilevato tentando di risolvere un record CNAME o A DNS per nonce.test.example.com
+
+### Deprovisioned cloud instances
+Abbiamo raccolto l'insieme di intervalli IP di 6 principali provider: Amazon AWS, Google Cloud Platform, Microsoft Azure, Hetzner Cloud, Linode e OVHcloud.
+
+Abbiamo testato ciascun (sotto)dominio nel nostro set di dati per verificare se l'IP indicato fosse incluso in uno qualsiasi degli intervalli IP del cloud.
+
+Come ultimo passaggio, eseguiamo un'analisi dell'attività per determinare se l'IP è in uso. Questo viene fatto eseguendo un ping sull'IP: se non viene ricevuta alcuna risposta, facciamo una scansione dell'intero intervallo IPv4 su 148 porte (128 TCP, 20 UDP).
+
+## Web Analyzer
+### Analysis of cookies
+Abbiamo utilizzato l'API Puppeteer per raccogliere i cookie impostati tramite intestazioni HTTP e JavaScript.
+
+Contrassegniamo un cookie come affetto da problemi di riservatezza se, tra i relativi domini vulnerabili al takeover, esiste un dominio dom tale che:
+- dom è un sottodominio dell'attributo Domain del cookie; 
+- usando dom, l'aggressore ha acquisito le capacità necessarie per diffondere il cookie.
+
+Contrassegniamo un cookie come affetto da problemi di integrità se: 
+- il nome del cookie non inizia con __ Host-
+
+Ci basiamo anche su un'euristica proposta da Bugliesi per identificare staticamente cookie che potrebbero essere rilevanti per la gestione delle sessioni utente.
+
+Per compromettere l'integrità è necessaria la funzionalità js o le intestazioni e, se viene utilizzato il prefisso __ Secure-, è necessario anche https.
+
+
+### CORS analysis
+Per valutare la sicurezza della politica CORS implementata da un sito Web, eseguiamo più richieste con valori Origin diversi e ispezioniamo le intestazioni HTTP nella risposta per capire se CORS è stato abilitato dal server.
+
+Vengono testate 3 cose:
+- il dominio in possesso è correlato a quello che stiamo testando
+- il dominio inizia come quello testato
+- il dominio termina come quello testato
+
+Per ogni test controlliamo se l'intestazione Access-Control-Allow-Origin è presente nella risposta e se il suo valore è * o quello dell'intestazione Origin contenuta nella richiesta. 
+
+Controlliamo anche se l'intestazione Access-Control-Allow-Credentials = true (quando Access-Control-Allow-Origin è diverso da *  perchè è disabilitato in quel caso) per identificare i casi in cui le richieste con credenziali sono consentite.
+
+### postMessage handler analysis
+Si usa il framework PMForce per estrarre i vincoli sul contenuto del messaggio (ad esempio, la presenza di una determinata stringa nel messaggio) che portano a tracce di esecuzione in cui il messaggio entra in un pericoloso sink che consente l'esecuzione del codice (ad esempio , eval) o l'alterazione dello stato del browser (es. document.cookie). 
+
+Abbiamo integrato PMForce nella nostra pipeline e l'abbiamo modificato per generare, per ciascun handler, più messaggi di exploit con gli stessi contenuti ma una proprietà di origine diversa, ad esempio un'origine di dominio correlato e un'origine intersito generata casualmente. 
+
+Consideriamo una pagina vulnerabile a qualsiasi attacco web se uno qualsiasi dei suoi gestori è sfruttabile da una posizione tra siti. 
+Consideriamo invece una pagina sfruttabile da un utente malintenzionato del dominio correlato se i suoi gestori possono essere sfruttati solo da un dominio correlato.
+
+
+### Domain relaxation analysis
+Come primo passo, l'analizzatore rileva se la proprietà document.domain è impostata dopo il caricamento della pagina. 
+
+Questo compito è semplice tranne nel caso in cui la pagina imposta la proprietà al suo valore originale poiché questo non può essere rilevato semplicemente leggendo il valore di document.domain. 
+
+Per identificare questo caso particolare, sfruttiamo le API Puppeteer per:
+- iniettare un frame da un sottodominio (generato casualmente) della pagina in analisi
+- intercettare la richiesta di rete in uscita e fornire come risposta una pagina con uno script che esegue il rilassamento del dominio e tenta di accedere al frame genitore, cosa che riesce solo se il genitore ha impostato document.domain. 
+
+​
+
+
+
+
+
+## PICCOLA SINTESI
+==I domini scaduti vengono banalmente verificati controllando se il dominio di destinazione può essere acquistato. ==
+
+==Per i servizi fuori servizio, abbiamo creato account di prova personali su ciascun servizio considerato nell'analisi e abbiamo utilizzato questi account per sondare la mappatura tra il sottodominio di destinazione e il servizio. 
+Se rileviamo tutte le condizioni necessarie per associare il sottodominio al nostro account, lo consideriamo vulnerabile.==
+
+
+
+
+## SECURITY EVALUATION
+Abbiamo valutato i servizi considerati rispetto alle trappole di sicurezza: 
+- (i) jolly, la verifica della proprietà del dominio consente agli aggressori di rivendicare sottodomini di un dominio già mappato, ad esempio, a causa della presenza di un carattere jolly voce DNS; 
+- (ii) reindirizzamento, se il sottodominio www di un dominio mappato reindirizza automaticamente al dominio principale, ad esempio www.shop.example.com reindirizza a shop.example.com, se il primo può essere rivendicato da un account diverso; 
+- (iii) PSL, se il servizio consente agli utenti di creare un sito web sotto uno specifico sottodominio, se il dominio principale del sito web assegnato è incluso nel PSL.
+
+
+
+
+# CONCLUSIONI
+<mark style="background: #BBFABBA6;">La toolchain è costituita da un modulo di analisi per l'acquisizione di sottodomini che 
+identifica quali sottodomini possono essere violati da un utente malintenzionato. </mark>
+
+<mark style="background: #BBFABBA6;">Successivamente, il modulo di sicurezza web quantifica quanti domini correlati possono essere attaccati dai domini scoperti nel passaggio precedente. </mark>
+
+
+Abbiamo eseguito un'analisi su larga scala sui 50.000 domini più popolari e abbiamo identificato le vulnerabilità in 887 di essi, inclusi i principali siti Web come cnn.com e cisco.com. 
+
+==Quindi, abbiamo correlato per la prima volta l’impatto di queste vulnerabilità sulla sicurezza delle applicazioni web, dimostrando che gli aggressori dei domini correlati ottengono un ulteriore vantaggio rispetto agli aggressori web che va oltre i tradizionali problemi legati ai cookie.==
+
+
+
+
+
+
+<mark style="background: #FF5582A6;">L'unico modo efficace per migliorare l'integrità dei cookie in questa impostazione è l'adozione del prefisso __ Host</mark>
+
+<mark style="background: #FF5582A6;">Gli aggressori di domini correlati sono più potenti dei tradizionali aggressori web per i CSP del mondo reale, essendo in grado di aggirare il meccanismo di protezione.</mark>
+
+<mark style="background: #FF5582A6;">Le implementazioni CORS sono significativamente più a rischio contro gli aggressori dei domini correlati piuttosto che contro gli aggressori web tradizionali. </mark>
+
+<mark style="background: #FF5582A6;">Lo sfruttamento del rilassamento del dominio pone un aggressore del dominio correlato nella stessa origine dell'applicazione web di destinazione, aggirando quindi tutti i confini della sicurezza web.</mark>
+
+<mark style="background: #FF5582A6;">L'analisi su postMessage mostra che tutti i siti che soffrono di pratiche di programmazione non sicure sono già vulnerabili contro gli aggressori web, vale a dire che per questo specifico vettore di attacco gli aggressori legati ai domini non sono più potenti degli aggressori web tradizionali.</mark>

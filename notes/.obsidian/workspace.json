@@ -30,9 +30,21 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "df6a264ca28ae809",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Thesis/0 Can I take your subdomain?.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -159,13 +171,16 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "6561b5b41094bcaf",
+  "active": "df6a264ca28ae809",
   "lastOpenFiles": [
-    "Pasted image 20231208155659.png",
+    "Pasted image 20231209160603.png",
     "Cyber Offense and defense/sss.md",
+    "Deep Learning/Project.md",
+    "Thesis/0 Can I take your subdomain?.md",
+    "Deep Learning",
+    "Pasted image 20231208155659.png",
     "Pasted image 20231208152025.png",
     "Cyber Offense and defense",
-    "Thesis/0 Can I take your subdomain?.md",
     "Thesis/Untitled.md",
     "Pasted image 20231208150847.png",
     "Pasted image 20231208145114.png",
