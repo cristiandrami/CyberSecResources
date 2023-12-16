@@ -30,6 +30,7 @@ Un nome di dominio con una sola etichetta a sinistra di un suffisso pubblico vie
 
 ![[Pasted image 20231208150847.png]]
 
+
 # Related Domain Attacker
 
 ### Threat model
@@ -108,8 +109,8 @@ Qui gli attaccanti si trovano sullo stesso sito dell'applicazione web bersaglio.
 ### Isolamento del sito 
 Site Isolation è un'architettura per browser che tratta siti diversi come processi di rendering separati.
 
-==I related-domain attackers possono annullare i vantaggi di questa architettura di sicurezza in quanto un sotto dominio è visto come stesso sito.==
-![[Pasted image 20231208155659.png]]
+==I related-domain attackers possono annullare i vantaggi di questa architettura di sicurezza in quanto un sotto dominio è visto come lo stesso sito.==
+![[Pasted image 20231211162620.png]]
 
 ### Same Site Request Forgery
 SameSite è una proprietà che può essere impostata nei cookie HTTP per prevenire gli attacchi Cross Site Request Forgery.
@@ -122,7 +123,7 @@ I cookie possono essere emessi con l'attributo Domain impostato su un antenato d
 
 <mark style="background: #FF5582A6;">Esempio good.foo.com imposta un cookie per foo.com così che possa essere condiviso con ogni sotto dominio del dominio foo.com</mark>. 
 
-==**Quindi evil.foo.com può impostare cookie per good.foo.com per poter eseguire attachi.**==
+==**Quindi evil.foo.com può impostare cookie per good.foo.com per poter eseguire attacchi.**==
 
 ==Anche l’integrità dei cookie impostati per essere condivisi con solo l'host è danneggiata, perché un utente malintenzionato del dominio correlato può montare il cookie shadowing, ovvero impostare un cookie di dominio con lo stesso nome di un cookie solo host per confondere il server web==
 
@@ -134,6 +135,8 @@ Le capabilities di un attaccante dipendono dai flag settati sui cookies:
 Per quanto riguarda l'integrità
 - tutti i cookie senza il prefisso __ Host hanno una bassa integrità contro un attaccante che nel sottodominio che comanda può eseguire js
 - i cookie che utilizzano il prefisso __ Secure- hanno una bassa integrità solo contro gli aggressori che hanno la funzionalità https
+
+![[Pasted image 20231211162017.png]]
 
 
 ## Bypassing CSP
@@ -330,9 +333,8 @@ Abbiamo eseguito un'analisi su larga scala sui 50.000 domini più popolari e abb
 
 
 
+<mark style="background: #FF5582A6;">L'unico modo efficace per migliorare l'integrità dei cookie è l'adozione del prefisso __Host</mark>
 
-
-<mark style="background: #FF5582A6;">L'unico modo efficace per migliorare l'integrità dei cookie in questa impostazione è l'adozione del prefisso __ Host</mark>
 
 <mark style="background: #FF5582A6;">Gli aggressori di domini correlati sono più potenti dei tradizionali aggressori web per i CSP del mondo reale, essendo in grado di aggirare il meccanismo di protezione.</mark>
 
@@ -341,3 +343,39 @@ Abbiamo eseguito un'analisi su larga scala sui 50.000 domini più popolari e abb
 <mark style="background: #FF5582A6;">Lo sfruttamento del rilassamento del dominio pone un aggressore del dominio correlato nella stessa origine dell'applicazione web di destinazione, aggirando quindi tutti i confini della sicurezza web.</mark>
 
 <mark style="background: #FF5582A6;">L'analisi su postMessage mostra che tutti i siti che soffrono di pratiche di programmazione non sicure sono già vulnerabili contro gli aggressori web, vale a dire che per questo specifico vettore di attacco gli aggressori legati ai domini non sono più potenti degli aggressori web tradizionali.</mark>
+
+
+
+
+
+
+![[Pasted image 20231211162051.png]]
+
+
+
+![[Pasted image 20231211163618.png]]
+
+![[Pasted image 20231211164037.png]]
+
+![[Pasted image 20231211164047.png]]
+
+
+
+![[Pasted image 20231211164218.png]]
+
+
+HTTP stict transport security 
+HSTS
+
+
+piattaforme per fare leasing di indirizzi 
+AS -> entità a cui vengono assegnati un set di indirizzi IP (posso affittare indirizzi IP)
+
+quindi posso prendere l'IP e fare IP takeover 
+
+
+tesi -> caratterizzare problema di IP leasing, capire quali sono le aziende che lo fanno
+
+capire chi e perchè compra IP e quindi magari per un mese tenere sotto controllo quali venogo associati a domain spam -> vedere la correlazione tra DNS e IP 
+
+capire cosa viene fatto e cosa potrebbe essere fatto

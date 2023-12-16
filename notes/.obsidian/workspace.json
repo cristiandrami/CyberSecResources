@@ -37,14 +37,26 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Thesis/0 Can I take your subdomain?.md",
+                "file": "Algorithmic game theory/LAB - Mechanism design.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "8e021ccd8bf705c5",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Cyber Offense and defense/JWT attacks.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 3
       }
     ],
     "direction": "vertical"
@@ -94,7 +106,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200
   },
   "right": {
     "id": "c65d9ed5f40a54f1",
@@ -110,7 +122,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Thesis/0 Can I take your subdomain?.md",
+                "file": "Cyber Offense and defense/JWT attacks.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -127,7 +139,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Thesis/0 Can I take your subdomain?.md",
+                "file": "Cyber Offense and defense/JWT attacks.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -150,7 +162,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Thesis/0 Can I take your subdomain?.md"
+                "file": "Cyber Offense and defense/JWT attacks.md"
               }
             }
           }
@@ -171,20 +183,30 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "df6a264ca28ae809",
+  "active": "8e021ccd8bf705c5",
   "lastOpenFiles": [
-    "Pasted image 20231209160603.png",
+    "Pasted image 20231216172426.png",
+    "Pasted image 20231216171613.png",
     "Cyber Offense and defense/sss.md",
-    "Deep Learning/Project.md",
+    "Cyber Offense and defense/JWT attacks.md",
+    "Algorithmic game theory/Th. Mechanism Design.md",
+    "Pasted image 20231214205003.png",
+    "Pasted image 20231214201648.png",
+    "Algorithmic game theory/LAB - Mechanism design.md",
+    "Pasted image 20231214195149.png",
+    "Pasted image 20231214195141.png",
+    "Pasted image 20231214193438.png",
+    "Pasted image 20231214190230.png",
+    "Pasted image 20231214185403.png",
+    "Pasted image 20231214184923.png",
+    "Untitled.canvas",
+    "Algorithmic game theory",
     "Thesis/0 Can I take your subdomain?.md",
+    "Pasted image 20231211164218.png",
+    "Deep Learning/Project.md",
     "Deep Learning",
-    "Pasted image 20231208155659.png",
-    "Pasted image 20231208152025.png",
     "Cyber Offense and defense",
     "Thesis/Untitled.md",
-    "Pasted image 20231208150847.png",
-    "Pasted image 20231208145114.png",
-    "Untitled.canvas",
     "2023-12-08.md",
     "Thesis"
   ]
