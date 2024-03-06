@@ -8,55 +8,18 @@
         "type": "tabs",
         "children": [
           {
-            "id": "7f66fdf5738f7817",
+            "id": "8e41a6f22aef035c",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Thesis/0 Can I take your subdomain?.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "0f573635d56f2f42",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Thesis/0 Can I take your subdomain?.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "df6a264ca28ae809",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Algorithmic game theory/LAB - Mechanism design.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "8e021ccd8bf705c5",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Cyber Offense and defense/JWT attacks.md",
+                "file": "Project and enterprise financing/PEF_3.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ],
-        "currentTab": 3
+        ]
       }
     ],
     "direction": "vertical"
@@ -122,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Cyber Offense and defense/JWT attacks.md",
+                "file": "Project and enterprise financing/PEF_3.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -139,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Cyber Offense and defense/JWT attacks.md",
+                "file": "Project and enterprise financing/PEF_3.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -162,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Cyber Offense and defense/JWT attacks.md"
+                "file": "Project and enterprise financing/PEF_3.md"
               }
             }
           }
@@ -183,26 +146,29 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "8e021ccd8bf705c5",
+  "active": "8e41a6f22aef035c",
   "lastOpenFiles": [
-    "Pasted image 20231216172426.png",
-    "Pasted image 20231216171613.png",
-    "Cyber Offense and defense/sss.md",
-    "Cyber Offense and defense/JWT attacks.md",
+    "Project and enterprise financing/PEF_2.md",
+    "Project and enterprise financing/PEF_3.md",
+    "Pasted image 20240306153710.png",
+    "Pasted image 20240306153419.png",
+    "Pasted image 20240306152947.png",
+    "Pasted image 20240306152640.png",
+    "Pasted image 20240306152625.png",
+    "Pasted image 20240306152608.png",
+    "Pasted image 20240306151939.png",
+    "Pasted image 20240306151809.png",
+    "Pasted image 20240306151527.png",
+    "Pasted image 20240306151448.png",
+    "Project and enterprise financing/PEF_1.md",
     "Algorithmic game theory/Th. Mechanism Design.md",
-    "Pasted image 20231214205003.png",
-    "Pasted image 20231214201648.png",
+    "Project and enterprise financing",
+    "Cyber Offense and defense/JWT attacks.md",
+    "Cyber Offense and defense/sss.md",
     "Algorithmic game theory/LAB - Mechanism design.md",
-    "Pasted image 20231214195149.png",
-    "Pasted image 20231214195141.png",
-    "Pasted image 20231214193438.png",
-    "Pasted image 20231214190230.png",
-    "Pasted image 20231214185403.png",
-    "Pasted image 20231214184923.png",
     "Untitled.canvas",
     "Algorithmic game theory",
     "Thesis/0 Can I take your subdomain?.md",
-    "Pasted image 20231211164218.png",
     "Deep Learning/Project.md",
     "Deep Learning",
     "Cyber Offense and defense",

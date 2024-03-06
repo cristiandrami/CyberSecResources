@@ -1,5 +1,5 @@
 ## What are JWTs?
-JSON web tokens (JWTs) are a standardized format for sending cryptographically signed JSON data between systems. 
+==JSON web tokens (JWTs) are a standardized format for sending cryptographically signed JSON data between systems.==
 
 They can theoretically contain any kind of data, but are most commonly used to send information ("claims") about users as part of authentication, session handling, and access control mechanisms.
 
@@ -62,7 +62,7 @@ This type of attack is very severe because if an attacker can change the JWT tok
 
 
 ## How do vulnerabilities to JWT attacks arise?
-In general they depend on implementation flaws and this happens when the signature of the JWT is not verified properly.
+==In general they depend on implementation flaws and this happens when the signature of the JWT is not verified properly.==
 
 In addition if the server key is leaked in some way, or can be guessed or brute-forced, an attacker can generate a valid signature for any arbitrary token, compromising the entire mechanism.
 
@@ -133,15 +133,15 @@ hashcat -a 0 -m 16500 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3
 ## JWT header parameter injections
 The following ones are of particular interest to attackers.
 
-- jwk (JSON Web Key) - Provides an embedded JSON object representing the key.
-- jku (JSON Web Key Set URL) - Provides a URL from which servers can fetch a set of keys containing the correct key.
+- ==jwk (JSON Web Key) - Provides an embedded JSON object representing the key.==
+- ==jku (JSON Web Key Set URL) - Provides a URL from which servers can fetch a set of keys containing the correct key.==
 - kid (Key ID) - Provides an ID that servers can use to identify the correct key in cases where there are multiple keys to choose from. Depending on the format of the key, this may have a matching kid parameter.
 
 
 
 ### Injecting self-signed JWTs via the jwk parameter
 #### JWK
-A JWK (JSON Web Key) is a standardized format for representing keys as a JSON object.
+<mark style="background: #BBFABBA6;">A JWK (JSON Web Key) is a standardized format for representing keys as a JSON object.</mark>
 ```JSON
 { 
 	"kid": "ed2Nf8sb-sD6ng0-scs5390g-fFD8sfxG", 
@@ -155,7 +155,7 @@ You can exploit this behavior by signing a modified JWT using your own RSA priva
 
 
 ### Injecting self-signed JWTs via the jku parameter
-Instead of embedding public keys directly using the `jwk` header parameter, some servers let you use the `jku` (JWK Set URL) header parameter to reference a JWK Set containing the key. When verifying the signature, the server fetches the relevant key from this URL.
+<mark style="background: #BBFABBA6;">Instead of embedding public keys directly using the `jwk` header parameter, some servers let you use the `jku` (JWK Set URL) header parameter to reference a JWK Set containing the key.</mark> When verifying the signature, the server fetches the relevant key from this URL.
 
 ```JSON
 { "keys": [ { "kty": "RSA", "e": "AQAB", "kid": "75d0ef47-af89-47a9-9061-7c02a610d5ab", "n": "o-yy1wpYmffgXBxhAUJzHHocCuJolwDqql75ZWuCQ_cb33K2vh9mk6GPM9gNN4Y_qTVX67WhsN3JvaFYw-fhvsWQ" }, { "kty": "RSA", "e": "AQAB", "kid": "d8fDFo-fS9-faS14a9-ASf99sa-7c1Ad5abA", "n": "fc3f-yy1wpYmffgXBxhAUJzHql79gNNQ_cb33HocCuJolwDqmk6GPM4Y_qTVX67WhsN3JvaFYw-dfg6DH-asAScw" } ] }
@@ -198,12 +198,15 @@ Therefore, signing the token with a empty string will result in a valid signatur
 
 
 ## How to prevent JWT attacks
-- Use an up-to-date library for handling JWTs
-- Make sure that you perform robust signature verification on any JWTs that you receive
-- Enforce a strict whitelist of permitted hosts for the `jku` header
-- Make sure that you're not vulnerable to [path traversal](https://portswigger.net/web-security/file-path-traversal) or SQL injection via the `kid` header parameter
+- <mark style="background: #BBFABBA6;">Use an up-to-date library for handling JWTs</mark>
+- <mark style="background: #BBFABBA6;">Make sure that you perform robust signature verification on any JWTs that you receive</mark>
+- <mark style="background: #BBFABBA6;">Enforce a strict whitelist of permitted hosts for the `jku` header</mark>
+- <mark style="background: #BBFABBA6;">Make sure that you're not vulnerable to path traversal or SQL injection via the `kid` header parameter</mark>
 
 Other important things:
 - Always set an expiration date for any tokens that you issue.
 - Avoid sending tokens in URL parameters where possible.
 - Enable the issuing server to revoke tokens (on logout, for example).
+
+
+![[Pasted image 20231222135855.png]]
