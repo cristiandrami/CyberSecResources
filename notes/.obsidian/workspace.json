@@ -13,13 +13,26 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Mobile Applicaion Pentesting/1 - tools.md",
+                "file": "Thesis/Information gathering 0.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "9bd3c51cf0691918",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Thesis/Information gathering 2.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -85,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Mobile Applicaion Pentesting/1 - tools.md",
+                "file": "Thesis/Information gathering 2.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Mobile Applicaion Pentesting/1 - tools.md",
+                "file": "Thesis/Information gathering 2.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Mobile Applicaion Pentesting/1 - tools.md"
+                "file": "Thesis/Information gathering 2.md"
               }
             }
           }
@@ -146,23 +159,26 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "8e41a6f22aef035c",
+  "active": "9bd3c51cf0691918",
   "lastOpenFiles": [
-    "System and application security/0 - Mobile Android.md",
-    "Mobile Applicaion Pentesting/1 - tools.md",
-    "Mobile Applicaion Pentesting",
-    "Pasted image 20240315130520.png",
-    "E-Marketing/Springer LNCS.md",
+    "Thesis/Information gathering 2.md",
+    "Pasted image 20240318123227.png",
+    "Pasted image 20240318111833.png",
     "Pasted image 20240314161429.png",
+    "Pasted image 20240306143850.png",
+    "Pasted image 20240318111239.png",
+    "Pasted image 20240318111226.png",
+    "Pasted image 20240318105008.png",
+    "Pasted image 20240318104218.png",
+    "Pasted image 20240318104157.png",
+    "Thesis/Information gathering 1.md",
+    "Pasted image 20240317141121.png",
+    "Thesis/Information gathering 0.md",
+    "Mobile Applicaion Pentesting/1 - tools.md",
+    "System and application security/0 - Mobile Android.md",
+    "Mobile Applicaion Pentesting",
+    "E-Marketing/Springer LNCS.md",
     "E-Marketing",
-    "Pasted image 20240314153137.png",
-    "Pasted image 20240314152356.png",
-    "Pasted image 20240314151853.png",
-    "Pasted image 20240314122105.png",
-    "Pasted image 20240314113728.png",
-    "Pasted image 20240314112201.png",
-    "Pasted image 20240314111538.png",
-    "Pasted image 20240314110728.png",
     "Project and enterprise financing/PEF_3.md",
     "System and application security",
     "Project and enterprise financing/PEF_2.md",
@@ -178,7 +194,6 @@
     "Deep Learning/Project.md",
     "Deep Learning",
     "Cyber Offense and defense",
-    "Thesis/Untitled.md",
     "2023-12-08.md",
     "Thesis"
   ]
