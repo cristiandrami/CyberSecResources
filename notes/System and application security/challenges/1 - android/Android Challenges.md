@@ -1,4 +1,4 @@
-### Cristian Domenico Dramisino (12338532)
+ ### Cristian Domenico Dramisino (12338532)
 
 ## Introduction
 
@@ -726,198 +726,731 @@ So the flag for this part of the challenge is `FLG_PT3{I_WAS_HERE_ALL_THE_TIME}`
 
 
 
+# Challenge Part 4
 
+## Static analysis 
+We know by the description that the last flag is hidden somewhere in the Quotes section of the application, so we can start to analyze the code of the activities:
+- QuoteActivity 
+- QuoteService
 
+### QuoteActivity analysis
+Looking at the method onCreate of this activity, we can notice that it is based on the using of a WebView.
 
+A WebView basically allows the usage of web content directly in the application and so allows the processing of web content such as HTML files, javascript code etc...
 
-
-
-
-
-ho visto che i metodi sono diversi nel getID 
-alcuni sono: 
 ```java
-public static String getID() {  
-        return GalleryContent.computeHash(secret, name);  
-    }
-    
-```
-
-altri
-```java
-public static String getID() {  
-        return GalleryContent.computeHash(name, secret);  
-    }
-    
-```
-
-
-
-
-
-
-2. vedo nel metodo:
-```java
-package wien.secpriv.challenges.braf;  
-  
-import android.os.Bundle;  
-import android.util.Log;  
-import android.view.View;  
-import android.widget.EditText;  
-import android.widget.Toast;  
-import androidx.appcompat.app.AbstractActivityC0027n;  
-import java.lang.reflect.InvocationTargetException;  
-  
-/* loaded from: classes.dex */  
-public class GuessingActivity extends AbstractActivityC0027n {  
-    private boolean verify(String str) {  
-        String str2;  
-        Log.d(MainActivity.TAG, "got guess: " + str);  
-        Class galleryContentByName = GalleryActivity.getGalleryContentByName(str);  
-        if (galleryContentByName == null) {  
-            return false;  
-        }  
-        try {  
-            str2 = (String) galleryContentByName.getMethod("getID", new Class[0]).invoke(null, new Object[0]);  
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException unused) {  
-            Log.e(MainActivity.TAG, "Yeah this should not happen");  
-            str2 = "";  
-        }  
-        return str2.equals("6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285");  
-    }  
-  
-    public void checkGuess(View view) {  
-        Toast.makeText(this, verify(((EditText) findViewById(R.id.input_guess)).getText().toString()) ? "Correct!" : "That's not it!", 1).show();  
-    }  
-  
-    /* JADX INFO: Access modifiers changed from: protected */  
-    @Override // androidx.fragment.app.j, androidx.activity.g, androidx.core.app.e, android.app.Activity  
-    public void onCreate(Bundle bundle) {  
+ public void onCreate(Bundle bundle) {  
         super.onCreate(bundle);  
-        setContentView(R.layout.activity_guessing);  
-    }  
-}
+        setContentView(R.layout.activity_quote);  
+        Button button = (Button) findViewById(R.id.getQuoteButton);  
+        this.getQuoteButton = button;  
+        button.setEnabled(false);  
+        jsonObserver();  
+        QuoteObserver.getInstance().addObserver(this);  
+        getNewQuote();  
+        WebView webView = (WebView) findViewById(R.id.contentWebView);  
+        this.webView = webView;  
+        webView.getSettings().setJavaScriptEnabled(true);  
+        this.webView.getSettings().setAllowFileAccess(true);  
+        this.webView.getSettings().setAllowFileAccessFromFileURLs(true);  
+        this.webView.getSettings().setCacheMode(1);  
+        this.webView.setWebViewClient(new WebViewClient());  
+        this.webView.setWebChromeClient(new WebChromeClient());  
+        this.webView.addJavascriptInterface(this, "userValidation");  
+        this.webView.loadUrl("file:///android_asset/index.html");  
+    }
 ```
-- str2.equals("6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285"); 
 
-provo a modificare il file smali di GuessingActivity:
-![[Pasted image 20240321214123.png]]
-
-ma non va, non mi fa ribuildare 
-![[Pasted image 20240321214143.png]]
-
-
-MA COMUNQUE NON MI DICE  NULLA
+From this code we can notice something interesting:
+- `webView.getSettings().setJavaScriptEnabled(true); ` enables the usage of javascript in the webView
+- `this.webView.loadUrl("file:///android_asset/index.html");` is used to load the file `index.html` contained in the `asset` folder of the application
+- `this.webView.addJavascriptInterface(this, "userValidation");` adds a javascript interface into the WebView
+	- a javascript interface allows the possibility to the javascript code processed by the WebView to call public methods of this class (QuoteActivity) that have the annotation `@JavascriptInterface`
 
 
-
-
-
-
-
-Nessuna immagine triggera questa exception:
-![[Pasted image 20240322100709.png]]
-
-
-Non so più che fare
-
-
-
-apro le immagini e vedo se c'è qualcosa di interesante (magari un commento ) siccome sono jpg
-
-
-provo anche a recuperare una flag con i metodi:
+Another thing really interesting here is the method:
 ```java
-  
+    @JavascriptInterface  
+    public String validateUsername(String str) {  
+        return 
+	    nativeUsernameValidation(Base64.getDecoder().decode(str.getBytes()));  
+    }
+```
+- it can be accessed by the javascript processed by the WebView and calls the method `nativeUsernameValidation`
 
-import java.io.UnsupportedEncodingException;
+So we can get a look to the method `nativeUsernameValidation`:
+```java
+public native String nativeUsernameValidation(byte[] bArr);
+```
+- it is a native method so basically is loaded from an external library written in C/C++
 
-import java.security.MessageDigest;
 
-import java.security.NoSuchAlgorithmException;
-
-  
-  
-
-/* loaded from: classes.dex */
-
-public class DigestCreator {
-
-public static final String image = "painting120";
-
-public static final String name = "GiantMerciesThriveSouth";
-
-protected static String secret = "IncredibleReturnsDiscardAllTheTime";
-
-  
-
-public static String getFlag2() {
-
-  
-
-String str;
-
-try {
-
-MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-
-messageDigest.update("yesthisone".getBytes("UTF-8"));
-
-messageDigest.update(name.getBytes("UTF-8"));
-
-messageDigest.update(secret.getBytes("UTF-8"));
-
-str = bytesToHex(messageDigest.digest());
-
-} catch (UnsupportedEncodingException | NoSuchAlgorithmException unused) {
-
-str = "";
-
-}
-
-return str;
-
-}
-
-  
-  
-
-public static String bytesToHex(byte[] bArr) {
-
-char[] cArr = new char[bArr.length * 2];
-
-char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-
-for (int i2 = 0; i2 < bArr.length; i2++) {
-
-int i3 = bArr[i2] & 255;
-
-int i4 = i2 * 2;
-
-char[] cArr2 = HEX_ARRAY;
-
-cArr[i4] = cArr2[i3 >>> 4];
-
-cArr[i4 + 1] = cArr2[i3 & 15];
-
-}
-
-return new String(cArr);
-
-}
-
-  
-
-public static void main(String[] args) {
-
-String flag2 = DigestCreator.getFlag2();
-
-System.out.println(flag2);
-
-}
-
-  
-
+In fact we can also notice that the class QuoteActivity loads a native library from the application libraries:
+```java
+static {  
+    System.loadLibrary("safetynetchallengepart");  
 }
 ```
-- ma è un hash di sha256, non può essere la flag
+
+### index.html analysis 
+At this point we can continue our investigation and we can get a look to the file `index.html` to see what it contains:
+```html
+<html>
+<body>
+<div id="username">
+</div>
+
+<div id="quote">
+</div>
+<script>
+    onmessage = function(event) {
+        const jsonData = JSON.parse(event.data);
+        if ('error' in jsonData) {
+            document.getElementById('username').innerHTML = `ERROR`;
+            document.getElementById('quote').innerHTML = `${jsonData.quote}`;
+        } else if ('quote' in jsonData) {
+            //Add validateUsername(jsonData.username) to the next version. Unfortunately, there was no time to implement it...
+	        document.getElementById('username').innerHTML = `${jsonData.username}, your personal quote is:`;
+            document.getElementById('quote').innerHTML = `${jsonData.quote}`;
+        } else {
+            document.getElementById('username').innerHTML = "";
+            document.getElementById('quote').innerHTML = "";
+        }
+
+    }
+</script>
+</body>
+</html>
+```
+
+The comment `//Add validateUsername(jsonData.username) to the next version. Unfortunately, there was no time to implement it...` gives us an useful information. The username field is not validated at all.
+
+The line  `document.getElementById('username').innerHTML = '${jsonData.username}, your personal quote is:';` basically changes the innerHTML of the element with the id = username.
+
+So, by the fact that the username is not validated this opens the door to an `XSS attack (Cross Side Scripting)`. 
+- This because we can inject javascript code that is not validated and so processed and executed by the WebView
+
+We know that `.innerHTML` doesn't allow the injection of tags like `<script>` so we need to use the tag `<img>` and try to trigger an error with the event `onerror`.
+
+#### XSS attack contruction
+We can easily start trying:
+```javascript
+<img src=1 onerror="alert()" >
+```
+
+And it works:
+![[Pasted image 20240326151007.png]]
+
+
+
+We have seen that the QuoteActivity contains a method `validateUsername` that can be invoked by the javascript processed by the WebView, so we could try to execute it using the `XSS`.
+
+
+### safetynetchallengepart.so library analysis
+Now we can focus on this library to see what the method `nativeUsernameValidation` does.
+
+We will use in this purpose the tool Ghidra.
+
+Ghidra is basically a suite software for reverse engineering (SRE) developed by the NSA Research Directorate.
+
+#### nativeUsernameValidation function analysis
+So we can load in it the library and and analyze the code of the function `nativeUsernameValidation'` :
+```C
+/* nativeUsernameValidation(unsigned char const*) */
+char * nativeUsernameValidation(uchar *param_1)
+{
+  void *__s2;
+  int iVar1;
+  char *pcVar2;
+  
+  __s2 = (void *)o_54832dacb65f7c6e96c8b10f0795d249();
+  iVar1 = memcmp(param_1,__s2,0xe);
+  if (iVar1 == 0) {
+    pcVar2 = (char *)getFlag();
+  }
+  else {
+    pcVar2 = "NOT_IMPLEMENTED";
+  }
+  return pcVar2;
+}
+
+```
+
+
+In this code:
+- `iVar2 = memcmp(param_1,__s2,0xe);` basically ckecks if the first 14 (0xe) chars (or blocks of memory) of `param_1` and `pcVar1` are equal
+- if they are equal and so `iVar1==0` then the code will return the content of the function `getFlag()`
+
+
+
+Now the idea in this case is to try to obtain what the function `o_54832dacb65f7c6e96c8b10f0795d249()` returns in order to reuse and force the application to print the flag.
+
+
+
+So we can start to create an XSS that triggers the function `validateUsername(String str)` of QuoteActivity that invokes `nativeUsernameValidation(Base64.getDecoder().decode(str.getBytes()))`
+
+
+
+
+## XSS to trigger validateUsername(String str)
+
+We can construct an < img > tag to for the execution of this method, showing the return value of the method at all in this way:
+```javascript
+<img src=1 onerror="var par = document.createElement('p'); var username = 'HELLO'; var base64 = btoa(username); par.textContent = window.userValidation.validateUsername(base64); document.body.appendChild(par);" >
+```
+
+In this code:
+- `var par = document.createElement('p');` creates a < p > html element 
+- `var username = 'HELLO';` this is the username we want to inject
+- `var base64 = btoa(username);` is used to convert the username string in base64. This beacuse the method `validateUsername(String str)` passes to the method `nativeUsernameValidation(byte[] arr)` this `Base64.getDecoder().decode(str.getBytes())`
+- `par.textContent = window.userValidation.validateUsername(base64);` is used to invoke the method `validateUsername(String str)` using the object `userValidation` that refers to the Javascript Interface created for the WebView
+- `document.body.appendChild(par);` basically appends to the HTML the result of the called function, so shows the return value of the native method
+
+
+In fact if we inject it we can see:
+![[Pasted image 20240326153731.png]]
+- NOT_IMPLEMENTED is the result of nativeUsernameValidation, this because we didn't use the right username
+
+
+So now we want to trace the methods and try to see if we are able to intercept what the method `o_54832dacb65f7c6e96c8b10f0795d249()` of the native library returns.
+
+So basically this method will return the correct "username" to use to force the execution of getFlag().
+
+
+# Dynamic Analysis
+## o_54832dacb65f7c6e96c8b10f0795d249() tracing with Frida
+Frida is a toolkit used to inject your own scripts into black box processes, hook any function, spy on crypto APIs or trace private application code.
+
+## Frida setup
+
+First of all we need to run on the device, in this case the emulator, a frida server.
+
+With the using of `adb` we can see on which architecture the emulator is based. 
+![[Pasted image 20240326154432.png]]
+
+So we download the frida server for x86_64.
+
+Now we have to make sure that adb is run as root on the device, so we can easily run the command `adb root`
+
+From this point we can easily follow the steps:
+1. Copy the frida server file into the Android phone’s tmp directory using
+	1. `adb push frida_server_name /data/local/tmp/`
+2. Change the permission of the frida-server file.
+	1. `adb shell "chmod 755 /data/local/tmp/frida_server_name"`
+3. Run frida server on the device
+	1. `adb shell "/data/local/tmp/frida_server_name `
+
+
+### Frida javascript to hook the function o_54832dacb65f7c6e96c8b10f0795d249()
+Now we can run from our pc frida, using a javascript file that contains:
+```javascript
+Interceptor.attach(Module.getExportByName("libsafetynetchallengepart.so", "_Z34o_54832dacb65f7c6e96c8b10f0795d249v"), {
+    onEnter: function (args) {
+        console.log("nativeUsernameValidation");
+
+        var param_1 = args[0];
+        var username = Memory.readCString(param_1);
+        console.log(username);
+    },
+    onLeave: function (retval) {
+
+        var resultBytes = Memory.readByteArray(retval,50);
+        console.log( resultBytes);
+    }
+});
+
+
+```
+
+Here:
+- `Interceptor.attach(Module.getExportByName("libsafetynetchallengepart.so", "_Z34o_54832dacb65f7c6e96c8b10f0795d249v"),` is used to find the address of the function `o_54832dacb65f7c6e96c8b10f0795d249 ` in the library `libsafetynetchallengepart.so`
+- `onEnter` is used to execute code when the application enters in the function we have hooked
+- `onLeave` is used to execute code when we are leaving the function.
+
+
+> NOTE we use `_Z34o_54832dacb65f7c6e96c8b10f0795d249v` instead of `o_54832dacb65f7c6e96c8b10f0795d249` because frida needs the mangled name of the function, so basically the name assigned by the compiler.
+> 
+> We can find it using nm that is used to enumerate the symbols contained in the library `nm -D libsafetynetchallengepart.so | grep o_54 `
+> ![[Pasted image 20240326161417.png]]
+
+
+
+The most important thing here is:
+```javascript
+var resultBytes = Memory.readByteArray(retval,50);
+console.log( resultBytes);
+```
+
+It takes the return value of the function we have hooked and prints it in the console.
+
+
+So now what we need to do is to find the name of the application that is running on the device:
+`frida-ps -U`
+
+![[Pasted image 20240326160636.png]]
+
+
+So now we have everything to trace the application and in fact we can run:
+`frida -U -l frida.js  Bob\ Ross\ App\ for\ Fan`
+- frida.js is the javascript seen before
+
+
+At this time frida is waiting for us, because we need to force the execution of the app we want to trace. 
+
+So we can use the `XSS` seen before and the game is done:
+![[Pasted image 20240326160942.png]]
+
+
+
+The correct "Username" is then: `Z_Uw)qb*+gXgt9`
+
+
+## Getting the flag
+The game is done because we have the correct username to bypass the check contained in `nativeUsernameValidation` function.
+
+So we change our `xss` into:
+```javascript
+<img src=1 onerror="var par = document.createElement('p'); var username = 'Z_Uw)qb*+gXgt9'; var base64 = btoa(username); par.textContent = window.userValidation.validateUsername(base64); document.body.appendChild(par);" >
+```
+- here we have `ar username = 'Z_Uw)qb*+gXgt9';`
+
+If we use it we obtain on the application:
+![[Pasted image 20240326161620.png]]
+
+
+
+
+
+
+## Approach 2
+
+We can use also another approach. In this one we analyze the native code and we try to reproduce the function `o_54832dacb65f7c6e96c8b10f0795d249` using a C "script".
+
+
+```C
+
+void o_54832dacb65f7c6e96c8b10f0795d249(void)
+
+{
+  undefined8 uVar1;
+  byte bVar2;
+  byte bVar3;
+  byte bVar4;
+  int iVar5;
+  undefined8 *puVar6;
+  undefined8 *puVar7;
+  byte *pbVar8;
+  
+  iVar5 = getSignature();
+  puVar6 = (undefined8 *)operator.new[](0xe);
+  uVar1 = *(undefined8 *)(iVar5 + 0x236);
+  *puVar6 = *(undefined8 *)(iVar5 + 0x230);
+  *(undefined8 *)((int)puVar6 + 6) = uVar1;
+  puVar7 = (undefined8 *)operator.new[](0xe);
+  uVar1 = *(undefined8 *)(iVar5 + 0x389);
+  *puVar7 = *(undefined8 *)(iVar5 + 899);
+  *(undefined8 *)((int)puVar7 + 6) = uVar1;
+  pbVar8 = (byte *)malloc(0xe);
+  bVar2 = *(byte *)((int)puVar6 + 1);
+  *pbVar8 = *(byte *)puVar6 ^ *(byte *)puVar7 ^ 0xd;
+  bVar3 = *(byte *)((int)puVar6 + 2);
+  pbVar8[1] = bVar2 ^ *(byte *)((int)puVar7 + 1) ^ 0x57;
+  bVar2 = *(byte *)((int)puVar6 + 3);
+  pbVar8[2] = bVar3 ^ *(byte *)((int)puVar7 + 2) ^ 7;
+  bVar3 = *(byte *)((int)puVar6 + 4);
+  pbVar8[3] = bVar2 ^ *(byte *)((int)puVar7 + 3) ^ 0x23;
+  bVar2 = *(byte *)((int)puVar6 + 5);
+  pbVar8[4] = bVar3 ^ *(byte *)((int)puVar7 + 4) ^ 0x29;
+  bVar3 = *(byte *)((int)puVar6 + 6);
+  pbVar8[5] = bVar2 ^ *(byte *)((int)puVar7 + 5) ^ 0x21;
+  bVar2 = *(byte *)((int)puVar6 + 7);
+  pbVar8[6] = bVar3 ^ *(byte *)((int)puVar7 + 6) ^ 0x36;
+  bVar3 = *(byte *)(puVar6 + 1);
+  bVar4 = *(byte *)(puVar7 + 1);
+  pbVar8[7] = bVar2 ^ *(byte *)((int)puVar7 + 7) ^ 0x28;
+  pbVar8[8] = bVar3 ^ bVar4 ^ 0x7b;
+  pbVar8[9] = *(byte *)((int)puVar6 + 9) ^ *(byte *)((int)puVar7 + 9) ^ 0x6b;
+  pbVar8[10] = *(byte *)((int)puVar6 + 10) ^ *(byte *)((int)puVar7 + 10) ^ 0x5b;
+  pbVar8[0xb] = *(byte *)((int)puVar6 + 0xb) ^ *(byte *)((int)puVar7 + 0xb) ^ 0x3a;
+  bVar2 = *(byte *)((int)puVar6 + 0xd);
+  bVar3 = *(byte *)((int)puVar7 + 0xd);
+  pbVar8[0xc] = *(byte *)((int)puVar6 + 0xc) ^ *(byte *)((int)puVar7 + 0xc) ^ 0x22;
+  pbVar8[0xd] = bVar2 ^ bVar3 ^ 0x62;
+  return;
+}
+
+```
+
+Here we can see that the return type of the function is wrong, because we know that there is a comparison between two arrays of char. So first of all we need to change the function return type using Ghidra into `char*`.
+
+>Right click on the function -> Edit function signature -> change void to char*
+
+
+```C
+char * o_54832dacb65f7c6e96c8b10f0795d249(void)
+
+{
+  undefined8 uVar1;
+  byte bVar2;
+  byte bVar3;
+  byte bVar4;
+  int iVar5;
+  undefined8 *puVar6;
+  undefined8 *puVar7;
+  byte *pbVar8;
+  
+  iVar5 = getSignature();
+  puVar6 = (undefined8 *)operator.new[](0xe);
+  uVar1 = *(undefined8 *)(iVar5 + 0x236);
+  *puVar6 = *(undefined8 *)(iVar5 + 0x230);
+  *(undefined8 *)((int)puVar6 + 6) = uVar1;
+  puVar7 = (undefined8 *)operator.new[](0xe);
+  uVar1 = *(undefined8 *)(iVar5 + 0x389);
+  *puVar7 = *(undefined8 *)(iVar5 + 899);
+  *(undefined8 *)((int)puVar7 + 6) = uVar1;
+  pbVar8 = (byte *)malloc(0xe);
+  bVar2 = *(byte *)((int)puVar6 + 1);
+  *pbVar8 = *(byte *)puVar6 ^ *(byte *)puVar7 ^ 0xd;
+  bVar3 = *(byte *)((int)puVar6 + 2);
+  pbVar8[1] = bVar2 ^ *(byte *)((int)puVar7 + 1) ^ 0x57;
+  bVar2 = *(byte *)((int)puVar6 + 3);
+  pbVar8[2] = bVar3 ^ *(byte *)((int)puVar7 + 2) ^ 7;
+  bVar3 = *(byte *)((int)puVar6 + 4);
+  pbVar8[3] = bVar2 ^ *(byte *)((int)puVar7 + 3) ^ 0x23;
+  bVar2 = *(byte *)((int)puVar6 + 5);
+  pbVar8[4] = bVar3 ^ *(byte *)((int)puVar7 + 4) ^ 0x29;
+  bVar3 = *(byte *)((int)puVar6 + 6);
+  pbVar8[5] = bVar2 ^ *(byte *)((int)puVar7 + 5) ^ 0x21;
+  bVar2 = *(byte *)((int)puVar6 + 7);
+  pbVar8[6] = bVar3 ^ *(byte *)((int)puVar7 + 6) ^ 0x36;
+  bVar3 = *(byte *)(puVar6 + 1);
+  bVar4 = *(byte *)(puVar7 + 1);
+  pbVar8[7] = bVar2 ^ *(byte *)((int)puVar7 + 7) ^ 0x28;
+  pbVar8[8] = bVar3 ^ bVar4 ^ 0x7b;
+  pbVar8[9] = *(byte *)((int)puVar6 + 9) ^ *(byte *)((int)puVar7 + 9) ^ 0x6b;
+  pbVar8[10] = *(byte *)((int)puVar6 + 10) ^ *(byte *)((int)puVar7 + 10) ^ 0x5b;
+  pbVar8[0xb] = *(byte *)((int)puVar6 + 0xb) ^ *(byte *)((int)puVar7 + 0xb) ^ 0x3a;
+  bVar2 = *(byte *)((int)puVar6 + 0xd);
+  bVar3 = *(byte *)((int)puVar7 + 0xd);
+  pbVar8[0xc] = *(byte *)((int)puVar6 + 0xc) ^ *(byte *)((int)puVar7 + 0xc) ^ 0x22;
+  pbVar8[0xd] = bVar2 ^ bVar3 ^ 0x62;
+  return (char *)pbVar8;
+}
+
+```
+
+
+So we can start to write our C "script".
+
+First of all the type of the variables are wrong. Looking at them we can see that
+- `undefined8` is 8 bytes for sure, so it could be `uint_64_t`
+- `byte` is for sure `char` because `pbVar8` is returned and we know that the return must be a pointer to `char`
+
+
+
+We start to follow line by line the function and try to figure out the correct code in C:
+
+```C
+char* o_54832dacb65f7c6e96c8b10f0795d249(void)
+{
+    uint64_t uVar1;
+    char bVar2;
+    char bVar3;
+    char bVar4;
+    char *pcVar5;
+    uint64_t *puVar6;
+    uint64_t *puVar7;
+    char *pbVar8;
+
+    pcVar5 = getSignature();
+
+    //puVar6 = (undefined8 *)operator.new[](0xe);
+    puVar6 = (uint64_t *)malloc(0xe);
+
+    //uVar1 = *(undefined8 *)(pcVar5 + 0x236);
+    uVar1 = *(uint64_t *)(pcVar5 + 0x236);
+
+    //*puVar6 = *(undefined8 *)(pcVar5 + 0x230);
+    *puVar6 = *(uint64_t *)(pcVar5 + 0x230);
+
+    //*(undefined8 *)((int)puVar6 + 6) = uVar1;
+    *(uint64_t *)((char *)puVar6 + 6) = uVar1;
+
+    //puVar7 = (undefined8 *)operator.new[](0xe);
+    puVar7 = (uint64_t *)malloc(0xe);
+
+    //uVar1 = *(undefined8 *)(pcVar5 + 0x389);
+    uVar1 = *(uint64_t *)(pcVar5 + 0x389);
+
+    //*puVar7 = *(undefined8 *)(pcVar5 + 899);
+    *puVar7 = *(uint64_t *)(pcVar5 + 899);
+
+    //*(undefined8 *)((int)puVar7 + 6) = uVar1;
+    *(uint64_t *)((char *)puVar7 + 6) = uVar1;
+
+    //pbVar8 = (byte *)malloc(0xe);
+    pbVar8 = (char *)malloc(0xe);
+
+    //bVar2 = *(byte *)((int)puVar6 + 1);
+    bVar2 = *((char *)puVar6 + 1);
+
+    //*pbVar8 = *(byte *)puVar6 ^ *(byte *)puVar7 ^ 0xd;
+    *pbVar8 = *((char *)puVar6) ^ *((char *)puVar7) ^ 0xd;
+
+    //bVar3 = *(byte *)((int)puVar6 + 2);
+    bVar3 = *((char *)puVar6 + 2);
+
+    //pbVar8[1] = bVar2 ^ *(byte *)((int)puVar7 + 1) ^ 0x57;
+    pbVar8[1] = bVar2 ^ *((char *)puVar7 + 1) ^ 0x57;
+
+    //bVar2 = *(byte *)((int)puVar6 + 3);
+    bVar2 = *((char *)puVar6 + 3);
+
+    //pbVar8[2] = bVar3 ^ *(byte *)((int)puVar7 + 2) ^ 7;
+    pbVar8[2] = bVar3 ^ *((char *)puVar7 + 2) ^ 7;
+
+    //bVar3 = *(byte *)((int)puVar6 + 4);
+    bVar3 = *((char *)puVar6 + 4);
+
+    //pbVar8[3] = bVar2 ^ *(byte *)((int)puVar7 + 3) ^ 0x23;
+    pbVar8[3] = bVar2 ^ *((char *)puVar7 + 3) ^ 0x23;
+
+    //bVar2 = *(byte *)((int)puVar6 + 5);
+    bVar2 = *((char *)puVar6 + 5);
+
+    //pbVar8[4] = bVar3 ^ *(byte *)((int)puVar7 + 4) ^ 0x29;
+    pbVar8[4] = bVar3 ^ *((char *)puVar7 + 4) ^ 0x29;
+
+    //bVar3 = *(byte *)((int)puVar6 + 6);
+    bVar3 = *((char *)puVar6 + 6);
+
+    //pbVar8[5] = bVar2 ^ *(byte *)((int)puVar7 + 5) ^ 0x21;
+    pbVar8[5] = bVar2 ^ *((char *)puVar7 + 5) ^ 0x21;
+
+    //bVar2 = *(byte *)((int)puVar6 + 7);
+    bVar2 = *((char *)puVar6 + 7);
+
+    //pbVar8[6] = bVar3 ^ *(byte *)((int)puVar7 + 6) ^ 0x36;
+    pbVar8[6] = bVar3 ^ *((char *)puVar7 + 6) ^ 0x36;
+
+
+    //bVar3 = *(byte *)(puVar6 + 1)
+    bVar3 = *((char *)puVar6 + 1);
+
+    //bVar4 = *(byte *)(puVar7 + 1);
+    bVar4 = *((char *)puVar7 + 1);
+
+    //pbVar8[7] = bVar2 ^ *(byte *)((int)puVar7 + 7) ^ 0x28;
+    pbVar8[7] = bVar2 ^ *((char *)puVar7 + 7) ^ 0x28;
+
+    //pbVar8[8] = bVar3 ^ bVar4 ^ 0x7b;
+    pbVar8[8] = bVar3 ^ bVar4 ^ 0x7b;
+
+    //pbVar8[9] = *(byte *)((int)puVar6 + 9) ^ *(byte *)((int)puVar7 + 9) ^ 0x6b;
+    pbVar8[9] = *((char *)puVar6 + 9) ^ *((char *)puVar7 + 9) ^ 0x6b;
+
+    //pbVar8[10] = *(byte *)((int)puVar6 + 10) ^ *(byte *)((int)puVar7 + 10) ^ 0x5b;
+    pbVar8[10] = *((char *)puVar6 + 10) ^ *((char *)puVar7 + 10) ^ 0x5b;
+
+    //pbVar8[0xb] = *(byte *)((int)puVar6 + 0xb) ^ *(byte *)((int)puVar7 + 0xb) ^ 0x3a;
+    pbVar8[0xb] = *((char *)puVar6 + 0xb) ^ *((char *)puVar7 + 0xb) ^ 0x3a;
+
+    //bVar2 = *(byte *)((int)puVar6 + 0xd);
+    bVar2 = *((char *)puVar6 + 0xd);
+
+    //bVar3 = *(byte *)((int)puVar7 + 0xd);
+    bVar3 = *((char *)puVar7 + 0xd);
+
+    //pbVar8[0xc] = *(byte *)((int)puVar6 + 0xc) ^ *(byte *)((int)puVar7 + 0xc) ^ 0x22;
+    pbVar8[0xc] = *((char *)puVar6 + 0xc) ^ *((char *)puVar7 + 0xc) ^ 0x22;
+
+    //pbVar8[0xd] = bVar2 ^ bVar3 ^ 0x62;
+    pbVar8[0xd] = bVar2 ^ bVar3 ^ 0x62;
+
+    return pbVar8;
+}
+```
+
+
+
+So now we just need to reproduce `getSignature()` to assign a value to `pcVar5`
+
+From Ghidra we can see:
+![[Pasted image 20240326162619.png]]
+- It basically calls with a Java Native Interface the line `getPackageManager().getPackageInfo().getPackageName().sigantures.toCharsString()`
+- So it simply returns the signature of the the certificate of the application
+
+
+
+We can write a pyhton script that retirns the certificate in HEX of the application using Androguard.
+
+```pyhton
+from androguard.core.bytecodes.apk import APK
+
+apk = APK('braf.2024S.apk')
+
+for cert in apk.get_certificates():
+    print(cert.dump().hex())
+```
+- it basically takes all certifcates and prints them
+
+In this case the result is:
+```
+308202bb308201a3a003020102020401f4f45e300d06092a864886f70d01010b0500300e310c300a060355040b1303534153301e170d3231313131313134323230355a170d3436313130353134323230355a300e310c300a060355040b130353415330820122300d06092a864886f70d01010105000382010f003082010a02820101008cfb5d5560445eb635cd56f69c1da17bee0a3b864312eba07b8dc37bc2f174e94efc4b3b1f78cce4a2bbaf9636a3c840ce28b35a59bf866623186be6bb2d4f02cbc66901f3a35e152521352c0bff7b8cbf539b03bceebf0765d26ebb4f3855c90d26611d9e555438e379e6d4cdb864572a417c82b2347b89d6b82c799b9c9f67960fe4831c1e677a6c19fc7bf66bdebfca8a9244ac59dba371140d4c4920a24b1cc7fc55102fad2516f5c06dbaee868b029d55b7ace4c9fcc94dfaf889cfc422f97048e418a74e3c11da18623f964f56e750c82fe02baa97d9f9827bc44987953766b868a2e2136292b16c02f45b7ec4babc25af8d6ce70a0ef8d5e7f9fbc4a50203010001a321301f301d0603551d0e04160414411465dbf011aff9d742cec358a94e3da8934799300d06092a864886f70d01010b050003820101000b456b166acc3a839b881463ba8903a8cc6401a4f39f5ee0ef764f78244b351a03df00d0f5938a900c108bb64e82a8ef1828384afa27ac7a733740ce60ee6f582066c44d9573b67d66792ed30bd517f466c50f418658076f980ffa49ab178620738693d95e9e1e9cae0e2e4ba0641f770c5e18e0c4a2e8af79537165569d12d72809ac82cff54f76fc1ea08ebe92984631d54a0e7b0bc5e0db669b59cd4e4fb8c4a527f896e3b48b3d659f5a9b72caae7542d51ba2688d865ffe58615b157ebeeffe498a66ded82fff1a95ff583b287dbfeb5b3a230e9efa687ca44a93693fdfda2e18ccf21f8f042f2c83f05f77cab60a11513166a93a6a4945219440283593
+```
+
+
+
+
+
+
+The final C code is then:
+```C
+
+
+#include <stdlib.h> 
+#include <stdint.h>
+
+char* getSignature()
+{
+    return "308202bb308201a3a003020102020401f4f45e300d06092a864886f70d01010b0500300e310c300a060355040b1303534153301e170d3231313131313134323230355a170d3436313130353134323230355a300e310c300a060355040b130353415330820122300d06092a864886f70d01010105000382010f003082010a02820101008cfb5d5560445eb635cd56f69c1da17bee0a3b864312eba07b8dc37bc2f174e94efc4b3b1f78cce4a2bbaf9636a3c840ce28b35a59bf866623186be6bb2d4f02cbc66901f3a35e152521352c0bff7b8cbf539b03bceebf0765d26ebb4f3855c90d26611d9e555438e379e6d4cdb864572a417c82b2347b89d6b82c799b9c9f67960fe4831c1e677a6c19fc7bf66bdebfca8a9244ac59dba371140d4c4920a24b1cc7fc55102fad2516f5c06dbaee868b029d55b7ace4c9fcc94dfaf889cfc422f97048e418a74e3c11da18623f964f56e750c82fe02baa97d9f9827bc44987953766b868a2e2136292b16c02f45b7ec4babc25af8d6ce70a0ef8d5e7f9fbc4a50203010001a321301f301d0603551d0e04160414411465dbf011aff9d742cec358a94e3da8934799300d06092a864886f70d01010b050003820101000b456b166acc3a839b881463ba8903a8cc6401a4f39f5ee0ef764f78244b351a03df00d0f5938a900c108bb64e82a8ef1828384afa27ac7a733740ce60ee6f582066c44d9573b67d66792ed30bd517f466c50f418658076f980ffa49ab178620738693d95e9e1e9cae0e2e4ba0641f770c5e18e0c4a2e8af79537165569d12d72809ac82cff54f76fc1ea08ebe92984631d54a0e7b0bc5e0db669b59cd4e4fb8c4a527f896e3b48b3d659f5a9b72caae7542d51ba2688d865ffe58615b157ebeeffe498a66ded82fff1a95ff583b287dbfeb5b3a230e9efa687ca44a93693fdfda2e18ccf21f8f042f2c83f05f77cab60a11513166a93a6a4945219440283593";
+}
+
+char* o_54832dacb65f7c6e96c8b10f0795d249(void)
+{
+    uint64_t uVar1;
+    char bVar2;
+    char bVar3;
+    char bVar4;
+    char *pcVar5;
+    uint64_t *puVar6;
+    uint64_t *puVar7;
+    char *pbVar8;
+
+    pcVar5 = getSignature();
+
+    //puVar6 = (undefined8 *)operator.new[](0xe);
+    puVar6 = (uint64_t *)malloc(0xe);
+
+    //uVar1 = *(undefined8 *)(pcVar5 + 0x236);
+    uVar1 = *(uint64_t *)(pcVar5 + 0x236);
+
+    //*puVar6 = *(undefined8 *)(pcVar5 + 0x230);
+    *puVar6 = *(uint64_t *)(pcVar5 + 0x230);
+
+    //*(undefined8 *)((int)puVar6 + 6) = uVar1;
+    *(uint64_t *)((char *)puVar6 + 6) = uVar1;
+
+    //puVar7 = (undefined8 *)operator.new[](0xe);
+    puVar7 = (uint64_t *)malloc(0xe);
+
+    //uVar1 = *(undefined8 *)(pcVar5 + 0x389);
+    uVar1 = *(uint64_t *)(pcVar5 + 0x389);
+
+    //*puVar7 = *(undefined8 *)(pcVar5 + 899);
+    *puVar7 = *(uint64_t *)(pcVar5 + 899);
+
+    //*(undefined8 *)((int)puVar7 + 6) = uVar1;
+    *(uint64_t *)((char *)puVar7 + 6) = uVar1;
+
+    //pbVar8 = (byte *)malloc(0xe);
+    pbVar8 = (char *)malloc(0xe);
+
+    //bVar2 = *(byte *)((int)puVar6 + 1);
+    bVar2 = *((char *)puVar6 + 1);
+
+    //*pbVar8 = *(byte *)puVar6 ^ *(byte *)puVar7 ^ 0xd;
+    *pbVar8 = *((char *)puVar6) ^ *((char *)puVar7) ^ 0xd;
+
+    //bVar3 = *(byte *)((int)puVar6 + 2);
+    bVar3 = *((char *)puVar6 + 2);
+
+    //pbVar8[1] = bVar2 ^ *(byte *)((int)puVar7 + 1) ^ 0x57;
+    pbVar8[1] = bVar2 ^ *((char *)puVar7 + 1) ^ 0x57;
+
+    //bVar2 = *(byte *)((int)puVar6 + 3);
+    bVar2 = *((char *)puVar6 + 3);
+
+    //pbVar8[2] = bVar3 ^ *(byte *)((int)puVar7 + 2) ^ 7;
+    pbVar8[2] = bVar3 ^ *((char *)puVar7 + 2) ^ 7;
+
+    //bVar3 = *(byte *)((int)puVar6 + 4);
+    bVar3 = *((char *)puVar6 + 4);
+
+    //pbVar8[3] = bVar2 ^ *(byte *)((int)puVar7 + 3) ^ 0x23;
+    pbVar8[3] = bVar2 ^ *((char *)puVar7 + 3) ^ 0x23;
+
+    //bVar2 = *(byte *)((int)puVar6 + 5);
+    bVar2 = *((char *)puVar6 + 5);
+
+    //pbVar8[4] = bVar3 ^ *(byte *)((int)puVar7 + 4) ^ 0x29;
+    pbVar8[4] = bVar3 ^ *((char *)puVar7 + 4) ^ 0x29;
+
+    //bVar3 = *(byte *)((int)puVar6 + 6);
+    bVar3 = *((char *)puVar6 + 6);
+
+    //pbVar8[5] = bVar2 ^ *(byte *)((int)puVar7 + 5) ^ 0x21;
+    pbVar8[5] = bVar2 ^ *((char *)puVar7 + 5) ^ 0x21;
+
+    //bVar2 = *(byte *)((int)puVar6 + 7);
+    bVar2 = *((char *)puVar6 + 7);
+
+    //pbVar8[6] = bVar3 ^ *(byte *)((int)puVar7 + 6) ^ 0x36;
+    pbVar8[6] = bVar3 ^ *((char *)puVar7 + 6) ^ 0x36;
+
+
+    //bVar3 = *(byte *)(puVar6 + 1)
+    bVar3 = *((char *)puVar6 + 1);
+
+    //bVar4 = *(byte *)(puVar7 + 1);
+    bVar4 = *((char *)puVar7 + 1);
+
+    //pbVar8[7] = bVar2 ^ *(byte *)((int)puVar7 + 7) ^ 0x28;
+    pbVar8[7] = bVar2 ^ *((char *)puVar7 + 7) ^ 0x28;
+
+    //pbVar8[8] = bVar3 ^ bVar4 ^ 0x7b;
+    pbVar8[8] = bVar3 ^ bVar4 ^ 0x7b;
+
+    //pbVar8[9] = *(byte *)((int)puVar6 + 9) ^ *(byte *)((int)puVar7 + 9) ^ 0x6b;
+    pbVar8[9] = *((char *)puVar6 + 9) ^ *((char *)puVar7 + 9) ^ 0x6b;
+
+    //pbVar8[10] = *(byte *)((int)puVar6 + 10) ^ *(byte *)((int)puVar7 + 10) ^ 0x5b;
+    pbVar8[10] = *((char *)puVar6 + 10) ^ *((char *)puVar7 + 10) ^ 0x5b;
+
+    //pbVar8[0xb] = *(byte *)((int)puVar6 + 0xb) ^ *(byte *)((int)puVar7 + 0xb) ^ 0x3a;
+    pbVar8[0xb] = *((char *)puVar6 + 0xb) ^ *((char *)puVar7 + 0xb) ^ 0x3a;
+
+    //bVar2 = *(byte *)((int)puVar6 + 0xd);
+    bVar2 = *((char *)puVar6 + 0xd);
+
+    //bVar3 = *(byte *)((int)puVar7 + 0xd);
+    bVar3 = *((char *)puVar7 + 0xd);
+
+    //pbVar8[0xc] = *(byte *)((int)puVar6 + 0xc) ^ *(byte *)((int)puVar7 + 0xc) ^ 0x22;
+    pbVar8[0xc] = *((char *)puVar6 + 0xc) ^ *((char *)puVar7 + 0xc) ^ 0x22;
+
+    //pbVar8[0xd] = bVar2 ^ bVar3 ^ 0x62;
+    pbVar8[0xd] = bVar2 ^ bVar3 ^ 0x62;
+
+    return pbVar8;
+}
+
+int main()
+{
+    char* content = o_54832dacb65f7c6e96c8b10f0795d249();
+    printf("%s", content);
+    free(content);
+
+    return 0;
+}
+```
+
+
+
+
+
+## Username getting
+Unfortunately something is wrong with the code and it prints a result that is quite similar to the correct one:
+`Z_Uw)qb*sgXgt9`
+
+But after the * must be + and not s. The correct one is `Z_Uw)qb*+gXgt9`

@@ -121,10 +121,14 @@ To create a key:
 keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
 ```
 
+Before to sign we need to align the apk:
+```shell
+
+```
 
 To sign the apk:
 ```shell
-apksigner sign --keystore my-release-key.keystore --ks-key-alias alias_name ./MyApp/dist/MyApp.apk
+apksigner sign --ks my-release-key.keystore --ks-key-alias alias_name ./MyApp/dist/MyApp.apk
 ```
 
 
