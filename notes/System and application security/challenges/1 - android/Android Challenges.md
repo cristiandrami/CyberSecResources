@@ -6,24 +6,47 @@ The challenge can be accessed using the link https://sas.hackthe.space/cms/files
 
 The file that is downloaded is a apk file named `braf.2024S.apk`
 
+In this challenge we will perform a static analysis and a dynamic analysis on the application in order to extract useful information from it.
 
+==**The static analysis is used to analyze the app without running it and only looking at the code, dependencies, configurations and resources.**==
 
+==**The dynamic analysis is used to analyze the running app in order to extract useful information about the application behavior, such as its resource utilization, error handling mechanisms, runtime interactions with external systems. **==
 
+For these challenges we will use some interesting tools:
+- [Android Studio + SDK](https://developer.android.com/studio)  (adb and emulator)
+- [the jadx decompiler](https://github.com/skylot/jadx)
+- [apktool](https://ibotpeaches.github.io/Apktool/)
+- [the androguard static analysis framework](https://github.com/androguard/androguard)
+- [the software reverse engineering (SRE) suite of tools](https://github.com/NationalSecurityAgency/ghidra)
+- [the frida dynamic analysis framework](https://frida.re/docs/android/)
 
 # Challenge part 1 
 
 ## Static analysis
 
-==**The static analysis is used to analyze the app without running it and only looking at the code.**==
-So what we will do first is to analyze the content of the apk file using the tool JADX.
+From the description of the first flag, we can understand that maybe in this case there is something that must not happen:
+```
+This little bug is not a bug at all, it's just a happy little accident giving us a way to surprise the developers.
+```
+- For example it's possible that the flag is hardcoded somewhere in the application soource code or in the resources of the apk.
 
-Basically we use JADX-GUI to decompile the apk and having an overview of the content of the application such as the source code and all the resources it uses.
+
+**==So what we will do first is to analyze the content of the apk file using the tool JADX.==**
+
+Basically we use JADX-GUI to decompile the apk and having an overview of the content of the application, such as the source code and all the resources it uses:
 
 ![[Pasted image 20240321174813.png]]
+
 
 ### AndroidManifest.xml analysis
 <mark style="background: #BBFABBA6;">We know that one of the most important files in an android application is the AndroidManifest.xml </mark>
 
+This file contains many important information about the application such as **information about the package, and also components of the application such as activities, services, broadcast receivers, content providers etc**.
+
+You can find a better overview [here](https://developer.android.com/guide/topics/manifest/manifest-intro)
+
+
+In this specific application, the `AndroidManifest.xml` contains:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>  
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="2" android:versionName="2024.SS.0" android:compileSdkVersion="33" android:compileSdkVersionCodename="13" package="wien.secpriv.challenges.braf" platformBuildVersionCode="33" platformBuildVersionName="13">  
@@ -52,32 +75,38 @@ Basically we use JADX-GUI to decompile the apk and having an overview of the con
 </manifest>
 ```
 
-As we can see there are no interesting things in it. 
-There is an activity that has the property `exported = "true"` 
+
+As we can see there are no interesting information here, but we can notice that `android:minSdkVersion="30"`. We have to take this in mind if we want to use an emulator, because we need an emulator that has atleast the `API 30`.
+
+However, there is an activity that has the property `exported = "true"` 
 ```xml
 <activity android:name="wien.secpriv.challenges.braf.MainActivity" android:exported="true">  
 ```
-- this means that it could be accessed from other application or in general from the extern.
-- **we can take note about it**, maybe it could contain some useful information
+- This means that it could be accessed from other application or in general from the extern.
+- **We could take note about it**, maybe it could contain some useful information.
 
 
 ### Resources Analysis
 Since the AndroidManifest.xml has no other interesting information we could take a look at the resources, starting from the generic folder `values` :
 ![[Pasted image 20240321173932.png]]
 
-**==In many cases android applications leak sensitive information because developers hardcode this information in the source code or generally in android development into the file ==** `strings.xml`
+**==In many cases android applications leak sensitive information because developers hardcode this information in the source code or generally into the file ==** `strings.xml`
+
+#### Strings.xml file analysis
+<mark style="background: #BBFABBA6;">This file is generally used for providing a centralized file for managing textual content, facilitating localization, promoting code maintainability, and supporting accessibility features.</mark>
+These strings can be easily referred also in the source java code of the application.
 
 So it could make sense to study it and try to figure out if there are some useful information in it.
 
-In fact, we could see that there is an interesting string:
+We know that the flag has the format `FLG_PT1{xxx}`, so we can try to find it reading one by one the strings contained in the file or also searching for `FLG_PT1`, always using JADX.
+
+In fact, we could see that we cna find:
 ```XML
 <string name="easyone">FLG_PT1{here_is_already_the_first_one}</string>
 ```
 
 
 So, the flag for the part 1 is: `FLG_PT1{here_is_already_the_first_one}`
-
-
 
 
 
@@ -100,20 +129,82 @@ So the first thing that we can do is to study the code of:
 - GuessingActivity
 
 ### GalleryActivity.java analizing
-In this activity nothing relevant happens. 
-The code contained in this class is used to charge all the paintings in the Activity that is shown to the user.
+The code contained in this class is used to charge all the paintings in the Activity that is shown to the user:
+```JAVA
+ public void onCreate(Bundle bundle) {  
+        super.onCreate(bundle);  
+        setContentView(R.layout.activity_gallery);  
+        setTitle("The BoB Ross Gallery");  
+        this.galleryClasses = getGalleryClasses();  
+        this.recyclerView = (RecyclerView) findViewById(R.id.recyclerView);  
+        this.galleryViewAdapter = new GalleryViewAdapter(this.galleryClasses);  
+        this.recyclerView.e0(new LinearLayoutManager());  
+        this.galleryViewAdapter.setOnItemClickListener(new a(0, this));  
+        this.recyclerView.d0(this.galleryViewAdapter);  
+    }
+```
+- as we can see it uses a `RecyclerView` to show all the painting as a "button"
+- each one "button" opens, when the user clicks on it, another activity that shows the painting and the details of it is opened
+
 
 
 ![[Pasted image 20240322172114.png]]
 
+==**Basically nothing relevant happens in this activity.** ==
+
+So we can pass to the GuessingActivity.
+
+
+
+
 
 ## GuessingActivity.java
-This is the most important Activity to analyze in this part of the challenge because it contains the information that can allow us to get the flag.
+
+The code contained in this class is very interesting because it is used to create an activity that allows an user to input the name of a painting:
+```java
+public class GuessingActivity extends AbstractActivityC0027n {  
+    private boolean verify(String str) {  
+        String str2;  
+        Log.d(MainActivity.TAG, "got guess: " + str);  
+        Class galleryContentByName = GalleryActivity.getGalleryContentByName(str);  
+        if (galleryContentByName == null) {  
+            return false;  
+        }  
+        try {  
+            str2 = (String) galleryContentByName.getMethod("getID", new Class[0]).invoke(null, new Object[0]);  
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException unused) {  
+            Log.e(MainActivity.TAG, "Yeah this should not happen");  
+            str2 = "";  
+        }  
+        return str2.equals("6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285");  
+    }  
+  
+    public void checkGuess(View view) {  
+        Toast.makeText(this, verify(((EditText) findViewById(R.id.input_guess)).getText().toString()) ? "Correct!" : "That's not it!", 1).show();  
+    }  
+  
+    /* JADX INFO: Access modifiers changed from: protected */  
+    @Override // androidx.fragment.app.j, androidx.activity.g, androidx.core.app.e, android.app.Activity  
+    public void onCreate(Bundle bundle) {  
+        super.onCreate(bundle);  
+        setContentView(R.layout.activity_guessing);  
+    }  
+}
+```
+- If the name of this painting is the `correct one` then a `Toast` shows to the user the label `Correct!`
+
+>NOTE: A toast is a lightweight user interface element used to display brief, non-intrusive messages to the user.
+
+
 
 ![[Pasted image 20240322173404.png]]
 
+From the description of the flag we know that we need the name of the correct painting to find the flag:
+- `"What's our favourite picture in the Gallery? Find the correct name and get a flag!"`
 
-The idea is to try to figure out which is the painting from which the flag is generated (the "fauvorite one") in order to generate this flag by ourself.
+==**For this reason the idea is to try to figure out which is the painting from which the flag is generated (the "fauvorite one") in order to generate this flag by ourself.**==
+
+
 
 
 So looking at the code of the file GuessingActivity.java we can notice:
@@ -123,10 +214,10 @@ So looking at the code of the file GuessingActivity.java we can notice:
     }
 ```
 - this snippet of code is responsible to check if the string insert by the user in the textfield is name of the "favourite painting"
-- to verify the condition, this method calls another method called verify, passing to it the string insert by the user
+- ==**to verify the condition, this method calls another method, ==**`verify`, ==**passing to it the string insert by the user**==
 
 
-Let's get a look at the verify method:
+==**Let's get a look at the verify method:**==
 ```JAVA 
 private boolean verify(String str) {  
         String str2;  
@@ -147,19 +238,21 @@ private boolean verify(String str) {
 
 
 Analyzing it we can say that this method:
-1. Takes as input a string str (the one used by the user in the textview)
-2. It uses the string str to obtain the Class object related to this string via a method of the GalleryActivity class
+1. **==Takes as input a string==** `str` (the one used by the user in the textview)
+2. It uses the string `str` **==to obtain the Class object related to this string via a method of the GalleryActivity class==**
 	1. If the obtained object is null, it returns false
-3. It uses reflection to invoke the method getID on the obtained object and stores the result in a string str2
+3. It uses reflection to ==**invoke the method**== `getID` ==**on the obtained object and stores the result in a string**== `str2`
 	1. If an exception occurs during reflection, it logs an error message and sets str2 to an empty string
-4. It returns true if the value of str2 is equal to a "6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285"
+4. **==It returns true if the value of str2 is equal to a "6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285"==**
 
-So basically to understand which is the right painting we need to insert the name of a painting such that the return of the method getID() of the java class related to this painting is equal to "6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285"
+
+<mark style="background: #BBFABBA6;">So basically to understand which is the right painting we need to insert the name of a painting such that the return of the method getID() of the java class related to this painting is equal to "6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285"</mark>
 
 
 
 Now we can search in JADX "getID" and we can notice that each one painting java class has a specific java class in the source code and each one implements this method:
 ![[Pasted image 20240322174008.png]]
+
 
 If we look at them we can see that each one implements this method calling the static method of the class GalleryContent, but in two different ways:
 ```java
@@ -176,8 +269,7 @@ public static String getID() {
 ```
 
 
-
-**==So, the method is the same but is called with a different order for the parameters by the different classes.==**
+**==So, the method is the same but is called with a different order of the parameters by the different classes.==**
 - we have to take this in mind for later
 
 
@@ -197,8 +289,8 @@ At this point we could take a look to the method GalleryContent.computeHash(Stri
 
 
 ```
-- basically it generates a SHA-256 digest
-- `bytesToHex` method is used to convert bytes in hex representation
+- it generates a SHA-256 digest
+- then `bytesToHex` method is used to convert bytes in hex representation
 
 
 
@@ -206,10 +298,10 @@ At this point we could take a look to the method GalleryContent.computeHash(Stri
 
 So now we have all the information to try to find out which is the painting that generates an ID equal to 6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285 .
 
-To do this we can try to offline brute force this digest using the same process used by the application source code.
+**To do this we can try to offline brute force this digest using the same process used by the application source code.**
 
 For this purpose we can use a java class that automates the process using a txt file that contains for each class ( representing a painting) :
-- for each line the name / secret pair or the secret / name pair depending on how they are used in the computeHash function
+- **==for each line the name / secret pair or the secret / name pair depending on how they are used in the computeHash function==**
 
 Txt file content:
 ```
@@ -228,7 +320,7 @@ SecondaryMusicalsCountAppropriately PreciseMeatsInterfereFreely
 ...
 ```
 
-> NOTE: I upload in TUWEL the java file and the txt file
+> Note: I upload in TUWEL the java file and the txt file.
 > The txt file contains only 100 lines because i tested the java "script" each 25 lines and I found the result at line 81, so it had no sense to fill the file with the other values.
 
 
@@ -281,15 +373,15 @@ public class DigestCreator  {
             String line;
             int i =0;
             while ((line = br.readLine()) != null) {
-                // Splitting the line by space
+
                 String[] parts = line.split("\\s+");
                 
-                if (parts.length >= 2) { // Ensure there are at least two parts
-                    String str = parts[0];
-                    String str2 = parts[1];
+                if (parts.length >= 2) { 
+                    String part1 = parts[0];
+                    String part2 = parts[1];
                     i++;
-                    if(computeHash(str, str2).equals("6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285")){
-                        System.out.println(str+" " + str2);
+                    if(computeHash(part1, part2).equals("6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285")){
+                        System.out.println(part1+" " + part2);
                     }
 
                 }
@@ -310,14 +402,28 @@ public class DigestCreator  {
 ```
 
 
+So what we do here is to:
+1. read the file `paintings.txt` line by line
+2. for each line we split on the space. So we get 2 strings from each line `part1` and `part2`
+3. we check if the hash value computed with `part1` and `part2`  is equal to ""6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285"
+	1. if they are equal then we found the name of the correct painting
+
+The function `computeHash(String str, String str2)` is the one contained in the application source code and performs the calculation of the SHA-256 digest.
+
+The function `bytesToHex(byte[] bArr)` is the one contained in the source code of the application and converts an array of bytes into a string that is the hexadecimal representation of the array.
+
+
+
 <mark style="background: #BBFABBA6;">So we can compile and run this java file and we obtain this result:</mark>
 `CrowdedFilmMakersDisappointWhatever SustainableLeftsMaintainOriginally`
+
+
 
 We search for both of them in JADX and we notice that the name of the painting is `SustainableLeftsMaintainOriginally`
 - ![[Pasted image 20240322180552.png]]
 
 
-## Flag generation
+## getting the flag
 Now we have all the information to have access to the flag.
 
 We know that the flag is generated by the painting `SustainableLeftsMaintainOriginally` so if we take a look at the source code of his java class we can see that there is the method getFlag2():
@@ -338,16 +444,26 @@ We know that the flag is generated by the painting `SustainableLeftsMaintainOrig
         return E.b(str, 0, 12, new StringBuilder("FLG_PT2{random_flag_is_"), "}");  
     }
 ```
+- also here we have a SHA-256 digest generation from `str` that is the name of the painting
 
-But we can notice that the flag is not enterely showed to the user. In fact only the first 2 hex values of the flag are shown to the user:
+If we take a look at the method `E.b` we can see:
+```java
+ public static String b(String str, int i2, int i3, StringBuilder sb, String str2) {  
+        sb.append(str.substring(i2, i3));  
+        sb.append(str2);  
+        return sb.toString();  
+    }
+```
+
+
+So:
 ```java
 return E.b(str, 0, 12, new StringBuilder("FLG_PT2{random_flag_is_"), "}"); 
 ```
-- example (not the right painting):
-	- ![[Pasted image 20240322182322.png]]
+- is basically used to append `str` after `FLG_PT2{random_flag_is_` and before `}`
 
 
-So what we can do here is to extract the method getFlag2() and compute by ourself the flag:
+==**So what we can do here is to extract the method getFlag2() and compute by ourself the flag**==:
 ```JAVA
 public static String getFlag2() {
 
@@ -374,7 +490,6 @@ public static String getFlag2() {
     }
 ```
 
-> Note that the flag is returned in this format because is the format requested by the challenge, so we take only the first 12 chars of the generated digest, in lowercase
 
 
 
@@ -391,8 +506,13 @@ The flag is: `FLG_PT2{random_flag_is_0f5943ffc0fb}`
 ## Static analysis 
 We use also here JADX-GUI to decompile the apk and to have access to the source code.
 
-We know by the description that the target for the third flag is for sure the RiddleActivity. 
-So we start on analyzing the source code of RiddleActivity.java and we notice that the most interesting method is the onCreate method:
+We know by the description that the target for the third flag is for sure the RiddleActivity:
+```
+Riddle me this: What's the flag?
+```
+
+
+So we start on analyzing the source code of RiddleActivity.java and we notice the `onCreate` method:
 ```java
 public void onCreate(Bundle bundle) {  
         super.onCreate(bundle);  
@@ -411,31 +531,65 @@ public void onCreate(Bundle bundle) {
 
 ```
 
-
-As we can see in the method there is an interesting url. if we copy and paste it in the browser we are able to download a file called Class.dex:
+One interesting thing here is the presence of an URL, and if we copy and paste it in the browser we are able to download a file called Class.dex:
 - ![[Pasted image 20240324141345.png]]
 
+**So we can take note of that.**
 
-At this point we continue to analyze the source code and we can notice that line below is only used to check if the url is in the correct form and in case is needed to normalize it, so not interesting at all: 
+
+
+At this point we continue to analyze the source code and we can notice that line below is only used to check if the url is in the correct format or if it needs to be normalized, so not interesting at all: 
 ```java
  d.g("https://class.sas.hackthe.space/class");  
 ```
 
+In, fact the function `d.g(String str)`:
+```java
+public final void g(String str) {  
+        String substring;  
+        String str2;  
+        S.b.f(str, "url");  
+        if (!W.g.C(str, "ws:", true)) {  
+            if (W.g.C(str, "wss:", true)) {  
+                substring = str.substring(4);  
+                S.b.e(substring, "this as java.lang.String).substring(startIndex)");  
+                str2 = "https:";  
+            }  
+            S.b.f(str, "<this>");  
+            w wVar = new w();  
+            wVar.f(null, str);  
+            this.f152a = wVar.a();  
+        }  
+        substring = str.substring(3);  
+        S.b.e(substring, "this as java.lang.String).substring(startIndex)");  
+        str2 = "http:";  
+        str = str2.concat(substring);  
+        S.b.f(str, "<this>");  
+        w wVar2 = new w();  
+        wVar2.f(null, str);  
+        this.f152a = wVar2.a();  
+    }
+```
+- Basically parses a URL string, changes the protocol (from "ws:" to "https:" or from "http:" to "https:") if necessary, and creates a new object using the new URL
 
 
 
-So we can focus on the line:
+
+
+
+**==So we can focus on the line:==**
 ```java
 new j(b2, d.a(), false).f(new e(this, filesDir, applicationContext, classLoader)
 ```
 
+> Note: we will refer to this line in the following text.
 
 In this case the obfuscation doesn't help us in the analyzing process but reading the source code we can extract useful information. 
 
 ## j java class analyzing
-In fact, if we open the class j we can read some strings that help us to understand that this class is used to manage a connection via web sockets.
+In fact, if we open the class `j`we can read some strings that help us to understand that this class is used to manage a connection via web sockets.
 
-For example in the constructor we can read "client", "originalRequest":
+For example in the constructor we can read `"client"`, `"originalRequest"`:
 ```java 
  public j(B b2, E e2, boolean z2) {  
         S.b.f(b2, "client");  
@@ -455,7 +609,7 @@ For example in the constructor we can read "client", "originalRequest":
     }
 ```
 
-But also in another method we can read "web socket" : "call" :
+But also in another method called `b` we can read `"web socket" : "call"` :
 ```java
  public static final String b(j jVar) {  
         StringBuilder sb = new StringBuilder();  
@@ -468,24 +622,43 @@ But also in another method we can read "web socket" : "call" :
 ```
 
 
+
+
 ## B class analyzing
-We can also see that an object b2 is passed as parameter for the j class contructor.
+We can also see (always from the line seen before) that an object `b2` is passed as parameter for the `j` class contructor.
+
+
+
+
 If we take a look on the B class then we can be sure that a web socket connection is established:
+
 ```java
 List list = this.f125c;  
 S.b.d(list, "null cannot be cast to non-null type kotlin.collections.List<okhttp3.Interceptor?>");
 ```
-- this lines contained in the constructor alloes us to understand that okhttp3 is used to perform http requests
+- this lines **==contained in the constructor allows us to understand that okhttp3 is used to perform http requests==**
+
+>Note: I reported only this lines because the method has an high number of lines.
+>It was interesting only to see that `okhttp3` is used.
 
 
 
+
+<mark style="background: #BBFABBA6;">So we can be pretty sure that the application downloads the file Class.dex from the link to do something. It is a dex file so maybe it is used to load code dynamically.</mark>
+
+Now we can continue to analyze the line:
+```java
+new j(b2, d.a(), false).f(new e(this, filesDir, applicationContext, classLoader)
+```
 ## e class analyzing
-Now we have to understand what this line does:
+
+We have to understand what this line does:
 ```java
 new e(this, filesDir, applicationContext, classLoader)
 ```
 
-So we take a look on the "e" java class, focusing on the method b:
+
+So we take a look on the `e` java class, focusing on the method `b`:
 ```java
 public final void b(H h2) {  
         String str;  
@@ -545,23 +718,24 @@ public final void b(H h2) {
     }
 ```
 
+In summary this method handles the loading and decoding of data from the URL and so the file `Class.dex` and loads from this file a class in a dynamical way. 
 
 
-Here the most important sections are:
+Here we have some interesting sections:
 
 ```java
 File file = this.f2989b;  
 File file2 = new File(file, "data.jar");  
 FileOutputStream fileOutputStream = new FileOutputStream(file2);
 ```
-- if we follow the code, "file" is simply initialized as getApplicationContext().getFilesDir(); so basically it contains the path used by the application to sotre on the device the files and the data (generally `/data/data/package_name`)
+- if we follow the code, "file" is simply initialized as getApplicationContext().getFilesDir(); so basically it contains the path used by the application to store on the device the files and the data (generally `/data/data/package_name`)
 - `fileOutputStream` is simply used to have the possibility to write on the file `data.jar` created with the previous line
 
 
 ```java
 byte[] g2 = A2.g();
 ```
-- g2 is basically the array of bytes that represents the body of the http request executed. So in this case it represents the file `Class.dex`
+- g2 is basically the array of bytes that represents the body of the https request executed. So in this case it represents the file `Class.dex`
 
 
 ```java
@@ -589,7 +763,8 @@ return;
 
 
 ### Decryption key creation
-Now we can see how the decryption key is generated:
+
+**==Now we can see how the decryption key is generated:==**
 ```java
 public static String d(Context context) {  
     try {  
@@ -622,12 +797,12 @@ So basically the decryption key is: `wien.secpriv.challenges.brafwien`
 With all the information obtained before we can try to download and decrypt by ourself the `Class.dex` file in order to analyze it and to see if it contains useful information.
 
 
-In order to do that we can write a java "script" that:
-1. performs an HTTP request to the url contained in the source code
-2. inserts the body of the response into an array of bytes
-3. uses the same approach used by the application source code to decrypt it and store it into a file called `data.jar`
+**In order to do that we can write a java "script" that:**
+1. **performs an HTTP request to the url contained in the source code**
+2. **inserts the body of the response into an array of bytes**
+3. **uses the same approach used by the application source code to decrypt it and store it into a file called** `data.jar`
 
-> NOTE: the key is constructed directly from the package name we can find into `AndroidManifest.xml`
+> NOTE: the key is constructed directly from the package name which can be found into `AndroidManifest.xml`
 
 
 Java file content:
@@ -702,14 +877,22 @@ public class Decrypt {
 ```
 
 
-> NOTE: I will upload it in TUWEL
+What we do here is:
+1. we construct the decryption key from the package name with ` String decryption_string = get_decrypt_key();`
+2. we perform an HTTP request to `https://class.sas.hackthe.space/class`
+3. we insert the body of the response, that contains the file `Class.dex` into an array of bytes `byte[] responseBody = response.body();`
+4. we use the same procedure used by the application code to decrypt the file and we write the decrypted file into the file `data.jar`
+
+
+
+> NOTE: I upload it in TUWEL
 
 
 
 ## Get the flag
 At this point we have the decrypted file and we could take a look to see if it contains useful information.
 
-We open it with a text editor and we can read:
+**==We open it with a text editor and we can read:==**
 ![[Pasted image 20240324145925.png]]
 
 
@@ -724,19 +907,24 @@ So the flag for this part of the challenge is `FLG_PT3{I_WAS_HERE_ALL_THE_TIME}`
 
 
 
-
-
 # Challenge Part 4
 
 ## Static analysis 
-We know by the description that the last flag is hidden somewhere in the Quotes section of the application, so we can start to analyze the code of the activities:
+We know by the description that the last flag is hidden somewhere in the Quotes section of the application:
+```
+Quotes, so many quotes! But where is the flag?
+```
+
+
+
+So we can start to analyze the code of the activities:
 - QuoteActivity 
 - QuoteService
 
 ### QuoteActivity analysis
 Looking at the method onCreate of this activity, we can notice that it is based on the using of a WebView.
 
-A WebView basically allows the usage of web content directly in the application and so allows the processing of web content such as HTML files, javascript code etc...
+**==A WebView basically allows the usage of web content directly in the application and so allows the processing of web content such as HTML files, javascript code etc...==**
 
 ```java
  public void onCreate(Bundle bundle) {  
@@ -762,10 +950,10 @@ A WebView basically allows the usage of web content directly in the application 
 ```
 
 From this code we can notice something interesting:
-- `webView.getSettings().setJavaScriptEnabled(true); ` enables the usage of javascript in the webView
-- `this.webView.loadUrl("file:///android_asset/index.html");` is used to load the file `index.html` contained in the `asset` folder of the application
-- `this.webView.addJavascriptInterface(this, "userValidation");` adds a javascript interface into the WebView
-	- a javascript interface allows the possibility to the javascript code processed by the WebView to call public methods of this class (QuoteActivity) that have the annotation `@JavascriptInterface`
+- `webView.getSettings().setJavaScriptEnabled(true); ` **enables the usage of javascript in the webView**
+- `this.webView.loadUrl("file:///android_asset/index.html");` **is used to load the file `index.html` contained in the `asset` folder of the application**
+- `this.webView.addJavascriptInterface(this, "userValidation");` **adds a javascript interface into the WebView**
+	- <mark style="background: #BBFABBA6;">a javascript interface allows the possibility to the javascript code processed by the WebView to call public methods of this class (QuoteActivity) that have the annotation</mark> `@JavascriptInterface`
 
 
 Another thing really interesting here is the method:
@@ -776,21 +964,29 @@ Another thing really interesting here is the method:
 	    nativeUsernameValidation(Base64.getDecoder().decode(str.getBytes()));  
     }
 ```
-- it can be accessed by the javascript processed by the WebView and calls the method `nativeUsernameValidation`
+- it can be accessed by the javascript processed by the WebView
+- it calls the method `nativeUsernameValidation`
+
+
 
 So we can get a look to the method `nativeUsernameValidation`:
 ```java
 public native String nativeUsernameValidation(byte[] bArr);
 ```
-- it is a native method so basically is loaded from an external library written in C/C++
+- **==it is a native method so basically is loaded from an external library written in C/C++==**
 
 
-In fact we can also notice that the class QuoteActivity loads a native library from the application libraries:
+In fact we can also notice that the class QuoteActivity loads a native library from the application libraries contained into the folder `/lib:
 ```java
 static {  
     System.loadLibrary("safetynetchallengepart");  
 }
 ```
+
+
+We take note of that, because it will be useful later.
+
+
 
 ### index.html analysis 
 At this point we can continue our investigation and we can get a look to the file `index.html` to see what it contains:
@@ -823,12 +1019,13 @@ At this point we can continue our investigation and we can get a look to the fil
 </html>
 ```
 
-The comment `//Add validateUsername(jsonData.username) to the next version. Unfortunately, there was no time to implement it...` gives us an useful information. The username field is not validated at all.
+The comment `//Add validateUsername(jsonData.username) to the next version. Unfortunately, there was no time to implement it...` gives us an useful information:
+- ==**The username field is not validated at all.**==
 
 The line  `document.getElementById('username').innerHTML = '${jsonData.username}, your personal quote is:';` basically changes the innerHTML of the element with the id = username.
 
-So, by the fact that the username is not validated this opens the door to an `XSS attack (Cross Side Scripting)`. 
-- This because we can inject javascript code that is not validated and so processed and executed by the WebView
+So, **==the fact that the username is not validated opens the door to an==** `XSS attack (Cross Side Scripting)`. 
+- This because we can inject javascript code, by the fact that the content of username is not validated and so processed and executed by the WebView.
 
 We know that `.innerHTML` doesn't allow the injection of tags like `<script>` so we need to use the tag `<img>` and try to trigger an error with the event `onerror`.
 
@@ -841,10 +1038,10 @@ We can easily start trying:
 And it works:
 ![[Pasted image 20240326151007.png]]
 
+**We have seen that the QuoteActivity contains a method `validateUsername` that can be invoked by the javascript processed by the WebView, so we could try to execute through the `XSS` attack.**
 
 
-We have seen that the QuoteActivity contains a method `validateUsername` that can be invoked by the javascript processed by the WebView, so we could try to execute it using the `XSS`.
-
+**Another part of the puzzle. We take note about that.**
 
 ### safetynetchallengepart.so library analysis
 Now we can focus on this library to see what the method `nativeUsernameValidation` does.
@@ -854,7 +1051,7 @@ We will use in this purpose the tool Ghidra.
 Ghidra is basically a suite software for reverse engineering (SRE) developed by the NSA Research Directorate.
 
 #### nativeUsernameValidation function analysis
-So we can load in it the library and and analyze the code of the function `nativeUsernameValidation'` :
+We load in it the library and we start to analyze the code of the function `nativeUsernameValidation` :
 ```C
 /* nativeUsernameValidation(unsigned char const*) */
 char * nativeUsernameValidation(uchar *param_1)
@@ -878,16 +1075,16 @@ char * nativeUsernameValidation(uchar *param_1)
 
 
 In this code:
-- `iVar2 = memcmp(param_1,__s2,0xe);` basically ckecks if the first 14 (0xe) chars (or blocks of memory) of `param_1` and `pcVar1` are equal
-- if they are equal and so `iVar1==0` then the code will return the content of the function `getFlag()`
+- **`iVar2 = memcmp(param_1,__s2,0xe);` basically ckecks if the first 14 (0xe) chars (or blocks of memory) of `param_1` and `pcVar1` are equal**
+- **if they are equal and so `iVar1==0` then the code will return the content of the function `getFlag()`**
 
 
 
-Now the idea in this case is to try to obtain what the function `o_54832dacb65f7c6e96c8b10f0795d249()` returns in order to reuse and force the application to print the flag.
+==**Maybe we can try to obtain what the function== `o_54832dacb65f7c6e96c8b10f0795d249()` ==returns in order to reuse and force the application to print the flag.**==
 
 
 
-So we can start to create an XSS that triggers the function `validateUsername(String str)` of QuoteActivity that invokes `nativeUsernameValidation(Base64.getDecoder().decode(str.getBytes()))`
+**==So we can start to create an XSS that triggers the function== `validateUsername(String str)` ==of QuoteActivity that invokes== `nativeUsernameValidation(Base64.getDecoder().decode(str.getBytes()))`**
 
 
 
@@ -900,49 +1097,57 @@ We can construct an < img > tag to for the execution of this method, showing the
 ```
 
 In this code:
-- `var par = document.createElement('p');` creates a < p > html element 
-- `var username = 'HELLO';` this is the username we want to inject
-- `var base64 = btoa(username);` is used to convert the username string in base64. This beacuse the method `validateUsername(String str)` passes to the method `nativeUsernameValidation(byte[] arr)` this `Base64.getDecoder().decode(str.getBytes())`
-- `par.textContent = window.userValidation.validateUsername(base64);` is used to invoke the method `validateUsername(String str)` using the object `userValidation` that refers to the Javascript Interface created for the WebView
-- `document.body.appendChild(par);` basically appends to the HTML the result of the called function, so shows the return value of the native method
+- **`var par = document.createElement('p');` -> creates a < p > html element** 
+- **`var username = 'HELLO';`  ->  is the username we want to inject**
+- **`var base64 = btoa(username);` -> is used to convert the username string in base64. This beacuse the method `validateUsername(String str)` passes to the method `nativeUsernameValidation(byte[] arr)` this `Base64.getDecoder().decode(str.getBytes())`**
+- **`par.textContent = window.userValidation.validateUsername(base64);` -> is used to invoke the method `validateUsername(String str)` using the object `userValidation` that refers to the Javascript Interface created for the WebView**
+- **`document.body.appendChild(par);` ->  appends to the HTML the result of the called function, so shows the return value of the native method**
 
 
 In fact if we inject it we can see:
 ![[Pasted image 20240326153731.png]]
-- NOT_IMPLEMENTED is the result of nativeUsernameValidation, this because we didn't use the right username
+- <mark style="background: #BBFABBA6;">NOT_IMPLEMENTED is the result of nativeUsernameValidation, this because we didn't use the right username</mark>
 
 
 So now we want to trace the methods and try to see if we are able to intercept what the method `o_54832dacb65f7c6e96c8b10f0795d249()` of the native library returns.
 
-So basically this method will return the correct "username" to use to force the execution of getFlag().
+Basically this method will return the correct "username" to use to force the execution of getFlag().
 
 
 # Dynamic Analysis
 ## o_54832dacb65f7c6e96c8b10f0795d249() tracing with Frida
+
 Frida is a toolkit used to inject your own scripts into black box processes, hook any function, spy on crypto APIs or trace private application code.
+- so we can use it to trace the execution of the function o_54832dacb65f7c6e96c8b10f0795d249()
 
 ## Frida setup
 
-First of all we need to run on the device, in this case the emulator, a frida server.
+**==First of all we need to run on the device, in this case the emulator, a frida server.==**
 
-With the using of `adb` we can see on which architecture the emulator is based. 
-![[Pasted image 20240326154432.png]]
+1. With the using of `adb` we can see on which architecture the emulator is based. 
+- ![[Pasted image 20240326154432.png]]
 
 So we download the frida server for x86_64.
 
-Now we have to make sure that adb is run as root on the device, so we can easily run the command `adb root`
 
-From this point we can easily follow the steps:
-1. Copy the frida server file into the Android phone’s tmp directory using
-	1. `adb push frida_server_name /data/local/tmp/`
-2. Change the permission of the frida-server file.
-	1. `adb shell "chmod 755 /data/local/tmp/frida_server_name"`
-3. Run frida server on the device
-	1. `adb shell "/data/local/tmp/frida_server_name `
+2. Now we have to make sure that adb is run as root on the device, so we can easily run the command `adb root`
+
+3. From this point we can easily follow the steps:
+	1. Copy the frida server file into the Android phone’s tmp directory using
+		1. `adb push frida_server_name /data/local/tmp/`
+	2. Change the permission of the frida-server file.
+		1. `adb shell "chmod 755 /data/local/tmp/frida_server_name"`
+	3. Run frida server on the device
+		1. `adb shell "/data/local/tmp/frida_server_name `
+
 
 
 ### Frida javascript to hook the function o_54832dacb65f7c6e96c8b10f0795d249()
-Now we can run from our pc frida, using a javascript file that contains:
+
+The idea of frida is to connect to the process of the application executed on the emulator and perform some actions using a javascript code.
+
+
+<mark style="background: #BBFABBA6;">So first of all we need a javascript code to hook the function we want to trace:</mark>
 ```javascript
 Interceptor.attach(Module.getExportByName("libsafetynetchallengepart.so", "_Z34o_54832dacb65f7c6e96c8b10f0795d249v"), {
     onEnter: function (args) {
@@ -975,38 +1180,73 @@ Here:
 
 
 
-The most important thing here is:
+The block:
 ```javascript
-var resultBytes = Memory.readByteArray(retval,50);
-console.log( resultBytes);
+onEnter: function (args) {
+        console.log("nativeUsernameValidation");
+
+        var param_1 = args[0];
+        var username = Memory.readCString(param_1);
+        console.log(username);
+    },
+```
+- is just used to print the username we pass to the function when we enter in the execution of that function
+
+
+
+
+But, the most important block of code here is:
+```javascript
+onLeave: function (retval) {
+
+        var resultBytes = Memory.readByteArray(retval,50);
+        console.log( resultBytes);
+    }
 ```
 
-It takes the return value of the function we have hooked and prints it in the console.
+==**It takes the return value of the function we have hooked and prints it in the console.**==
 
 
+
+<mark style="background: #BBFABBA6;">The second thing to do is to find the name of the application we want to trace on the device.</mark>
 So now what we need to do is to find the name of the application that is running on the device:
-`frida-ps -U`
+- **`frida-ps -U`**
 
 ![[Pasted image 20240326160636.png]]
 
 
-So now we have everything to trace the application and in fact we can run:
-`frida -U -l frida.js  Bob\ Ross\ App\ for\ Fan`
-- frida.js is the javascript seen before
+
+### Frida execution 
+**So now we have everything to trace the application and in fact we can run:**
+**`frida -U -l frida.js  Bob\ Ross\ App\ for\ Fan`**
+- **frida.js is the javascript seen before**
 
 
-At this time frida is waiting for us, because we need to force the execution of the app we want to trace. 
+<mark style="background: #BBFABBA6;">At this time frida is waiting for us, because we need to force the execution of the function we want to trace. </mark>
 
-So we can use the `XSS` seen before and the game is done:
+So we can use the `XSS`:
+```html
+<img src=1 onerror="var par = document.createElement('p'); var username = 'HELLO'; var base64 = btoa(username); par.textContent = window.userValidation.validateUsername(base64); document.body.appendChild(par);" >
+```
+- directly in the user input of the application running on the emulator:
+	- ![[Pasted image 20240327201648.png]]
+
+
+
+The execution of the `xss` triggers the execution of the method `nativeUsernameValidation` that  triggers internally the execution of the method `o_54832dacb65f7c6e96c8b10f0795d249`
+
+**==This execution is intercepted by our frida javascript code:==**
 ![[Pasted image 20240326160942.png]]
 
 
 
-The correct "Username" is then: `Z_Uw)qb*+gXgt9`
+We cna see that the return of the function  `o_54832dacb65f7c6e96c8b10f0795d249` is `Z_Uw)qb*+gXgt9`
+
+**So the correct "Username" is then: `Z_Uw)qb*+gXgt9`**
 
 
 ## Getting the flag
-The game is done because we have the correct username to bypass the check contained in `nativeUsernameValidation` function.
+**==The game is done because we have the correct username to bypass the check contained in== `nativeUsernameValidation` ==function.==**
 
 So we change our `xss` into:
 ```javascript
@@ -1018,15 +1258,20 @@ If we use it we obtain on the application:
 ![[Pasted image 20240326161620.png]]
 
 
-
+The flag for this part is `FLG_PT4{FINALLY_YOU_FOUND_ME}`
 
 
 
 ## Approach 2
 
-We can use also another approach. In this one we analyze the native code and we try to reproduce the function `o_54832dacb65f7c6e96c8b10f0795d249` using a C "script".
+**I tried also another approach to take the correct username, that is really interesting.**
 
 
+In this one we analyze the native code and we try to reproduce the function `o_54832dacb65f7c6e96c8b10f0795d249` using a C "script".
+
+
+
+We know from Ghidra that the code of `o_54832dacb65f7c6e96c8b10f0795d249` is:
 ```C
 
 void o_54832dacb65f7c6e96c8b10f0795d249(void)
@@ -1081,11 +1326,13 @@ void o_54832dacb65f7c6e96c8b10f0795d249(void)
 
 ```
 
-Here we can see that the return type of the function is wrong, because we know that there is a comparison between two arrays of char. So first of all we need to change the function return type using Ghidra into `char*`.
+Here we can see that the return type of the function is wrong, because we know that there is a comparison between two arrays of char. 
 
->Right click on the function -> Edit function signature -> change void to char*
+**So first of all we need to change the function return type using Ghidra into `char*`.**
 
+>Right click on the function -> Edit function signature -> change "void" to "char*"
 
+After the change it becames:
 ```C
 char * o_54832dacb65f7c6e96c8b10f0795d249(void)
 
@@ -1142,13 +1389,15 @@ char * o_54832dacb65f7c6e96c8b10f0795d249(void)
 
 So we can start to write our C "script".
 
-First of all the type of the variables are wrong. Looking at them we can see that
-- `undefined8` is 8 bytes for sure, so it could be `uint_64_t`
-- `byte` is for sure `char` because `pbVar8` is returned and we know that the return must be a pointer to `char`
+
+
+**First of all the type of the variables are wrong. Looking at them we can see that**
+- **`undefined8` undefined8 could mean that the type is of 8 bytes, so it could be in C a `uint_64_t`**
+- **`byte` is for sure `char` because `pbVar8` is returned and we know that the return must be a pointer to `char`**
 
 
 
-We start to follow line by line the function and try to figure out the correct code in C:
+**==With these information we start to follow line by line the function and try to figure out the correct code in C:==**
 
 ```C
 char* o_54832dacb65f7c6e96c8b10f0795d249(void)
@@ -1273,17 +1522,27 @@ char* o_54832dacb65f7c6e96c8b10f0795d249(void)
 
 
 
-So now we just need to reproduce `getSignature()` to assign a value to `pcVar5`
+**So now we just need to reproduce `getSignature()` to assign a value to `pcVar5`**
+
+
+
 
 From Ghidra we can see:
 ![[Pasted image 20240326162619.png]]
-- It basically calls with a Java Native Interface the line `getPackageManager().getPackageInfo().getPackageName().sigantures.toCharsString()`
-- So it simply returns the signature of the the certificate of the application
+- It basically calls with a Java Native Interface the java line `getPackageManager().getPackageInfo().getPackageName().sigantures.toCharsString()`
+- **==So it simply returns the signature of the the certificate of the application==**
 
 
 
-We can write a pyhton script that retirns the certificate in HEX of the application using Androguard.
+We can write a pyhton script that return the certificate of the application in hexadecimal format using Androguard.
 
+>Note: be sure that the version of Androguard is 3.4.0a1 
+>The new versions doesn't have a good documentation and this script won't work with them.
+>You can install the version 3.4.0a1 with `pip install androguard==3.4.0a1`
+
+
+
+**==This is the python script we need to take the certificate in hexadecimal format:==**
 ```pyhton
 from androguard.core.bytecodes.apk import APK
 
@@ -1304,7 +1563,7 @@ In this case the result is:
 
 
 
-The final C code is then:
+So now we can write the final C script:
 ```C
 
 
