@@ -22,7 +22,7 @@ For these challenges we will use some interesting tools:
 
 # Challenge part 1 
 
-## Static analysis
+## Introduction
 
 From the description of the first flag, we can understand that maybe in this case there is something that must not happen:
 ```
@@ -30,6 +30,8 @@ This little bug is not a bug at all, it's just a happy little accident giving us
 ```
 - For example it's possible that the flag is hardcoded somewhere in the application soource code or in the resources of the apk.
 
+
+## Static analysis
 
 **==So what we will do first is to analyze the content of the apk file using the tool JADX.==**
 
@@ -113,7 +115,9 @@ So, the flag for the part 1 is: `FLG_PT1{here_is_already_the_first_one}`
 
 # Challenge part 2
 
-## Static analysis 
+Professor Bleier Jakob gave me some advice when I was stuck.
+
+## Introduction
 We use also here JADX-GUI to decompile the apk and to have access to the source code.
 
 We know by the description that the target for the second flag is for sure the GalleryActivity and all the activities related to it:
@@ -128,6 +132,8 @@ So the first thing that we can do is to study the code of:
 - GalleryActivity 
 - GuessingActivity
 
+
+## Static analysis
 ### GalleryActivity.java analizing
 The code contained in this class is used to charge all the paintings in the Activity that is shown to the user:
 ```JAVA
@@ -405,7 +411,7 @@ public class DigestCreator  {
 So what we do here is to:
 1. read the file `paintings.txt` line by line
 2. for each line we split on the space. So we get 2 strings from each line `part1` and `part2`
-3. we check if the hash value computed with `part1` and `part2`  is equal to ""6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285"
+3. we check if the hash value computed with `part1` and `part2`  is equal to "6E3E25FC3EBEE6CDF0B383683B261045D3DD52D5D3C106BD5F11FBCAD01C8285"
 	1. if they are equal then we found the name of the correct painting
 
 The function `computeHash(String str, String str2)` is the one contained in the application source code and performs the calculation of the SHA-256 digest.
@@ -414,8 +420,12 @@ The function `bytesToHex(byte[] bArr)` is the one contained in the source code o
 
 
 
-<mark style="background: #BBFABBA6;">So we can compile and run this java file and we obtain this result:</mark>
-`CrowdedFilmMakersDisappointWhatever SustainableLeftsMaintainOriginally`
+<mark style="background: #BBFABBA6;">So we can compile and run this java file</mark>
+1. `javac DigestCreator.java `
+2. `java DigestCreator`
+
+<mark style="background: #BBFABBA6;">And we obtain:</mark>
+- `CrowdedFilmMakersDisappointWhatever SustainableLeftsMaintainOriginally`
 
 
 
@@ -498,12 +508,24 @@ The flag is: `FLG_PT2{random_flag_is_0f5943ffc0fb}`
 
 
 
+## Discussion of the vulnerabilities
+As we can see in this part of the challenge we have a vulnerability involving Exposure of Sensitive Information. 
 
+In fact we can see that in the source code the hardcoding of the string "6E3E25FC3EBEE6CDF0B3683B261045D3DD52D5D3C106BD5F11FBCAD01C8285" which represents the ID of the framework used to access the flag is done.
 
+A possible solution to this problem might be to store the sensitive data not in the source code but in configuration files.
+
+Another possible solution might be to initiate an interaction with an external server to perform the verification and thus prevent it from being exposed in the source code.
+
+Also exposed in plain text is the method used to calculate a framework ID, which uses SHA-256.
+
+The solution in this case could be to use code obfuscation.
 
 
 # Challenge part 3
-## Static analysis 
+
+Professor Hahnenkamp Klaus gave me some advice when I was stuck.
+## Introduction
 We use also here JADX-GUI to decompile the apk and to have access to the source code.
 
 We know by the description that the target for the third flag is for sure the RiddleActivity:
@@ -512,6 +534,7 @@ Riddle me this: What's the flag?
 ```
 
 
+## Static analysis
 So we start on analyzing the source code of RiddleActivity.java and we notice the `onCreate` method:
 ```java
 public void onCreate(Bundle bundle) {  
@@ -887,6 +910,10 @@ What we do here is:
 
 > NOTE: I upload it in TUWEL
 
+<mark style="background: #BBFABBA6;">Compile and run it:</mark>
+- `javac Decrypt.java`
+- `java Decrypt`
+
 
 
 ## Get the flag
@@ -899,17 +926,19 @@ At this point we have the decrypted file and we could take a look to see if it c
 So the flag for this part of the challenge is `FLG_PT3{I_WAS_HERE_ALL_THE_TIME}`
 
 
+## Discussion of the vulnerabilities
+In this case there are 2 vulnerabilities.
 
+The first is based on public exposure of the `Class.dex` file that can be downloaded by making an unauthenticated request to the URL `https://class.sas.hackthe.space/class`.
+So a first line of defense could be to use a server that requires authentication to access the resource.
 
-
-
-
-
+The second vulnerability relies on exposing the key used to decrypt the `Class.dex` file, which turns out to be `wien.secpriv.challenges.brafwien`. 
+It can be easily obtained by studying the code used to generate it. A line of defense here could be applied by storing the key in Android's Trusty TEE and then not exposing it.
 
 
 # Challenge Part 4
-
-## Static analysis 
+Professor Hahnenkamp Klaus gave me some advice when I wa stuck.
+## Introduction
 We know by the description that the last flag is hidden somewhere in the Quotes section of the application:
 ```
 Quotes, so many quotes! But where is the flag?
@@ -921,6 +950,7 @@ So we can start to analyze the code of the activities:
 - QuoteActivity 
 - QuoteService
 
+## Static analysis
 ### QuoteActivity analysis
 Looking at the method onCreate of this activity, we can notice that it is based on the using of a WebView.
 
@@ -1553,6 +1583,11 @@ for cert in apk.get_certificates():
 ```
 - it basically takes all certifcates and prints them
 
+
+<mark style="background: #BBFABBA6;">Run it:</mark>
+- `python3 get_certificate.py`
+
+
 In this case the result is:
 ```
 308202bb308201a3a003020102020401f4f45e300d06092a864886f70d01010b0500300e310c300a060355040b1303534153301e170d3231313131313134323230355a170d3436313130353134323230355a300e310c300a060355040b130353415330820122300d06092a864886f70d01010105000382010f003082010a02820101008cfb5d5560445eb635cd56f69c1da17bee0a3b864312eba07b8dc37bc2f174e94efc4b3b1f78cce4a2bbaf9636a3c840ce28b35a59bf866623186be6bb2d4f02cbc66901f3a35e152521352c0bff7b8cbf539b03bceebf0765d26ebb4f3855c90d26611d9e555438e379e6d4cdb864572a417c82b2347b89d6b82c799b9c9f67960fe4831c1e677a6c19fc7bf66bdebfca8a9244ac59dba371140d4c4920a24b1cc7fc55102fad2516f5c06dbaee868b029d55b7ace4c9fcc94dfaf889cfc422f97048e418a74e3c11da18623f964f56e750c82fe02baa97d9f9827bc44987953766b868a2e2136292b16c02f45b7ec4babc25af8d6ce70a0ef8d5e7f9fbc4a50203010001a321301f301d0603551d0e04160414411465dbf011aff9d742cec358a94e3da8934799300d06092a864886f70d01010b050003820101000b456b166acc3a839b881463ba8903a8cc6401a4f39f5ee0ef764f78244b351a03df00d0f5938a900c108bb64e82a8ef1828384afa27ac7a733740ce60ee6f582066c44d9573b67d66792ed30bd517f466c50f418658076f980ffa49ab178620738693d95e9e1e9cae0e2e4ba0641f770c5e18e0c4a2e8af79537165569d12d72809ac82cff54f76fc1ea08ebe92984631d54a0e7b0bc5e0db669b59cd4e4fb8c4a527f896e3b48b3d659f5a9b72caae7542d51ba2688d865ffe58615b157ebeeffe498a66ded82fff1a95ff583b287dbfeb5b3a230e9efa687ca44a93693fdfda2e18ccf21f8f042f2c83f05f77cab60a11513166a93a6a4945219440283593
@@ -1712,4 +1747,18 @@ int main()
 Unfortunately something is wrong with the code and it prints a result that is quite similar to the correct one:
 `Z_Uw)qb*sgXgt9`
 
+<mark style="background: #BBFABBA6;">To test it:</mark>
+1. `gcc almost_correct.c`
+2. `./a.out`
+
 But after the * must be + and not s. The correct one is `Z_Uw)qb*+gXgt9`
+
+
+
+
+## Discussion of the vulnerabilities
+The vulnerability here is related to improper validation of user input that through the use of a WebView is inserted into the html of the rendered page and then in our case interpreted as javascript and executed.
+
+The solution to this problem concerns the proper validation of user input.
+
+Another solution can be the using of mechanism that are able to detect when Frida is executed on the device or when the device is rooted.

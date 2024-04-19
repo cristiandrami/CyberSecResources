@@ -9,7 +9,7 @@ Android systems **==are often customized by Original Equipment Manufactures (OEM
 - apps that cannot be removed
 - very slow adoption of system updates
 
-With the project Treble we have a better separation  between the Android framework and the OEM code in order to speed up the updates (from android 9)
+**With the project Treble we have a better separation between the Android framework and the OEM code in order to speed up the updates** (from android 9)
 
 
 
@@ -38,9 +38,10 @@ For example new and updated apps on google play need to target Android 12 or hig
 An application is a all-in-one application archive, that is basically **==a zip file==**.
 
 It is usually<mark style="background: #FF5582A6;"> not encrypted, except for paid apps on the Play Store</mark>. 
-Unencrypted apks can be dumped from a rooted phone.
 
-They can be installed using google play or "sideloaded" via USB or from the archive of the phone.
+==**Unencrypted apks can be dumped from a rooted phone.**==
+
+They can be installed using google play or "sideloaded" via USB or from the archive of the phone.****
 
 
 ## APK identification
@@ -50,7 +51,7 @@ Each app has a ==**package name (ID) that is theorically unique**.== It is used 
 
 
 Each app **==has a developer signature. This signature is a self-signed certificate==** and is used to:
-- <mark style="background: #BBFABBA6;">distinguish developers and not to identify them</mark>
+- <mark style="background: #BBFABBA6;">distinguish developers and **not to identify them**</mark>
 - <mark style="background: #BBFABBA6;">distinguish system apps from normal apps</mark>
 - <mark style="background: #BBFABBA6;">used to verify the apps updates</mark> (posso aggiornare un app solo se l'apk dell'aggiornamento ha la stessa developer signature)
 - <mark style="background: #BBFABBA6;">nowadays Google Play signs the APKs for the developers</mark>
@@ -178,7 +179,7 @@ We specify the target component to talk to.
 
 # APP components
 ## Activities
-The ==**activity is the entry point for and user interaction, basically a single screen with a GUI**==.
+The ==**activity is the entry point for user interaction, basically a single screen with a GUI**==.
 
 They are composed from Views and code.
 
@@ -215,7 +216,7 @@ Each activity has a life cycle:
 It is used to ==**manage the access on the app data from other external apps**==
 The access can be protected by permissions.
 
-It is mostly based on (fiel-based) SQLite database, but this can lead to SQLinjections.
+It is mostly based on (file-based) SQLite database, but this can lead to SQLinjections.
 
 
 ```java 

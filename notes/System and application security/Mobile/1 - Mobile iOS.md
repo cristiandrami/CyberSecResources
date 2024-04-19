@@ -5,7 +5,7 @@
 **Most of them are closed-source and proprietary.==**
 
 
-
+- it allows to publish apps in Apple App Store
 # iOS Versioning
 Apple releases a major version each year (september)
 
@@ -73,7 +73,7 @@ where:
 - **==Info.plist==** is the Information Property List and contains the configuration for the app and all information about permissions and so on
 - **==Frameworks==**, it is a folder that contains some of the frameworks used by the app
 - ==**MyApp**== that is the app binary
-- further resources contains language fiels, icons, GUI objects, videos and so on
+- **==further resources==** contains language fiels, icons, GUI objects, videos and so on
 
 
 
@@ -149,7 +149,7 @@ On each state change UIKit notifies the app:
 - in iOS < 13 via UIApplicationDelegate
 
 
-Each Scene has  its own life cycle:
+Each Scene has its own life cycle:
 1. **==Unattached==** that is a newly created scene , dismissed or suspended for some time
 2. **==Inactive==** that is when the app is launched and there are no user interactions
 3. ==**active**==
@@ -183,7 +183,7 @@ With iOS 17.4 and EU regulations apple allows other browsers engines only in EU.
 
 # iOS secure enclave
 
-From iphone 5s an later we have a ==**secure sub-system called secure enclave**==.
+From iphone 5s and later we have a ==**secure sub-system called secure enclave**==.
 
 It is isolated from main processor and should keep user data safe even if Application Processor kernel is compromised.
 

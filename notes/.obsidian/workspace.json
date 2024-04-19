@@ -4,35 +4,22 @@
     "type": "split",
     "children": [
       {
-        "id": "9e6b9465b73bb966",
+        "id": "e1a5ac4a0671801f",
         "type": "tabs",
         "children": [
           {
-            "id": "8e41a6f22aef035c",
+            "id": "257724a98e6a8e5e",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "System and application security/challenges/1 - android/Android Challenges.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "e6d45b3e0cddf588",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "System and application security/challenges/1 - android/Android Challenges.md",
+                "file": "System and application security/challenges/IoT/IoT Challenges.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -61,7 +48,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#Principali",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -98,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "System and application security/challenges/1 - android/Android Challenges.md",
+                "file": "System and application security/challenges/IoT/IoT Challenges.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "System and application security/challenges/1 - android/Android Challenges.md",
+                "file": "System and application security/challenges/IoT/IoT Challenges.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "System and application security/challenges/1 - android/Android Challenges.md"
+                "file": "System and application security/challenges/IoT/IoT Challenges.md"
               }
             }
           }
@@ -159,34 +146,45 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "e6d45b3e0cddf588",
+  "active": "257724a98e6a8e5e",
   "lastOpenFiles": [
-    "Untitled.md",
+    "Pasted image 20240419163708.png",
+    "Pasted image 20240419163449.png",
+    "Pasted image 20240419163402.png",
+    "Pasted image 20240419163225.png",
+    "Pasted image 20240419162652.png",
+    "Pasted image 20240419162617.png",
+    "Pasted image 20240419162511.png",
+    "Pasted image 20240419162227.png",
+    "Pasted image 20240419162046.png",
+    "Pasted image 20240419161820.png",
+    "Pasted image 20240419161251.png",
+    "System and application security/IoT/IoT security.md",
+    "System and application security/challenges/IoT/IoT Challenges.md",
     "System and application security/challenges/1 - android/Android Challenges.md",
-    "Pasted image 20240327201648.png",
-    "writeup.md",
-    "Pasted image 20240326162619.png",
-    "Pasted image 20240326161620.png",
-    "Pasted image 20240326161417.png",
-    "Pasted image 20240326160942.png",
-    "Pasted image 20240326160636.png",
-    "Pasted image 20240326154432.png",
-    "Pasted image 20240326153731.png",
-    "Pasted image 20240326151651.png",
-    "Pasted image 20240326151559.png",
-    "Mobile Applicaion Pentesting/3 - Android Dynamic Analysis.md",
-    "System and application security/1 - Mobile iOS.md",
-    "System and application security/2 - Mobile Challenge.md",
-    "System and application security/0 - Mobile Android.md",
+    "System and application security/challenges/IoT",
+    "System and application security/Mobile/1 - Mobile iOS.md",
+    "System and application security/Mobile/0 - Mobile Android.md",
+    "().md",
+    "2024-04-13.md",
+    "Untitled 1.canvas",
+    "Thesis/LibKit -> Detecting Third-Party Libraries in iOS Apps.md",
+    "System and application security/IoT",
+    "System and application security/Mobile",
+    "System and application security/Mobile/2 - Mobile Challenge.md",
+    "Untitled 1.md",
     "Mobile Applicaion Pentesting/2 - Android Static Analysis.md",
-    "Mobile Applicaion Pentesting/1 - Android tools.md",
-    "System and application security/challenges/1 - android",
-    "System and application security/challenges",
-    "Thesis/Information gathering 0.md",
-    "Mobile Applicaion Pentesting/Untitled",
     "Thesis/Information gathering 3.md",
     "Thesis/Information gathering 2.md",
     "Thesis/Information gathering 1.md",
+    "Thesis/Information gathering 0.md",
+    "Untitled.md",
+    "writeup.md",
+    "Mobile Applicaion Pentesting/3 - Android Dynamic Analysis.md",
+    "Mobile Applicaion Pentesting/1 - Android tools.md",
+    "System and application security/challenges/1 - android",
+    "System and application security/challenges",
+    "Mobile Applicaion Pentesting/Untitled",
     "Mobile Applicaion Pentesting",
     "E-Marketing/Springer LNCS.md",
     "E-Marketing",
@@ -197,14 +195,6 @@
     "Algorithmic game theory/Th. Mechanism Design.md",
     "Project and enterprise financing",
     "Cyber Offense and defense/JWT attacks.md",
-    "Cyber Offense and defense/sss.md",
-    "Algorithmic game theory/LAB - Mechanism design.md",
-    "Untitled.canvas",
-    "Algorithmic game theory",
-    "Thesis/0 Can I take your subdomain?.md",
-    "Deep Learning/Project.md",
-    "Deep Learning",
-    "Cyber Offense and defense",
-    "2023-12-08.md"
+    "Untitled.canvas"
   ]
 }
