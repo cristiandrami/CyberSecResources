@@ -291,3 +291,92 @@ with open('image.jpg', 'wb') as image_file:
 
 The flag is: `FLG_PT2{B0BR0SS_TH3_B3ST}`
 
+
+
+# Challenge part 3
+
+## Introduction
+
+This challenge can be accessed through this [link.](https://sas.hackthe.space/#/challenges/IoT%20part%203)
+
+
+From the description of the challenge we can retrieve some useful information that we could take in mind:
+```
+Knodel war!
+
+I'm filling good.
+
+As with almost every recipe, the original recipe for knodels is also disputed among a bunch of countries: Germany, Italy, Austria... And this opens up a crucial debate... 
+BUT WAIT! A group of malicious chefs is showing on TV the wrong recipe! Can you find out which recipe? 
+
+[You have a recording of the stream](https://owncloud.tuwien.ac.at/index.php/s/cSu6orfR8PlMco7), password: hbbtv_chal.
+```
+- We can download the record of the stream [here](https://owncloud.tuwien.ac.at/index.php/s/cSu6orfR8PlMco7) using the password `hbbtv_chal`
+	- Maybe the attacker injected the HbbTV signal
+
+
+
+## Analyzing the stream recording file
+
+Using the link provided by the challenge we will download the stream recording file that is a `.ts` file.
+
+A TS file is a video file saved in the Video Transport Stream (TS) format, which stores video data compressed with standard MPEG-2 (MPEG) video compression.
+- This format is commonly used for transmitting video data over networks, including broadcasting over the air or via satellite.
+
+
+To analyze it we need to use the `TSDuck` tool that could be dowloaded [here](https://tsduck.io/download/tsduck/).
+- TSDuck is a e tool used for analyzing and manipulating MPEG transport streams and it provides various functionalities for inspecting, modifying, and generating transport streams.
+
+
+With the usage of this tool we are able to analyze the file and the content of the signal that contains **application data and stream events**. 
+An attacker can manipulate this signal in order to inject unauhtorized data into the AIT **Application Information Table**, so we could be pretty sure that the attacker modified it to perform the injection.
+- An Application Information Table (AIT) is a specific type of table used to convey application-related information it contains information about interactive applications, such as their identifiers, descriptors, and other metadata.
+
+
+You could get more information about **HbbTV** from this article: [link](https://medium.com/@dimitri.reifschneider/hbbtv-all-about-streams-230bd0ac05fb)
+
+### AIT information extracting
+What we really need to do is to analyze the AIT using `TSDuck` and we can do that using this command:
+```shell 
+tstables hacked_2024.ts -a -b tables_in_binary
+```
+
+This command collects MPEG tables or individual sections from a transport stream and so it takes all the information about the AIT from the stream recording file `hacked_2024.ts` and stores it into a binary file called `tables_in_binary`
+
+From the documentation:
+- `-a`
+	- Display/save all sections, as they appear in the stream. By default, collect complete tables, with all sections of the tables grouped and ordered and collect each version of a table only once. Note that this mode is incompatible with all forms of XML and JSON output since valid XML and JSON structures may contain complete tables only
+- `-b` 
+	- Save the sections in raw binary format in the specified output file name. If the file name is empty or '-', the binary sections are written to the standard output
+
+
+### AIT information converting into XML
+At this point we need to convert the binary file into a readable format. So we convert it into a `XML` format using `TSDuck`.
+
+In this specific case we can use this command:
+```shell
+tstabcomp --decompile tables_in_binary -o tables_in_XML
+``` 
+
+### AIT analyzing
+Now, we can open the XML file and analyze it.
+
+It is a very huge file, but we can start to search for keywords such as: `recipe`, `ricetta` (since it is in italian), `knodels`, `knodel`.
+
+And, in fact, if we search for `knodel` we can see that there are interesting sections in the file that are:
+![[Pasted image 20240419172333.png]]
+
+Here we can easily see the string `RkxHX1BUM3tQMW4zQXBwbDNfS24wZDNsfQ==`, by the format and the final `==` it could be a base64 string.
+
+So we try to decrypt it using the command:
+`echo 'RkxHX1BUM3tQMW4zQXBwbDNfS24wZDNsfQ==' | base64 -d`
+- it basically passes the string echo `RkxHX1BUM3tQMW4zQXBwbDNfS24wZDNsfQ==` to the command `base64 -d` that decrypts it
+
+
+![[Pasted image 20240419172513.png]]
+
+
+Or we could use this website: [base64decode.org](https://www.base64decode.org/).
+
+
+The flag of part 3 is: `FLG_PT3{P1n3Appl3_Kn0d3l}`

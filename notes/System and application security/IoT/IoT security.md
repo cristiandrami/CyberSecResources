@@ -487,7 +487,7 @@ It is written with standard web techniques (HTML, CSS, JavaScript).
 
 Il segnale viene:
 1. inviato alla tv
-2. la tv prende AIT e lo invia al Runtime environment 
+2. la tv prende AIT e lo invia al Runtime Environment 
 3. il Runtime environment processa AIT e effettua le comunicazioni con gli URL
 
 
