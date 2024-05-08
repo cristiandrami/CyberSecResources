@@ -69,7 +69,7 @@ An APK contains:
 - **resources.arsc**
 	- <mark style="background: #BBFABBA6;">precompiled resources, such as a binary xml</mark>
 - **META-INF/**
-	- **MANIFEST.MF** that is the manifest file
+	- **MANIFEST.MF** that is the manifest filebu
 	- **CERT.RSA** <mark style="background: #BBFABBA6;">that is the certificate of the app (RSA)</mark>
 	- **CERT.SF** that is the list of resources and SHA-1 digest
 - **lib/**
@@ -132,7 +132,7 @@ We can explicit the level with `targetSandboxVersion [1,2]` in AndroidManifest.x
 <mark style="background: #BBFABBA6;">Level 2 is default since API 28 and disallows UID sharing and cleartext traffic.</mark>
 
 It implements MAC (Mandatory Access Control). 
-It is not possible to write on `/system` or to have row access on GPS/microphone/radui an is not possible to disabel SELinux.
+**==It is not possible to write on ==** `/system` **==or to have row access on GPS/microphone/radui and is not possible to disable SELinux.==**
 
 
 
@@ -179,7 +179,7 @@ We specify the target component to talk to.
 
 # APP components
 ## Activities
-The ==**activity is the entry point for user interaction, basically a single screen with a GUI**==.
+The ==**activity is the entry point for user interaction, basically a sbuingle screen with a GUI**==.
 
 They are composed from Views and code.
 
@@ -269,7 +269,7 @@ They are an <mark style="background: #BBFABBA6;">alternative to broadcasts and a
 
 
 # Running apps
-Running apps are managed bu the Android Runtime (ART)
+Running apps are managed by the Android Runtime (ART)
 
 ![[Pasted image 20240314113728.png]]
 
@@ -409,6 +409,9 @@ It is generally implemented by Google Play Protect and needs Google Services.
 Is not possible for apps to collect fingerprints because the fingerprint sensor keeps the fingerprint model locally and only exposes functions through the Hardware Abstraction Layer (HAL).
 
 
+
+
+
 ![[Pasted image 20240314153137.png]]
 
 
@@ -444,7 +447,7 @@ The remedy is to use:
 It involves the using of:
 - <mark style="background: #FF5582A6;">security by obscurity, hidden endpoints</mark>
 - <mark style="background: #FF5582A6;">weak passwords, or storing them in cache</mark>
-- <mark style="background: #FF5582A6;">single factor authentication, or ignoring it fro password reset</mark>
+- <mark style="background: #FF5582A6;">single factor authentication, or ignoring it for password reset</mark>
 
 The remedy can be:
 - <mark style="background: #BBFABBA6;">assume that all APIs are public </mark>
@@ -468,7 +471,7 @@ Remedy:
 - <mark style="background: #BBFABBA6;">always use TLS and secure channels</mark>
 
 ## M6 Inadequate Privacy Controls
-It is related to <mark style="background: #FF5582A6;">laks of Personal Identifiable Information (PII) and the issues involve confidentiality, integrity and or availability</mark>.
+It is related to <mark style="background: #FF5582A6;">leaks of Personal Identifiable Information (PII) and the issues involve confidentiality, integrity and or availability</mark>.
 
 Remedy:
 - <mark style="background: #BBFABBA6;">don't use at all PII (not sensitive ones) or delete them on request by the user or when they are not used</mark>.

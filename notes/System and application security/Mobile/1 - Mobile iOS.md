@@ -29,7 +29,6 @@ It is also possible to distribute Custom Apps within an Organization
 - developer Enterprise Program : 299 USD/year
 
 
-
 There is also a platform to test apps that is TestFlight.
 
 ==**Each submitted app for publishing it in the App Store is reviewed by apple.**==
@@ -108,7 +107,6 @@ The protected resources are:
 - Photos
 - Microphone
 - ...
-
 
 
 # iOS App Sandboxing

@@ -2,9 +2,6 @@ To do the challenge we need to connect to:
 `sas.hackthe.space` and login with TU wien.
 
 
-
-
-
 # code protection techniques
 There are some different techniques:
 - **==Obfuscation==**. It involves renaming, string encryption, java reflection, code modification, dynamic code loading ecc

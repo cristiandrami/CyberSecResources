@@ -26,12 +26,10 @@ Can you help Ben find out what happened? **WILL** he be able to solve the prob
 
 Hint: The user was able to find the flaw quickly, detailed reversing is not necessary.
 ```
-- There is a MQTT server on the domain **mosquitto.sas.hackthe.space on the port 8883**
-- The MQTT server **is secured with "top security practices"**.
+- There is a MQTT server on the domain ==**mosquitto.sas.hackthe.space on the port 8883**==
+- The MQTT server ==**is secured with "top security practices"**.==
 - We could download the firmware from this [link](https://owncloud.tuwien.ac.at/index.php/s/k3njyCirLnmNnGU) using the password **mqtt_chal_1**
-- The **firmware was posted on a forum** so the attacker could have obtained some information from it in order to understand how to open the door.
-
-
+- The ==**firmware was posted on a forum** so the attacker could have obtained some information from it in order to understand how to open the door.==
 ## Connecting to the MQTT broker 
 We know that there is a MQTT broker on  **mosquitto.sas.hackthe.space on the port 8883** so what we can try to do is to connect to it.
 
@@ -43,7 +41,7 @@ This means that it works on topics on which clients:
 - can be subscribed, and so can read all the messages published on them
 - can publish messages that will be send to all clients subscribed
 
-What we want to do there is to try to subscribe to all topics in order to see if we could get some useful information useful for the flag getting.
+What we want to do there is to ==try to subscribe to all topics in order to see if we could get some unexpected useful information==.
 
 
 
@@ -62,7 +60,7 @@ Unfortunately we receive an error message that says:
 `Error: A TLS error occurred.`
 
 This means that probably we have not the authorization to connect to the MQTT server. 
-So maybe, we need a valid certificate to connect to server, because we know that the MQTT server **is secured with "top security practices"**. 
+==So maybe, we need a valid certificate to connect to server, because we know that the MQTT server **is secured with "top security practices"**. ==
 
 
 At this point we could try to analyze the firmware file we can download from this [link](https://owncloud.tuwien.ac.at/index.php/s/k3njyCirLnmNnGU) using the password `mqtt_chal_1`
@@ -79,20 +77,24 @@ We can see that there are some log information and it is pretty readable, but to
 ```shell
 strings firmware_2024.bin > firmware_strings.txt
 ```
-- `strings` is a command that searchs in files or inputs sequences of bytes that represent a valid string 
+- `strings` is a command that searchs in files, or in inputs, sequences of bytes that represent a valid string 
 
 
 So now we have a readable file, and we can start to analyze it.
-If we analyze it in a detailed way we can see that it contains an interesting line:
+
+
+**==If we analyze it in a detailed way we can see that it contains an interesting line:==**
 ```
 -----BEGIN CERTIFICATE----- MIIDnzCCAoegAwIBAgIUV8tXyfkAERUe4ajvN9S1AiQU3RowDQYJKoZIhvcNAQEL BQAwXjELMAkGA1UEBhMCQVQxDTALBgNVBAgMBFdpZW4xDTALBgNVBAcMBFdpZW4x DzANBgNVBAoMBlRVV2llbjEMMAoGA1UECwwDU0FTMRIwEAYDVQQDDAkxMjcuMC4w LjEwIBcNMjIxMTA3MDkxMzA0WhgPMzAyMjAzMTAwOTEzMDRaMF4xCzAJBgNVBAYT AkFUMQ0wCwYDVQQIDARXaWVuMQ0wCwYDVQQHDARXaWVuMQ8wDQYDVQQKDAZUVVdp ZW4xDDAKBgNVBAsMA1NBUzESMBAGA1UEAwwJMTI3LjAuMC4xMIIBIjANBgkqhkiG 9w0BAQEFAAOCAQ8AMIIBCgKCAQEAub9wOf/kgUptJ4F5J3gO6cxXpenX/j2+0lKo DJ7dXytCiUIH5yREfhqGxeCtR1b0/3rkK3wEkT8N3DbRtiGrGVFgwgegLtufrYLz yvUvm1p6JI1TPmv7wpvXjplq0T8G1e6P2UeMf2BZCAs8kGIYFARE0GlmZhiGha3R ElnFq6iTSr1FiBu7nQbxa/OwfdbVrRmHhO9qRhsaDurKa/MdH8CgJdOHzwKM7Jcn +azYwNPmkUskfNsAe6+9u5UJ70gAY2pS2gRNevlXWE5azoZC5GKPpNVpdjBXbMcc ZfT7jZ8KGdbOm2jOE40HoFanNBDSrrfjVaIRFvb4Bwr1Ud2cpwIDAQABo1MwUTAd BgNVHQ4EFgQUpwkz73DstzC221sS8WAgbrKf54kwHwYDVR0jBBgwFoAUpwkz73Ds tzC221sS8WAgbrKf54kwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOC AQEAW/h8RWIAkS1UiggSUqhbwBGQA4HTSEmKhe/4GeMQxMz8WAl4+oeSqAErgPdg ec8b2IT7iZcvwv9mpkCXPBb9vIcBFGn+IEYWV66dVxVW1oVYzTzFvw+0pqNsog9z FTzDDWBkhz3+LIaagoSLX1/LV/iiakxfUDJi+Xft59bf+f4A84p8+Ub2IzeyeTE2 cxcj3TD6rq5jGJAJZjkR6xIfivZ7rv/v+f0B+sN5cR4XOLResBxNhsh0S70FgIJB JuJembC8m36Axycy7D0g52WWdfbF5Q3bR3BWuxKX9WFXb93WpRbJlu1rKiD1lfGZ Ryzh2D4QlEOmRg6HtQFC1MWYTQ== -----END CERTIFICATE-----
 
 ```
 
 
-It represents for sure a certificate and it is very strange that it is present on this firmware file. So maybe it is a valid certificate that could allow us to connect to the MQTT server.
+It **==represents for sure a certificate and it is very strange that it is present on this firmware file==**. 
 
-At this point we rewrite the certificate into a txt file following the certificate standards and we obtain this:
+So maybe we can use it to try to connect to the MQTT server.
+
+**==At this point we rewrite the certificate into a txt file following the certificate standards and we obtain this:==**
 ```
 -----BEGIN CERTIFICATE-----
 MIIDnzCCAoegAwIBAgIUV8tXyfkAERUe4ajvN9S1AiQU3RowDQYJKoZIhvcNAQEL
@@ -119,7 +121,7 @@ Ryzh2D4QlEOmRg6HtQFC1MWYTQ==
 ```
 
 
-Now we can change the extension of the txt file into `.pem` that is a format used to store certificates and cryptographic keys.
+Now we **==can change the extension of the txt file into== `.pem`** that is a format used to store certificates and cryptographic keys.
 ![[Pasted image 20240419153048.png]]
 
 If we double click on it, we can see the details of the certificate and we can understand that it is a valid certificate:
@@ -130,20 +132,26 @@ If we double click on it, we can see the details of the certificate and we can u
 ## Connecting to the MQTT broker using the certificate found
 
 Now we can retry to connect to the MTTQ server using the found certificate. 
+
 The procedure is pretty similar to the previous one, and in fact we can just use the command:
 ```shell
 mosquitto_sub -h mosquitto.sas.hackthe.space -p 8883 -t '#' --cafile certificate.pem
 ```
+- `--cafile` is used to define the certificate we want to use for TLS connection
+
 
 But also this time we get the error:
 `Error: A TLS error occurred.`
 
-This is a little bit strange, because the certificate we have has an high probability to be the correct one for connecting to the MQTT server. 
 
-So we try to analyze it and we can see that the `CN` (Common name) is set to `127.0.0.1` that means we can connect only to `127.0.0.1` using this certificate:
+So we try to analyze another time the certificate and we can see that the `CN` (Common name) is set to `127.0.0.1` that means we can connect only to `127.0.0.1` using this certificate:
 ![[Pasted image 20240419153653.png]]
 
-But we can try to find a way to bypass the check on the `CN` field. So we search on the `mosquitto_sub` documentation ([here](https://mosquitto.org/man/mosquitto_sub-1.html)) and we can find on the `TLS` section an interesting argument we can use: `--insecure`
+==**But we can try to find a way to bypass the check on the== `CN` ==field==**. 
+
+So we search on the `mosquitto_sub` documentation ([here](https://mosquitto.org/man/mosquitto_sub-1.html)) and we can find on the `TLS` section an **==interesting argument we can use==**:
+- `--insecure`
+
 
 Description of `--insecure` argument:
 ```
@@ -157,9 +165,19 @@ mosquitto_sub -h mosquitto.sas.hackthe.space -p 8883 -t '#' --cafile certificate
 ```
 - it works, and allows us to connect to the server.
 
-As soon as we connect to the MQTT server we receive a message that is the flag.
+<mark style="background: #BBFABBA6;">As soon as we connect to the MQTT server we receive a message that is the flag we are searching for.</mark>
 
-So the flag is: ``
+
+
+## Discussion of the vulnerabilities
+
+In this context, the vulnerability arises from the fact that the certificate to be able to connect to the MQTT broker can be found within the firmware, which turns out to be publicly accessible.
+
+==**One solution to this problem is definitely to avoid storing sensitive data such as this certificate within the firmware.** ==
+
+==**Or at the point when it is strictly necessary to do so, use a strong encryption algorithm so that a possible attacker will not be able to decrypt the data.**==
+
+
 
 
 
@@ -179,15 +197,15 @@ One day an unfinished painting got public, can you figure out how that happened?
 
 Hint: there is not a single MQTT version..
 ```
-- There is a MQTT server on the domain **mosquitto.sas.hackthe.space on the port 1883**
-- Bob **shares his paintings over MQTT**
-- **Hint: there is not a single MQTT version.** So maybe we have to work with different protocol versions
+- There is a ==MQTT server on the domain **mosquitto.sas.hackthe.space on the port 1883**==
+- ==Bob **shares his paintings over MQTT**==
+- ==**Hint: there is not a single MQTT version.** ==So maybe we have to work with different protocol versions
 
 
 ## Connecting to the MQTT broker 
 We know that there is a MQTT broker on  **mosquitto.sas.hackthe.space on the port 1883 so what we can try to do is to connect to it.
 
-What we want to do there is to try to subscribe to all topics in order to see if we could get some useful information useful for the flag getting.
+What we want to do there is to try to subscribe to all topics in order to see if we could get some useful unexpected information.
 
 
 So we try to use:
@@ -199,9 +217,10 @@ mosquitto_sub -h mosquitto.sas.hackthe.space -p 1883 -t '#'
 We are able to connect but nothing happens:
 ![[Pasted image 20240419161251.png]]
 
-But we know from the hint tha there are different protocol versions. So let's get a look on the `mosquitto_sub` documentation ([here](https://mosquitto.org/man/mosquitto_sub-1.html)).
+But **==we know from the hint that there are different protocol versions==**. So let's get a look on the `mosquitto_sub` documentation ([here](https://mosquitto.org/man/mosquitto_sub-1.html)).
 
-There we can find an useful argument that is `--protocol-version`
+There we can find ==**an useful argument that is**==:
+- `--protocol-version`
 
 Description of `--protocol-version` argument:
 ```
@@ -214,43 +233,47 @@ So we can try all of them and see what happens:
 - But also with different protocol versions nothing happens, at least nothing directly visible.
 
 
-So we can do a deeper analysis using `wireshark`.
+So we **==can do a deeper analysis using== `wireshark`.**
+
+### Wireshark analysis
 
 What we need to do here is to:
-1. run wireshark using `sudo wireshark`
-2. start a capture using the network device, in my case `wlo1`
+1. **==run wireshark==** using `sudo wireshark`
+2. start a ==**capture using the network device**==, in my case `wlo1`
 	1. ![[Pasted image 20240419162046.png]]
-3. start, as before, a connection with the MQTT server with all different MQTT protocol versions:
+3. ==**start**==, as before, **==a connection with the MQTT server with all different MQTT protocol versions==**:
 	1. ![[Pasted image 20240419161820.png]]
-4. filter the connection on wireshark using `mqtt` filter
+4. ==**filter the connection on wireshark**== using **`mqtt` filter**
 	1. ![[Pasted image 20240419162227.png]]
 
 
 
 
 At this point we can start to analyze the different connection. 
-In general what we need to do is to analyze the response we obtain to the connection request and so in this case the `Connect ACK` packets.
+
+**==In general what we need to do is to analyze the response we obtain to the connection request and so in this case the== `Connect ACK` ==packets.==**
 
 
 So we take a look:
-1. `Protocol version 31` Connect ACK packet
+1. **`Protocol version 31` Connect ACK packet**
 	1.  ![[Pasted image 20240419162511.png]]
 	2. Nothing interesting there
-2. `Protocol version 311` Connect ACK packet
+2. **`Protocol version 311` Connect ACK packet**
 	1. ![[Pasted image 20240419162617.png]]
 	2. Nothing interesting there
-3. `Protocol version 5` Connect ACK packet
+3. **`Protocol version 5` Connect ACK packet**
 	1. ![[Pasted image 20240419162652.png]]
-	2. **Very interesting!**
+	2. ==**Very interesting!**==
 
 
 
 So the protocol version 5 gives us some useful information:
-- `flag_picture` is the topic we need to connect to
-- `bob:ross` are the credentials we can use to connect to it
+- **`flag_picture` ==is the topic we need to connect to==**
+- **`bob:ross` ==are the credentials we can use to connect to it**==
 
 
 ## Subscription to the MQTT topic using found credentials
+
 At this point we can subscribe to the topic `flag_picture` using the credentials `bob:ross`.
 
 We use this command:
@@ -260,19 +283,22 @@ mosquitto_sub -h mosquitto.sas.hackthe.space -p 1883 -t 'flag_picture' -u bob -P
 - `-u` is used to define the username 
 - `-P` is used to define the password
 
+
 The result is:
 ![[Pasted image 20240419163225.png]]
 
-Not comprensible at all. But we know that Bob does paintings and the topic is called `flag_picture`. So maybe this binary represents a picture.
+**==Not comprensible at all. But we know that Bob does paintings and the topic is called ==`flag_picture`**. So maybe this binary represents a picture.
 
 
-What we really need is the HEX representation of this binary. And we can easily find it using wireshark, capturing the message exchange:
+What we really need is the HEX representation of this binary. ==**And we can easily find it using wireshark, capturing the message exchange**==:
 ![[Pasted image 20240419163402.png]]
 
-So we can now copy the message received:
+
+**==So we can now copy the message received:==**
 ![[Pasted image 20240419163449.png]]
 
-At this point we can past it into a file `flag.txt` and write a simple python script that converts HEX strings to images or use the website [CodePen](https://codepen.io/abdhass/full/jdRNdj) :
+
+==**At this point we can past it into a file== `flag.txt` ==and write a simple python script that converts HEX strings to images or use the website== [CodePen](https://codepen.io/abdhass/full/jdRNdj)** :
 ![[Pasted image 20240419163708.png]]
 
 
@@ -289,9 +315,16 @@ with open('image.jpg', 'wb') as image_file:
 
 
 
-The flag is: `FLG_PT2{B0BR0SS_TH3_B3ST}`
+<mark style="background: #BBFABBA6;">The flag is:</mark> `FLG_PT2{B0BR0SS_TH3_B3ST}`
 
 
+## Discussion of the vulnerabilities
+
+In this context, the vulnerability arises from the fact that the credentials to be able to connect to the MQTT topic that contains the flag are hardcoded into the properties of the connect ACK message sent by the server when the client uses the protocol version 5.
+
+==**The solution to this problem is definitely to avoid hardcode credentials in messages sent to the users and so publicly accessible.** ==
+
+==**Another useful thing is to manage the protocol versions allowed to perform a connection to the MQTT broker and so allow only the needed ones and not all of them.**==
 
 # Challenge part 3
 
@@ -312,7 +345,8 @@ BUT WAIT! A group of malicious chefs is showing on TV the wrong recipe! Can you 
 [You have a recording of the stream](https://owncloud.tuwien.ac.at/index.php/s/cSu6orfR8PlMco7), password: hbbtv_chal.
 ```
 - We can download the record of the stream [here](https://owncloud.tuwien.ac.at/index.php/s/cSu6orfR8PlMco7) using the password `hbbtv_chal`
-	- Maybe the attacker injected the HbbTV signal
+- "**A group of malicious chefs is showing on TV the wrong recipe!**"
+	- **==Maybe the attacker injected the television signal==**
 
 
 
@@ -329,6 +363,7 @@ To analyze it we need to use the `TSDuck` tool that could be dowloaded [here](ht
 
 
 With the usage of this tool we are able to analyze the file and the content of the signal that contains **application data and stream events**. 
+
 An attacker can manipulate this signal in order to inject unauhtorized data into the AIT **Application Information Table**, so we could be pretty sure that the attacker modified it to perform the injection.
 - An Application Information Table (AIT) is a specific type of table used to convey application-related information it contains information about interactive applications, such as their identifiers, descriptors, and other metadata.
 
@@ -336,12 +371,13 @@ An attacker can manipulate this signal in order to inject unauhtorized data into
 You could get more information about **HbbTV** from this article: [link](https://medium.com/@dimitri.reifschneider/hbbtv-all-about-streams-230bd0ac05fb)
 
 ### AIT information extracting
-What we really need to do is to analyze the AIT using `TSDuck` and we can do that using this command:
+
+==**What we really need to do is to analyze the AIT using ==`TSDuck` ==and we can do that using this command:**==
 ```shell 
 tstables hacked_2024.ts -a -b tables_in_binary
 ```
+- **==This command collects MPEG tables or individual sections from a transport stream and so it takes all the information about the AIT from the stream recording file== `hacked_2024.ts` ==and stores it into a binary file called== `tables_in_binary`**
 
-This command collects MPEG tables or individual sections from a transport stream and so it takes all the information about the AIT from the stream recording file `hacked_2024.ts` and stores it into a binary file called `tables_in_binary`
 
 From the documentation:
 - `-a`
@@ -351,25 +387,33 @@ From the documentation:
 
 
 ### AIT information converting into XML
-At this point we need to convert the binary file into a readable format. So we convert it into a `XML` format using `TSDuck`.
+
+At this point we need to convert the binary file into a readable format. So **==we convert it into a== `XML` format using `TSDuck`**.
 
 In this specific case we can use this command:
 ```shell
 tstabcomp --decompile tables_in_binary -o tables_in_XML
 ``` 
 
+
 ### AIT analyzing
-Now, we can open the XML file and analyze it.
 
-It is a very huge file, but we can start to search for keywords such as: `recipe`, `ricetta` (since it is in italian), `knodels`, `knodel`.
+Now, we are able to open the XML file and analyze it.
 
-And, in fact, if we search for `knodel` we can see that there are interesting sections in the file that are:
+**==It is a very huge file, but we can start to search for keywords such as:==** **`recipe`, `ricetta` (since the stream is in italian), `knodels`, `knodel`.**
+
+**==And, in fact, if we search for== `knodel` we can see that there are interesting sections in the file that are:**
 ![[Pasted image 20240419172333.png]]
 
-Here we can easily see the string `RkxHX1BUM3tQMW4zQXBwbDNfS24wZDNsfQ==`, by the format and the final `==` it could be a base64 string.
 
-So we try to decrypt it using the command:
-`echo 'RkxHX1BUM3tQMW4zQXBwbDNfS24wZDNsfQ==' | base64 -d`
+
+Here we can easily see the string `RkxHX1BUM3tQMW4zQXBwbDNfS24wZDNsfQ==`.
+- by the format and the final `==` it could be a base64 string
+
+**==So we try to decrypt it using the command:==**
+``` shell
+echo 'RkxHX1BUM3tQMW4zQXBwbDNfS24wZDNsfQ==' | base64 -d
+```
 - it basically passes the string echo `RkxHX1BUM3tQMW4zQXBwbDNfS24wZDNsfQ==` to the command `base64 -d` that decrypts it
 
 
@@ -379,4 +423,14 @@ So we try to decrypt it using the command:
 Or we could use this website: [base64decode.org](https://www.base64decode.org/).
 
 
-The flag of part 3 is: `FLG_PT3{P1n3Appl3_Kn0d3l}`
+<mark style="background: #BBFABBA6;">The flag of part 3 is: </mark>`FLG_PT3{P1n3Appl3_Kn0d3l}`
+
+## Discussion of the vulnerabilities
+
+In this context the vulnerability arises from the fact that there is no protection mechanism for the DVB signal, which can therefore be read and modified without problems by an external attacker.
+
+In this case we have the possibility of being able to access the AIT of the signal.
+
+==**One solution to this problem could be to use encryption for the signals being sent.**==
+
+==**In general, we should use an authentication mechanism to verify the identity of the person sending the signal and the person who has authorization to receive it.**==
