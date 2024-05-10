@@ -13,13 +13,26 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "System and application security/challenges/IoT/IoT Challenges.md",
+                "file": "System and application security/challenges/1 - android/Android Challenges.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "c23cccb0498d25ac",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "System and application security/challenges/Hardware/Hardware.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -85,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "System and application security/challenges/IoT/IoT Challenges.md",
+                "file": "System and application security/challenges/Hardware/Hardware.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "System and application security/challenges/IoT/IoT Challenges.md",
+                "file": "System and application security/challenges/Hardware/Hardware.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "System and application security/challenges/IoT/IoT Challenges.md"
+                "file": "System and application security/challenges/Hardware/Hardware.md"
               }
             }
           }
@@ -146,28 +159,33 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "257724a98e6a8e5e",
+  "active": "c23cccb0498d25ac",
   "lastOpenFiles": [
-    "System and application security/IoT/IoT security.md",
+    "Pasted image 20240510180740.png",
+    "Pasted image 20240510180707.png",
+    "Pasted image 20240510180650.png",
+    "Pasted image 20240510175706.png",
+    "Pasted image 20240510175305.png",
+    "Pasted image 20240510174832.png",
+    "Pasted image 20240510174423.png",
+    "Pasted image 20240510173249.png",
+    "Pasted image 20240510172632.png",
+    "Pasted image 20240510172504.png",
+    "Pasted image 20240510172440.png",
     "System and application security/challenges/1 - android/Android Challenges.md",
+    "System and application security/challenges/Hardware/Hardware.md",
+    "System and application security/challenges/IoT/IoT Challenges.md",
+    "System and application security/Hardware/Hardware security.md",
+    "System and application security/challenges/Hardware",
+    "().md",
+    "System and application security/Hardware",
+    "System and application security/IoT/IoT security.md",
     "System and application security/exams/Exam 1 - Possible Questions.md",
     "System and application security/Mobile/0 - Mobile Android.md",
     "System and application security/exams",
     "System and application security/Mobile/1 - Mobile iOS.md",
     "System and application security/Mobile/2 - Mobile Challenge.md",
-    "Pasted image 20240420145514.png",
-    "System and application security/challenges/IoT/IoT Challenges.md",
-    "Pasted image 20240419172513.png",
-    "Pasted image 20240419172333.png",
-    "Pasted image 20240419163708.png",
-    "Pasted image 20240419163449.png",
-    "Pasted image 20240419163402.png",
-    "Pasted image 20240419163225.png",
-    "Pasted image 20240419162652.png",
-    "Pasted image 20240419162617.png",
-    "Pasted image 20240419162511.png",
     "System and application security/challenges/IoT",
-    "().md",
     "2024-04-13.md",
     "Untitled 1.canvas",
     "Thesis/LibKit -> Detecting Third-Party Libraries in iOS Apps.md",
@@ -188,13 +206,8 @@
     "Mobile Applicaion Pentesting/Untitled",
     "Mobile Applicaion Pentesting",
     "E-Marketing/Springer LNCS.md",
-    "E-Marketing",
     "Project and enterprise financing/PEF_3.md",
-    "System and application security",
     "Project and enterprise financing/PEF_2.md",
-    "Project and enterprise financing/PEF_1.md",
-    "Algorithmic game theory/Th. Mechanism Design.md",
-    "Cyber Offense and defense/JWT attacks.md",
     "Untitled.canvas"
   ]
 }
