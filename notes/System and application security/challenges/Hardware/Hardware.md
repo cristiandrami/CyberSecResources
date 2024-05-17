@@ -505,3 +505,552 @@ Let's try it on the real server:
 
 <mark style="background: #BBFABBA6;">So the part 2 flag is</mark>: `FLG_PT2{0n3s_l34k_1s_4n0th3rs_d0cum3ntat10n}`
 
+
+
+# Challenge part 3
+
+## Introduction
+
+This challenge can be accessed through this [link.](https://sas.hackthe.space/#/challenges/RISC-V%20part%203)
+
+
+From the description of the challenge we can retrieve some useful information that we need take in mind:
+```
+Now this flag is protected a lot better. It requires you to know a secret, but that secret doesn't seem to contained in the leak (it's a secret after all). But maybe there is a place where you can find it?
+
+Hints:
+
+- If you haven't gotten flag 2 from the server yet, you probably don't have all the pieces to put this one together...
+```
+- From "But maybe there is a place where you can find it?" 
+	- we can understand that there is some useful information hidden somewhere
+- From the hint "If you haven't gotten flag 2 from the server yet, you probably don't have all the pieces to put this one together..."
+	- we can understand that to find the last flag it is necessary that we have already discovered the second flag.
+		- So maybe there is something related with the privileges that we can exploit
+
+
+In addition we have another hint from professor Jakob:
+```
+Hi! We don't give major hints in DMs, but I'd like to point out the README in the zip contains the line "Note the the firmware on the server differs." (from the `public_firmware`), which is relevant for flag 3.
+```
+- So maybe we have to focus on the differences between the public firmware contained in the leak and the firmware used by the remote server
+
+
+At this point we can start on trying to extract the firmware from the remote server.
+
+
+## Remote firmware extraction
+
+To try to extract the firmware from the remote server we could use the same approach used to print the flag in the part 2.
+
+So basically what we want to do now is to print the content in the range `0xffff0000 - 0xffffffff`, since we know from the leaked file `sp-24.md` that there is contained in it the firmware.
+
+To do this we can use this RISC-V "code", that is really similar to the one used to get the flag 2:
+```C
+_start:
+    li t1, 0xffff0000
+    li t2, 0xffffffff
+    privilege
+
+
+loop:
+    bgt t1, t2, end 
+    lw t5, 0(t1) 
+    print t0,t5, 7
+    addi t1, t1, 4
+    j loop 
+
+end: 
+    ebreak
+```
+- we use the `privilege` instruction since we need the `supervisor` privileges to have access to this memory portion
+- we add 4 bytes per time to `t1` because we know that RISC-V instruction are 32 bits and so 4 bytest1
+
+>NOTE: differently from the "code" used for flag 2 here we print also 0 values, because they we want to extract everything from this portion of memory, since we need to reconstruct the firmware byte by byte
+
+> NOTE: we print in `hex format` -> `7` to don't lose information
+
+
+
+At this point we can save this "code" into the `part3.txt` file and then execute it on the remote server.
+
+We always use `ace` to assemble it and `base64` to represent it in this encoding format:
+```shell 
+python3 main.py a --input part2.txt | base64
+```
+
+And then executing it using:
+![[Pasted image 20240517195203.png]]
+
+But we can notice that there are a lot of initial 0s.
+So maybe we can reduce the memory range...
+
+If we play with the memory ranges, we can see that the firmware starts effectively at memory location `0xffff1000`, since everything before it are 0s.
+
+In addition we can also reduce the the range to `0xffff1100` since everything after it are 0s.
+
+
+So we can change the "code" in:
+```C
+_start:
+    li t1, 0xffff1000
+    li t2, 0xffff1100
+    privilege
+
+
+loop:
+    bgt t1, t2, end 
+    lw t5, 0(t1) 
+    print t0,t5, 7
+    addi t1, t1, 4
+    j loop 
+
+end: 
+    ebreak
+```
+
+The result of this "code" is:
+```
+10000293
+0058fc63
+00589893
+00000297
+01088893
+005888b3
+00088067
+00000893
+00000073
+00000000
+00000000
+00000000
+00000000
+00000000
+00000000
+ff1870e3
+00080283
+0002800b
+00180813
+fe0298e3
+fcdff06f
+00000000
+00000000
+00000513
+fb187ee3
+fa078ce3
+00082283
+00550533
+fff78793
+fedff06f
+00000000
+00381513
+01050533
+01050533
+f95ff06f
+00000000
+00000000
+00000000
+00000000
+46880ab7
+630a8a93
+8d2a6aab
+f0100293
+0002a303
+5f4742b7
+c4628293
+00000513
+00628263
+00150513
+dac08ab7
+a1ca8a93
+8d2a6aab
+f4dff06f
+00000000
+00000000
+00000000
+00000000
+00000000
+00000000
+00000000
+00000000
+00000000
+00000000
+00000000
+00000000
+```
+
+
+
+At this point we need to convert store this result into a file called `hex_strings.txt`, then convert it into a binary file, in order to reconstruct the firmware, and then disassemble it using `ace`.
+
+
+>NOTE: when we process these hex values, we have to convert it into little endian. Otherwise it won't work at all.
+
+To convert these hex values to a binary file we can write a python script.
+
+### Hex to binary firmware conversion
+
+So let's write a python script that:
+1. reads the file containing the hex strings obtained before
+2. convert these strings into little endian form
+3. store these converted values into a binary file
+
+
+```python
+def hex_to_little_endian(hex_str):
+    # this splits the hex string into groups of 2 characters, e.g., 00000093 -> ['00', '00', '00', '93']
+    two_chars_split_list = [hex_str[i:i+2] for i in range(0, len(hex_str), 2)]
+    
+    # this reverses the order of the list we have created, e.g., ['00', '00', '00', '93'] -> ['93', '00', '00', '00']
+    little_endian_list = two_chars_split_list[::-1]
+
+    # returns the entire little endian hex: 93000000
+    return ''.join(little_endian_list)
+
+def create_binary_file(hex_list, file_name):
+    with open(file_name, 'wb') as bin_file:
+        for hex_str in hex_list:
+            little_endian_hex = hex_to_little_endian(hex_str)
+            little_endian_bytes = bytes.fromhex(little_endian_hex)
+            bin_file.write(little_endian_bytes)
+
+
+# file from which to read hex strings
+input_file_name = "hex_strings.txt"
+
+# output binary file name
+output_file_name = "firmware.bin"
+
+# read hex strings from the file
+hex_strings = []
+with open(input_file_name, 'r') as file:
+    for line in file:
+        hex_strings.append(line)
+
+# create the binary file
+create_binary_file(hex_strings, output_file_name)
+```
+
+At this point we can execute:
+```shell
+python3 hex_to_binary.py
+```
+
+To obtain: 
+-  ![[Pasted image 20240517201439.png]]
+
+
+
+
+
+Now we have everything that we need to compare the leaked firmware to the remote used one.
+
+
+## Firmware comparison (remote one vs leaked one)
+
+So we can start to compare the firmware.
+
+The first step to do it is to disassemble them and we can do it using `ace`.
+
+We can find the public firmware at `server-config/public_firmware.bin`. We can copy and paste it in the ace directory.
+
+So we execute:
+```shell
+python3 main.py d --input public_firmware.bin | base64
+```
+
+The result will be:
+
+```c
+addi x5,x0,256
+bgeu x17,x5,24
+slli x17,x17,5
+auipc x5,0
+addi x17,x17,16
+add x17,x17,5
+jalr x0,x17,0
+addi x17,x0,0
+ecall
+0x0
+0x0
+0x0
+0x0
+0x0
+0x0
+bgeu x16,x17,-32
+lb x5,0(x16)
+0x2800b
+addi x16,x16,1
+bne x5,x0,-16
+jal x0,-52
+0x0
+0x0
+addi x10,x0,0
+bgeu x16,x17,-68
+beq x15,x0,-72
+lw x5,0(x16)
+add x10,x10,5
+addi x15,x15,-1
+jal x0,-20
+0x0
+slli x10,x16,3
+add x10,x10,16
+add x10,x10,16
+jal x0,-108
+0x0
+0x0
+0x0
+0x0
+0x4
+0x0
+0x0
+0x0
+0x0
+0x0
+0x0
+0x0
+0x0
+```
+
+
+With the same process we disassemble the remote firmware we extracted before:
+```shell
+python3 main.py d --input firmware.bin | base64
+```
+
+And the result is:
+```c
+addi x5,x0,256
+bgeu x17,x5,24
+slli x17,x17,5
+auipc x5,0
+addi x17,x17,16
+add x17,x17,5
+jalr x0,x17,0
+addi x17,x0,0
+ecall
+0x0
+0x0
+0x0
+0x0
+0x0
+0x0
+bgeu x16,x17,-32
+lb x5,0(x16)
+0x2800b
+addi x16,x16,1
+bne x5,x0,-16
+jal x0,-52
+0x0
+0x0
+addi x10,x0,0
+bgeu x16,x17,-68
+beq x15,x0,-72
+lw x5,0(x16)
+add x10,x10,5
+addi x15,x15,-1
+jal x0,-20
+0x0
+slli x10,x16,3
+add x10,x10,16
+add x10,x10,16
+jal x0,-108
+0x0
+0x0
+0x0
+0x0
+lui x21,1183318016
+addi x21,x21,1584
+0x8d2a6aab
+addi x5,x0,-255
+lw x6,0(x5)
+lui x5,1598504960
+addi x5,x5,-954
+addi x10,x0,0
+beq x5,x6,4
+addi x10,x10,1
+lui x21,-624918528
+addi x21,x21,-1508
+0x8d2a6aab
+jal x0,-180
+0x0
+0x0
+0x0
+0x0
+0x0
+0x0
+0x0
+0x0
+... other 0s and non relevant stuff
+```
+
+
+
+The first thing we can see in both firmwares is that they contain a strange value that is:
+`0x2800b`
+
+Another thing we can see is that the remote firmware contains some instruction not contained in the public one:
+```c
+lui x21,1183318016
+addi x21,x21,1584
+0x8d2a6aab
+addi x5,x0,-255
+lw x6,0(x5)
+lui x5,1598504960
+addi x5,x5,-954
+addi x10,x0,0
+beq x5,x6,4
+addi x10,x10,1
+lui x21,-624918528
+addi x21,x21,-1508
+0x8d2a6aab
+jal x0,-180
+```
+
+So what we need to do is to understand what this value is.
+
+Let's try to execute the firmware.
+
+
+### Firmware execution
+
+From the docuementation of RISC-V we know that when we call the instruction `ecall` and the register `a7` has a value greater than 0 then the firmware is executed.
+
+In addition if we try to run the binary file `spoke` with the `--help` we can see that we can also define which firmware we have to use in the spoke execution:
+- ![[Pasted image 20240517210457.png]]
+
+
+So first of all let's create a RISC-V "code" to trigger the firmware execution, and save it in a file called `firmware_execution.txt`:
+```C
+_start:
+    addi a7, x0, 1
+    ecall
+```
+- Let's assemble and convert it in base64
+	- the result will be: `kwgQAHMAAAA=`
+
+
+
+
+At this point we have to set the remote firmware into the `spoke` binary, and since we are there we can use also the debug mode to see the execution instruction by instruction:
+```shell
+./spoke -d -f firmware.bin 
+```
+- copy the file `firmware.bin` into the `spoke` directory to directly execute it with this command
+
+
+We put the base64 value calculated before and the result is:
+```
+pc: 0, all others: 0
+Addi { rd: 17, rs1: 0, imm: 1 }
+pc: 4, x17: 1, all others: 0
+Ecall
+pc: ffff1000, x17: 1, all others: 0
+Addi { rd: 5, rs1: 0, imm: 256 }
+pc: ffff1004, x5: 100, x17: 1, all others: 0
+Bgeu { rs1: 17, rs2: 5, imm: 24 }
+pc: ffff1008, x5: 100, x17: 1, all others: 0
+Slli { rd: 17, rs1: 17, shamt: 5 }
+pc: ffff100c, x5: 100, x17: 20, all others: 0
+Auipc { rd: 5, imm: 0 }
+pc: ffff1010, x5: ffff100c, x17: 20, all others: 0
+Addi { rd: 17, rs1: 17, imm: 16 }
+pc: ffff1014, x5: ffff100c, x17: 30, all others: 0
+Add { rd: 17, rs1: 17, rs2: 5 }
+pc: ffff1018, x5: ffff100c, x17: ffff103c, all others: 0
+Jalr { rd: 0, rs1: 17, imm: 0 }
+pc: ffff103c, x5: ffff100c, x17: ffff103c, all others: 0
+Bgeu { rs1: 16, rs2: 17, imm: 4294967264 }
+pc: ffff1040, x5: ffff100c, x17: ffff103c, all others: 0
+Lb { rd: 5, rs1: 16, imm: 0 }
+pc: ffff1044, x5: ffffff93, x17: ffff103c, all others: 0
+CustomPrint { rd: 0, rs1: 5, format: 0 }
+����pc: ffff1048, x5: ffffff93, x17: ffff103c, all others: 0
+Addi { rd: 16, rs1: 16, imm: 1 }
+pc: ffff104c, x5: ffffff93, x16: 1, x17: ffff103c, all others: 0
+Bne { rs1: 5, rs2: 0, imm: 4294967280 }
+pc: ffff103c, x5: ffffff93, x16: 1, x17: ffff103c, all others: 0
+Bgeu { rs1: 16, rs2: 17, imm: 4294967264 }
+pc: ffff1040, x5: ffffff93, x16: 1, x17: ffff103c, all others: 0
+Lb { rd: 5, rs1: 16, imm: 0 }
+pc: ffff1044, x5: 8, x16: 1, x17: ffff103c, all others: 0
+CustomPrint { rd: 0, rs1: 5, format: 0 }
+pc: ffff1048, x5: 8, x16: 1, x17: ffff103c, all others: 0
+Addi { rd: 16, rs1: 16, imm: 1 }
+pc: ffff104c, x5: 8, x16: 2, x17: ffff103c, all others: 0
+Bne { rs1: 5, rs2: 0, imm: 4294967280 }
+pc: ffff103c, x5: 8, x16: 2, x17: ffff103c, all others: 0
+Bgeu { rs1: 16, rs2: 17, imm: 4294967264 }
+pc: ffff1040, x5: 8, x16: 2, x17: ffff103c, all others: 0
+Lb { rd: 5, rs1: 16, imm: 0 }
+pc: ffff1044, x5: 10, x16: 2, x17: ffff103c, all others: 0
+CustomPrint { rd: 0, rs1: 5, format: 0 }
+pc: ffff1048, x5: 10, x16: 2, x17: ffff103c, all others: 0
+Addi { rd: 16, rs1: 16, imm: 1 }
+pc: ffff104c, x5: 10, x16: 3, x17: ffff103c, all others: 0
+Bne { rs1: 5, rs2: 0, imm: 4294967280 }
+pc: ffff103c, x5: 10, x16: 3, x17: ffff103c, all others: 0
+Bgeu { rs1: 16, rs2: 17, imm: 4294967264 }
+pc: ffff1040, x5: 10, x16: 3, x17: ffff103c, all others: 0
+Lb { rd: 5, rs1: 16, imm: 0 }
+pc: ffff1044, x16: 3, x17: ffff103c, all others: 0
+CustomPrint { rd: 0, rs1: 5, format: 0 }
+pc: ffff1048, x16: 3, x17: ffff103c, all others: 0
+Addi { rd: 16, rs1: 16, imm: 1 }
+pc: ffff104c, x16: 4, x17: ffff103c, all others: 0
+Bne { rs1: 5, rs2: 0, imm: 4294967280 }
+pc: ffff1050, x16: 4, x17: ffff103c, all others: 0
+Jal { rd: 0, imm: 4294967244 }
+pc: ffff101c, x16: 4, x17: ffff103c, all others: 0
+Addi { rd: 17, rs1: 0, imm: 0 }
+pc: ffff1020, x16: 4, all others: 0
+Ecall
+pc: 8, x16: 4, all others: 0
+Could not decode instruction!
+```
+
+
+#### 0x2800b instruction decoding
+
+From these lines:
+```
+pc: ffff1018, x5: ffff100c, x17: ffff103c, all others: 0
+Jalr { rd: 0, rs1: 17, imm: 0 }
+pc: ffff103c, x5: ffff100c, x17: ffff103c, all others: 0
+Bgeu { rs1: 16, rs2: 17, imm: 4294967264 }
+pc: ffff1040, x5: ffff100c, x17: ffff103c, all others: 0
+Lb { rd: 5, rs1: 16, imm: 0 }
+pc: ffff1044, x5: ffffff93, x17: ffff103c, all others: 0
+CustomPrint { rd: 0, rs1: 5, format: 0 }
+```
+
+We can easily understand that `CustomPrint` referes to the `0x2800b` value. In fact, in the firmware we can see these lines, that represent the ones extracted from the firmware execution:
+```
+bgeu x16,x17,-32
+lb x5,0(x16)
+0x2800b
+```
+
+So `0x2800b` is a custom instruction that maybe cannot be disassembled by `ace`.
+
+Now we have to understand what `0x8d2a6aab`. So maybe it could be another custom instruction that cannot be disassembled by `ace`.
+
+
+To understand what this value does we have to force the execution of these lines:
+```c
+lui x21,1183318016
+addi x21,x21,1584
+0x8d2a6aab
+addi x5,x0,-255
+lw x6,0(x5)
+lui x5,1598504960
+addi x5,x5,-954
+addi x10,x0,0
+beq x5,x6,4
+addi x10,x10,1
+lui x21,-624918528
+addi x21,x21,-1508
+0x8d2a6aab
+jal x0,-180
+```
+
+
