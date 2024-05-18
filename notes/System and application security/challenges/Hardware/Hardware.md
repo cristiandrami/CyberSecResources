@@ -121,10 +121,10 @@ rd is the register where the return code gets written: 0 for success, 1 for erro
 
 ```
 - From the `## Installation` section
-	- we can understand that the tool can be used directly with python, using `main.py`
+	- **==we can understand that the tool can be used directly with python, using==** `main.py`
 - From `### Custom Instructions` section
-	- we can understand that the tool supports a custom instruction called `print` that can be used to print the content of a register, and that allows different formats
-	- the instruction has this format -> `print rd (register to store the result of printing), rs1 (register to print), format (that is an integer)`
+	- ==**we can understand that the tool supports a custom instruction called**== `print` ==**that can be used to print the content of a register, and that allows different formats**==
+		- the instruction has this format -> `print rd (register to store the result of printing), rs1 (register to print), format (that is an integer)`
 
 
 Now we can try to understand how to use the assembler.
@@ -201,9 +201,9 @@ So we copy and paste `NwUAABMFFQYLBQUA` on the local "server" and we obtain:
 
 
 Now we know how everything works and for this reason we can start to write an assembly code that:
-1. initializes 2 registers with the start address and the end address of the memory we can analyze
+1. ==**initializes 2 registers with the start address and the end address of the memory we can analyze**==
 	1. we will use registers `t1` and `t2` since they are temporary registers (from the documentation page 137)
-2. executes a loop in which we 
+2. ==**executes a loop**== in which we 
 	1. check if the register `t1` is greater or equal to `t2` (this because we will increase `t1` by one byte per time in order ot scan the memory range)
 		1. when this is true, then the program must stop
 	2. read the content of the register `t1` 
@@ -232,8 +232,7 @@ print_no_zero:
     j loop
 
 end: 
-    li a7, 10          
-    ecall  
+    ebreak  
 ```
 
 
@@ -275,10 +274,8 @@ print_no_zero:
     j loop
 
 end: 
-
 	#this block is used to stop the execution, nothing relevant
-    li a7, 10           
-    ecall   
+    ebreak   
 ```
 
 
@@ -287,10 +284,12 @@ So we try to execute it in local:
 ```shell
 python3 main.py a --input part1.txt | base64
 ```
-![[Pasted image 20240510172440.png]]
+![[Pasted image 20240518125511.png]]
+- so the base64 is `NxMAABMDAwC38wAAk4MDAGPAYwIDTwMAYxYPABMDEwBv8B//iwIPABMDEwBv8F/+cwAQAA==`
+
 
 And then:
-![[Pasted image 20240510172504.png]]
+![[Pasted image 20240518125609.png]]
 
 
 
@@ -300,7 +299,7 @@ So it works, now we need to take the real flag, so we perform the same identical
 nc spoke.sas.hackthe.space 8286
 ```
 
-![[Pasted image 20240510172632.png]]
+![[Pasted image 20240518125649.png]]
 
 
 
@@ -324,10 +323,10 @@ Hints:
 
 - Take a look around the leaked files
 ```
-- From "you don't seem to have the necessary privileges to print it" 
-	- we can understand that there is some protection mechanisms used to manage the privileges on the memory accessing
-- From the hint "Take a look around the leaked files"
-	- we can understand that we need to analyze the leaked files 
+- From "*you don't seem to have the necessary privileges to print it*" 
+	- ==**we can understand that there is some protection mechanisms used to manage the privileges on the memory accessing**==
+- From the hint "*Take a look around the leaked files*"
+	- ==**we can understand that we need to analyze the leaked files** ==
 
 
 
@@ -395,7 +394,7 @@ Our newest SoC, the SP-24, improves upon our older designs in various ways:
 This memory is not accessible to user programs, and is used for firmware calls.
 To support secure key storage, the last few addresses (0xffffff00 - 0xffffffff) can only be acessed during manufacturing.
 ```
-- From the section "The SP-24 reserves a small part of memory (addresses 0xffff0000 - 0xffffffff) for its internal usage. This memory is not accessible to user programs, and is used for firmware calls. To support secure key storage, the last few addresses (0xffffff00 - 0xffffffff) can only be acessed during manufacturing."
+- From the section "*The SP-24 reserves a small part of memory (addresses 0xffff0000 - 0xffffffff) for its internal usage. This memory is not accessible to user programs, and is used for firmware calls. To support secure key storage, the last few addresses (0xffffff00 - 0xffffffff) can only be acessed during manufacturing.*"
 	- **==we can understand that the addresses from==** `0xffff0000` ==**to**== `0xffffffff` are ==**reserved to the internal usage, so not accessible as a normal user but maybe accessible for a supervisor user**==
 	- **in additionthe addresses from**`0xffffff00` **to** `0xffffffff` can be acessed only during manufacturing 
 
@@ -477,8 +476,7 @@ print_no_zero:
     j loop
     
 end: 
-    li a7, 10          
-    ecall
+    ebreak
 ```
 - The only changes are in the _ start section.
 	- We changed the memory addresses 
@@ -493,15 +491,18 @@ So we try to execute it in local:
 python3 main.py a --input part2.txt | base64
 ```
 ![[Pasted image 20240510180650.png]]
+- so the base64 is `NwP//xMDAwC38///k4Pz/6sgoCRjwmMCA08DAGMWDwATAxMAb/Af/wsFDwATAxMAY1RzAG/wH/5zABAA`
 
-And then:
-![[Pasted image 20240510180707.png]]
+
+
+Try to run it in local:
+![[Pasted image 20240518125829.png]]
 
 
 So it seems to work...
 
 Let's try it on the real server:
-![[Pasted image 20240510180740.png]]
+![[Pasted image 20240518125944.png]]
 
 <mark style="background: #BBFABBA6;">So the part 2 flag is</mark>: `FLG_PT2{0n3s_l34k_1s_4n0th3rs_d0cum3ntat10n}`
 
@@ -522,18 +523,18 @@ Hints:
 
 - If you haven't gotten flag 2 from the server yet, you probably don't have all the pieces to put this one together...
 ```
-- From "But maybe there is a place where you can find it?" 
-	- we can understand that there is some useful information hidden somewhere
-- From the hint "If you haven't gotten flag 2 from the server yet, you probably don't have all the pieces to put this one together..."
-	- we can understand that to find the last flag it is necessary that we have already discovered the second flag.
-		- So maybe there is something related with the privileges that we can exploit
+- From "*But maybe there is a place where you can find it?*" 
+	- ==**we can understand that there is some useful information hidden somewhere**==
+- From the hint "*If you haven't gotten flag 2 from the server yet, you probably don't have all the pieces to put this one together...*"
+	- **==we can understand that to find the last flag it is necessary that we have already discovered the second flag.==**
+		- <mark style="background: #BBFABBA6;">So maybe there is something related with the privileges that we can exploit</mark>
 
 
 In addition we have another hint from professor Jakob:
 ```
 Hi! We don't give major hints in DMs, but I'd like to point out the README in the zip contains the line "Note the the firmware on the server differs." (from the `public_firmware`), which is relevant for flag 3.
 ```
-- So maybe we have to focus on the differences between the public firmware contained in the leak and the firmware used by the remote server
+- **==So maybe we have to focus on the differences between the public firmware contained in the leak and the firmware used by the remote server==**
 
 
 At this point we can start on trying to extract the firmware from the remote server.
@@ -566,28 +567,31 @@ end:
 - we use the `privilege` instruction since we need the `supervisor` privileges to have access to this memory portion
 - we add 4 bytes per time to `t1` because we know that RISC-V instruction are 32 bits and so 4 bytest1
 
->NOTE: differently from the "code" used for flag 2 here we print also 0 values, because they we want to extract everything from this portion of memory, since we need to reconstruct the firmware byte by byte
+>NOTE: **==differently from the "code" used for flag 2 here we print also 0 values, because they we want to extract everything from this portion of memory, since we need to reconstruct the firmware byte by byte==**
+
 
 > NOTE: we print in `hex format` -> `7` to don't lose information
 
 
 
-At this point we can save this "code" into the `part3.txt` file and then execute it on the remote server.
+At this point we can save this "code" into the `firmware_extractor.txt` file and then execute it on the remote server.
 
 We always use `ace` to assemble it and `base64` to represent it in this encoding format:
 ```shell 
-python3 main.py a --input part2.txt | base64
+python3 main.py a --input firmware_extractor.txt | base64
 ```
+- the base64 is `NwP//xMDAwC38///k4Pz/6sgoCRjymMAAy8DAIsCfwATA0MAb/Af/3MAEAA=`
+
 
 And then executing it using:
-![[Pasted image 20240517195203.png]]
+![[Pasted image 20240518130454.png]]
 
 But we can notice that there are a lot of initial 0s.
 So maybe we can reduce the memory range...
 
-If we play with the memory ranges, we can see that the firmware starts effectively at memory location `0xffff1000`, since everything before it are 0s.
+If we play with the memory ranges, we can see that ==**the firmware starts effectively at memory location**== `0xffff1000`, since everything before it are 0s.
 
-In addition we can also reduce the the range to `0xffff1100` since everything after it are 0s.
+In addition **==we can also reduce the the range to==** `0xffff1100` since everything after it are 0s.
 
 
 So we can change the "code" in:
@@ -609,7 +613,11 @@ end:
     ebreak
 ```
 
-The result of this "code" is:
+
+The base64 for this "code" is `NxP//xMDAwC3E///k4MDEKsgoCRjymMAAy8DAIsCfwATA0MAb/Af/3MAEAA=`
+
+
+The result is:
 ```
 10000293
 0058fc63
@@ -680,10 +688,10 @@ f4dff06f
 
 
 
-At this point we need to convert store this result into a file called `hex_strings.txt`, then convert it into a binary file, in order to reconstruct the firmware, and then disassemble it using `ace`.
+At this point we need to store this result into a file called `hex_strings.txt`,  convert it into a binary file, in order to reconstruct the firmware, and then disassemble it using `ace`.
 
 
->NOTE: when we process these hex values, we have to convert it into little endian. Otherwise it won't work at all.
+>NOTE:<mark style="background: #FF5582A6;"> when we process these hex values, we have to convert it into little endian.</mark> Otherwise it won't work at all.
 
 To convert these hex values to a binary file we can write a python script.
 
@@ -732,7 +740,7 @@ create_binary_file(hex_strings, output_file_name)
 
 At this point we can execute:
 ```shell
-python3 hex_to_binary.py
+python3 hex_to_binary_firmware.py
 ```
 
 To obtain: 
@@ -742,7 +750,7 @@ To obtain:
 
 
 
-Now we have everything that we need to compare the leaked firmware to the remote used one.
+<mark style="background: #BBFABBA6;">Now we have everything we need to compare the leaked firmware to the remote used one.</mark>
 
 
 ## Firmware comparison (remote one vs leaked one)
@@ -814,7 +822,7 @@ jal x0,-108
 
 With the same process we disassemble the remote firmware we extracted before:
 ```shell
-python3 main.py d --input firmware.bin | base64
+python3 main.py d --input firmware.bin
 ```
 
 And the result is:
@@ -888,7 +896,7 @@ jal x0,-180
 The first thing we can see in both firmwares is that they contain a strange value that is:
 `0x2800b`
 
-Another thing we can see is that the remote firmware contains some instruction not contained in the public one:
+==**Another thing we can see is that the remote firmware contains some instruction not contained in the public one**==:
 ```c
 lui x21,1183318016
 addi x21,x21,1584
@@ -913,7 +921,7 @@ Let's try to execute the firmware.
 
 ### Firmware execution
 
-From the docuementation of RISC-V we know that when we call the instruction `ecall` and the register `a7` has a value greater than 0 then the firmware is executed.
+==**From the documentation of RISC-V we know that when we call the instruction**== `ecall` ==**and the register**== `a7` ==**has a value greater than 0 then the firmware is executed in supervisor mode.**==
 
 In addition if we try to run the binary file `spoke` with the `--help` we can see that we can also define which firmware we have to use in the spoke execution:
 - ![[Pasted image 20240517210457.png]]
@@ -1023,7 +1031,9 @@ pc: ffff1044, x5: ffffff93, x17: ffff103c, all others: 0
 CustomPrint { rd: 0, rs1: 5, format: 0 }
 ```
 
-We can easily understand that `CustomPrint` referes to the `0x2800b` value. In fact, in the firmware we can see these lines, that represent the ones extracted from the firmware execution:
+**==We can easily understand that==** `CustomPrint` **==referes to the==** `0x2800b` value. 
+
+In fact, in the firmware we can see these lines, that represent the ones extracted from the firmware execution:
 ```
 bgeu x16,x17,-32
 lb x5,0(x16)
@@ -1054,3 +1064,402 @@ jal x0,-180
 ```
 
 
+
+
+## Firmware execution with new remote lines
+
+At this point we have to find a way to execute that instructions.
+
+<mark style="background: #BBFABBA6;">But, if we open the hex strings file that represents the remote firmware and we try to understand which lines represent the new instructions?</mark>
+
+We can do it looking at the disassembled remote firmware and the hex strings of the remote firmware:
+![[Pasted image 20240518120618.png]]
+
+So we know that the instructions we need to study are represented with the hex values:
+```hex
+46880ab7
+630a8a93
+8d2a6aab
+f0100293
+0002a303
+5f4742b7
+c4628293
+00000513
+00628263
+00150513
+dac08ab7
+a1ca8a93
+8d2a6aab
+f4dff06f
+```
+
+
+
+What we need to do is to copy these lines, put them in the top of a new `hex_strings_modified.txt` file, and revert it into a binary file, using the python script as before.
+- <mark style="background: #BBFABBA6;">In this way we are reconstructing the firmware, but with the instruction we want to execute at the beginning.</mark>
+
+The new `hex_strings_modified.txt` file will be:
+```hex
+46880ab7
+630a8a93
+8d2a6aab
+f0100293
+0002a303
+5f4742b7
+c4628293
+00000513
+00628263
+00150513
+dac08ab7
+a1ca8a93
+8d2a6aab
+f4dff06f
+10000293
+0058fc63
+00589893
+00000297
+01088893
+005888b3
+00088067
+00000893
+00000073
+00000000
+00000000
+00000000
+00000000
+00000000
+00000000
+ff1870e3
+00080283
+0002800b
+00180813
+fe0298e3
+fcdff06f
+00000000
+00000000
+00000513
+fb187ee3
+fa078ce3
+00082283
+00550533
+fff78793
+fedff06f
+00000000
+00381513
+01050533
+01050533
+f95ff06f
+00000000
+00000000
+00000000
+00000000
+46880ab7
+630a8a93
+8d2a6aab
+f0100293
+0002a303
+5f4742b7
+c4628293
+00000513
+00628263
+00150513
+dac08ab7
+a1ca8a93
+8d2a6aab
+f4dff06f
+00000000
+00000000
+00000000
+```
+
+
+The script need to be changed, just for the file names:
+```python
+def hex_to_little_endian(hex_str):
+    # this splits the hex string into groups of 2 characters, e.g., 00000093 -> ['00', '00', '00', '93']
+    two_chars_split_list = [hex_str[i:i+2] for i in range(0, len(hex_str), 2)]
+    
+    # this reverses the order of the list we have created, e.g., ['00', '00', '00', '93'] -> ['93', '00', '00', '00']
+    little_endian_list = two_chars_split_list[::-1]
+
+    # returns the entire little endian hex: 93000000
+    return ''.join(little_endian_list)
+
+def create_binary_file(hex_list, file_name):
+    with open(file_name, 'wb') as bin_file:
+        for hex_str in hex_list:
+            little_endian_hex = hex_to_little_endian(hex_str)
+            little_endian_bytes = bytes.fromhex(little_endian_hex)
+            bin_file.write(little_endian_bytes)
+
+# file from which to read hex strings
+input_file_name = "hex_strings.txt"
+
+# output binary file name
+output_file_name = "modified_firmware.bin"
+
+# read hex strings from the file
+hex_strings = []
+with open(input_file_name, 'r') as file:
+    for line in file:
+        hex_strings.append(line)
+
+# create the binary file
+create_binary_file(hex_strings, output_file_name)
+```
+
+
+So at this point we can execute:
+```shell
+python3 hex_to_binary_firmware.py
+```
+
+Then in the `ace` directory:
+```shell
+python3 main.py d --input modified_firmware.bin 
+```
+
+And the result will be:
+```c
+lui x21,1183318016
+addi x21,x21,1584
+0x8d2a6aab
+addi x5,x0,-255
+lw x6,0(x5)
+lui x5,1598504960
+addi x5,x5,-954
+addi x10,x0,0
+beq x5,x6,4
+addi x10,x10,1
+lui x21,-624918528
+addi x21,x21,-1508
+0x8d2a6aab
+jal x0,-180
+addi x5,x0,256
+bgeu x17,x5,24
+slli x17,x17,5
+auipc x5,0
+addi x17,x17,16
+add x17,x17,5
+jalr x0,x17,0
+addi x17,x0,0
+ecall
+0x0
+0x0
+0x0
+0x0
+0x0
+0x0
+bgeu x16,x17,-32
+lb x5,0(x16)
+0x2800b
+addi x16,x16,1
+bne x5,x0,-16
+jal x0,-52
+0x0
+0x0
+addi x10,x0,0
+bgeu x16,x17,-68
+beq x15,x0,-72
+lw x5,0(x16)
+add x10,x10,5
+addi x15,x15,-1
+jal x0,-20
+0x0
+slli x10,x16,3
+add x10,x10,16
+add x10,x10,16
+jal x0,-108
+0x0
+0x0
+0x0
+0x0
+lui x21,1183318016
+addi x21,x21,1584
+0x8d2a6aab
+addi x5,x0,-255
+lw x6,0(x5)
+lui x5,1598504960
+addi x5,x5,-954
+addi x10,x0,0
+beq x5,x6,4
+addi x10,x10,1
+lui x21,-624918528
+addi x21,x21,-1508
+0x8d2a6aab
+jal x0,-180
+0x0
+0x0
+0x0
+```
+
+
+The result we want.
+
+### Modified firmware execution
+
+Let's execute another time spoke with debug arg and the new modified firmware:
+```shell
+./spoke -d -f modified_firmware.bin 
+```
+
+We will use the same base64 to trigger the firmware execution `kwgQAHMAAAA=`
+
+The result will be:
+```
+Please provide your program as a single base64 encoded string terminated by a newline
+kwgQAHMAAAA=
+pc: 0, all others: 0
+Addi { rd: 17, rs1: 0, imm: 1 }
+pc: 4, x17: 1, all others: 0
+Ecall
+pc: ffff1000, x17: 1, all others: 0
+Lui { rd: 21, imm: 1183318016 }
+pc: ffff1004, x17: 1, x21: 46880000, all others: 0
+Addi { rd: 21, rs1: 21, imm: 1584 }
+pc: ffff1008, x17: 1, x21: 46880630, all others: 0
+X { rd: 21 }
+pc: ffff100c, x17: 1, x21: 46880630, all others: 0
+Addi { rd: 5, rs1: 0, imm: 3841 }
+pc: ffff1010, x5: f01, x17: 1, x21: 46880630, all others: 0
+Lw { rd: 6, rs1: 5, imm: 0 }
+pc: ffff1014, x5: f01, x17: 1, x21: 46880630, all others: 0
+Lui { rd: 5, imm: 1598504960 }
+pc: ffff1018, x5: 5f474000, x17: 1, x21: 46880630, all others: 0
+Addi { rd: 5, rs1: 5, imm: 3142 }
+pc: ffff101c, x5: 5f474c46, x17: 1, x21: 46880630, all others: 0
+Addi { rd: 10, rs1: 0, imm: 0 }
+pc: ffff1020, x5: 5f474c46, x17: 1, x21: 46880630, all others: 0
+Beq { rs1: 5, rs2: 6, imm: 4 }
+pc: ffff1024, x5: 5f474c46, x17: 1, x21: 46880630, all others: 0
+Addi { rd: 10, rs1: 10, imm: 1 }
+pc: ffff1028, x5: 5f474c46, x10: 1, x17: 1, x21: 46880630, all others: 0
+Lui { rd: 21, imm: 3670048768 }
+pc: ffff102c, x5: 5f474c46, x10: 1, x17: 1, x21: dac08000, all others: 0
+Addi { rd: 21, rs1: 21, imm: 2588 }
+pc: ffff1030, x5: 5f474c46, x10: 1, x17: 1, x21: dac08a1c, all others: 0
+X { rd: 21 }
+pc: ffff1034, x5: 5f474c46, x10: 1, x17: 1, x21: dac08a1c, all others: 0
+Jal { rd: 0, imm: 4294967116 }
+pc: ffff0f80, x5: 5f474c46, x10: 1, x17: 1, x21: dac08a1c, all others: 0
+```
+- If we study it we can see that the line `0x8d2a6aab` refers to a function called `X` that uses as destination register `x21`
+
+
+But what the instruction `X` represents?
+
+We can try to convert `0x8d2a6aab` in binary using this [link](https://www.rapidtables.com/convert/number/hex-to-binary.html) to see what it represents, it must be a 32 bit string, and the  last 7 bits must be the operation code...
+
+So maybe we can understand what instruction it is effectively.
+
+The result is:
+![[Pasted image 20240518123021.png]]
+
+The last 7 bits are: `0101011`
+
+## 01011011 operation code searching
+**==If we open the official documentation of CRISP-V we cannot find an instruction with this operation code. So maybe it is a custom instruction.==**
+
+In fact, if we search for it into the file `ace/instruction.py` we can see that:
+![[Pasted image 20240518123320.png]]
+- it has the same operation code of the **==custom privilege operation==**
+
+
+So maybe it is used to change the privileges into the machine ones, we have to try it.
+
+
+
+## 0x8d2a6aab operation executing
+
+We know from the documentation of ace, and so from the file `ace/README.md` that:
+![[Pasted image 20240518123633.png]]
+- we can use directly hex values in our CRISP-V "code"
+	- so we can run directly this instruction without decoding it
+
+
+So what we want to do is to force the execution of `0x8d2a6aab` in order to see if it can be used to gain the machine privileges and so to print the memory non accessible without these privileges.
+
+So we can start to write:
+```C
+_start:
+    li t1, 0xffff0000   
+    li t2, 0xffffffff
+    lui x21,1183318016
+    addi x21,x21,1584
+    0x8d2a6aab 
+
+loop:
+    bgt t1, t2, end 
+    lbu t5, 0(t1)    
+    bnez t5, print_no_zero
+    addi t1, t1, 1     
+    j loop
+
+ 
+print_no_zero:
+    print t0,t5, 0
+    addi t1, t1, 1
+    j loop
+    
+end: 
+    ebreak
+```
+- in order to see if this approach works
+- we use the print with format 0 to print everything in `utf-8`, if the flag is here we can notice easily it
+- we avoid here to print 0s, and we use the same approach we used for the flag 2
+
+We store this "code" into a file called `part3.txt`
+
+>NOTE: we used also the instructions `lui x21,1183318016` and `addi x21,x21,1584` because the instruction `0x8d2a6aab` uses the register x21, so it has sense to reproduce everything as it is in the remote firmware to test
+
+
+So let's use the same approach as before:
+```shell
+python3 main.py a --input part3.txt | base64
+```
+- and we obtain `NwP//xMDAwC38///k4Pz/7cKiEaTigpjq2oqjWPAYwIDTwMAYxYPABMDEwBv8B//iwIPABMDEwBv8F/+cwAQAA==`
+
+We use it on the remote server and the result is:
+![[Pasted image 20240518124643.png]]
+
+So nothing happens...
+
+==**But maybe, since this instruction is a firmware instruction, we need to gain first the supervisor privileges...**==
+
+
+So let's try to change the "code" into:
+```C
+_start:
+    li t1, 0xffff0000   
+    li t2, 0xffffffff
+    privilege
+    lui x21,1183318016
+    addi x21,x21,1584
+    0x8d2a6aab 
+
+loop:
+    bgt t1, t2, end 
+    lbu t5, 0(t1)    
+    bnez t5, print_no_zero
+    addi t1, t1, 1     
+    j loop
+
+ 
+print_no_zero:
+    print t0,t5, 0
+    addi t1, t1, 1
+    j loop
+    
+end: 
+    ebreak
+```
+- we added `privilege` before calling the new instructions
+
+
+The base64 for this new "code" is: `NwP//xMDAwC38///k4Pz/6sgoCS3CohGk4oKY6tqKo1jwGMCA08DAGMWDwATAxMAb/Af/4sCDwATAxMAb/Bf/nMAEAA=`
+
+
+And booom, it works:
+![[Pasted image 20240518125014.png]]
+
+<mark style="background: #BBFABBA6;">The flag for the part 3 is</mark>: `FLG_PT3{chris_domas_h4s_n1c3_t4lk5_r3c0rd3d}`
