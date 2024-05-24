@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "System and application security/challenges/Hardware/Hardware.md",
+                "file": "System and application security/challenges/Binary.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "System and application security/challenges/Hardware/Hardware.md",
+                "file": "System and application security/challenges/Binary.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "System and application security/challenges/Hardware/Hardware.md",
+                "file": "System and application security/challenges/Binary.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "System and application security/challenges/Hardware/Hardware.md"
+                "file": "System and application security/challenges/Binary.md"
               }
             }
           }
@@ -161,38 +161,40 @@
   },
   "active": "c23cccb0498d25ac",
   "lastOpenFiles": [
-    "Pasted image 20240518130459.png",
-    "Pasted image 20240518130454.png",
-    "Pasted image 20240518130343.png",
-    "Pasted image 20240518125944.png",
-    "Pasted image 20240518125829.png",
-    "Pasted image 20240518125649.png",
-    "Pasted image 20240518125609.png",
-    "Pasted image 20240518125511.png",
-    "Pasted image 20240518125014.png",
-    "Pasted image 20240518124643.png",
-    "Pasted image 20240518123633.png",
-    "System and application security/challenges/IoT/IoT Challenges.md",
-    "System and application security/Hardware/Hardware security.md",
-    "System and application security/Binary and Malware/Binary security.md",
-    "System and application security/challenges/Hardware/Hardware.md",
-    "System and application security/Binary and Malware",
+    "Pasted image 20240524171004.png",
+    "Pasted image 20240524170624.png",
+    "Pasted image 20240524170613.png",
+    "Pasted image 20240524170537.png",
+    "Pasted image 20240524170442.png",
+    "Pasted image 20240524170410.png",
+    "Pasted image 20240524170149.png",
+    "Pasted image 20240524170047.png",
+    "Pasted image 20240524165909.png",
+    "Pasted image 20240524165504.png",
+    "Pasted image 20240524165401.png",
     "System and application security/challenges/1 - android/Android Challenges.md",
+    "System and application security/challenges/Binary.md",
+    "System and application security/3 - Binary and Malware/Binary security.md",
+    "System and application security/2 - Hardware/Hardware security.md",
+    "System and application security/challenges/Hardware/Hardware.md",
+    "System and application security/3 - Binary and Malware/Malware.md",
+    "System and application security/challenges/IoT/IoT Challenges.md",
+    "System and application security/3 - Binary and Malware",
     "System and application security/challenges/Hardware",
     "().md",
-    "System and application security/Hardware",
-    "System and application security/IoT/IoT security.md",
+    "System and application security/2 - Hardware",
+    "System and application security/1 - IoT/IoT security.md",
     "System and application security/exams/Exam 1 - Possible Questions.md",
-    "System and application security/Mobile/0 - Mobile Android.md",
+    "System and application security/0 - Mobile/0 - Mobile Android.md",
     "System and application security/exams",
-    "System and application security/Mobile/1 - Mobile iOS.md",
-    "System and application security/Mobile/2 - Mobile Challenge.md",
+    "System and application security/0 - Mobile/1 - Mobile iOS.md",
+    "System and application security/0 - Mobile/2 - Mobile Challenge.md",
     "System and application security/challenges/IoT",
     "2024-04-13.md",
     "Untitled 1.canvas",
     "Thesis/LibKit -> Detecting Third-Party Libraries in iOS Apps.md",
-    "System and application security/IoT",
-    "System and application security/Mobile",
+    "System and application security/1 - IoT",
+    "System and application security/0 - Mobile",
     "Untitled 1.md",
     "Mobile Applicaion Pentesting/2 - Android Static Analysis.md",
     "Thesis/Information gathering 3.md",
@@ -206,8 +208,6 @@
     "System and application security/challenges/1 - android",
     "System and application security/challenges",
     "Mobile Applicaion Pentesting/Untitled",
-    "E-Marketing/Springer LNCS.md",
-    "Project and enterprise financing/PEF_3.md",
     "Untitled.canvas"
   ]
 }

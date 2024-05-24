@@ -44,7 +44,7 @@ General hints:
 
 
 But the most important thing here is:
-- **==The first flag is a warmup. It's lying around somewhere in memory between addresses 0x00001000 and 0x0000f000, all you need to do is find and print it!==**
+- <mark style="background: #FF5582A6;">The first flag is a warmup. It's lying around somewhere in memory between addresses 0x00001000 and 0x0000f000, all you need to do is find and print it!</mark>
 	- this means that we could need to find a way to scan the memory on the server (from address  `0x00001000` to address `0x0000f000`) to obtain the first flag 
 
 
@@ -81,9 +81,9 @@ The leaks directory includes additional ressources that are essential to underst
 - From "You can pass it a RISC-V 32bit little endian binary, which it will execute directly from the first address" 
 	- we **==can easily understand that the binary==** `spoke` **==can be used to execute RISC-V 32bit little endian binary files.==**
 - From "To avoid writing bytes by hand, `ace` is a basic assembler/disassembler written in python, you can find more information in `ace/README.md`." 
-	- we can understand that **==ACE is a tool used to assemble or disassemble files that contain RISC-V assembly instructions.==**
+	- we can understand that **==ACE is a tool used to assemble or disassemble files that contain RISC-V instructions.==**
 	- **Maybe it would be a good idea to investigate this tool**
-- From "The leaks directory includes additional ressources that are essential to understand the customizations of the implementation." 
+- From *"The leaks directory includes additional ressources that are essential to understand the customizations of the implementation." *
 	- **==we can understand that maybe there are some customizations in the assembler/disassembler==**
 	- **We need to investigate that**
 - We ==**can recreate the server in local executing**== `make docker-build` ==**and start the container with**== `make docker-start` 
@@ -175,6 +175,12 @@ At this point we can try to execute it on Spoke...
 ## Spoke usage
 First of all we can use it in local and so we can connect on it using:
 ```shell
+make docker-build
+make docker-start
+```
+
+After that we can use `spoke` in local:
+```shell
 nc localhost 8286
 ```
 
@@ -197,7 +203,7 @@ So we copy and paste `NwUAABMFFQYLBQUA` on the local "server" and we obtain:
 
 
 
-## Flag getting assembly code
+## Flag 1  getting assembly code
 
 
 Now we know how everything works and for this reason we can start to write an assembly code that:
@@ -211,7 +217,7 @@ Now we know how everything works and for this reason we can start to write an as
 		1. if it is equal to zero, then it is empy and so we don't need to print it
 		2. if it is not equal to zero then we "call the method" `print_no_zero` to print the content 
 
->NOTE: the `ace` tool doesn't accept comments so you need to use this code:
+>NOTE: the `ace` tool doesn't accept comments so you need to use this code.
 
 ``` c
 _start:
@@ -278,6 +284,7 @@ end:
     ebreak   
 ```
 
+> NOTE: the memory adresses are taken from *The first flag is a warmup. It's lying around somewhere in memory between addresses 0x00001000 and 0x0000f000, all you need to do is find and print it!*
 
 
 So we try to execute it in local:
@@ -294,7 +301,7 @@ And then:
 
 
 
-So it works, now we need to take the real flag, so we perform the same identical steps, but we connect to:
+It seems to be correct, now we need to take the real flag, so we perform the same identical steps, but we connect to:
 ```shell
 nc spoke.sas.hackthe.space 8286
 ```
@@ -304,6 +311,12 @@ nc spoke.sas.hackthe.space 8286
 
 
 <mark style="background: #BBFABBA6;">So the part 1 flag is</mark>: `FLG_PT1{l00k_mum_n0_c0mp1l3r_ju5t_a4s5embly}`
+
+
+
+
+
+
 
 
 
@@ -395,7 +408,7 @@ This memory is not accessible to user programs, and is used for firmware calls.
 To support secure key storage, the last few addresses (0xffffff00 - 0xffffffff) can only be acessed during manufacturing.
 ```
 - From the section "*The SP-24 reserves a small part of memory (addresses 0xffff0000 - 0xffffffff) for its internal usage. This memory is not accessible to user programs, and is used for firmware calls. To support secure key storage, the last few addresses (0xffffff00 - 0xffffffff) can only be acessed during manufacturing.*"
-	- **==we can understand that the addresses from==** `0xffff0000` ==**to**== `0xffffffff` are ==**reserved to the internal usage, so not accessible as a normal user but maybe accessible for a supervisor user**==
+	- **==we can understand that the addresses from==** `0xffff0000` ==**to**== `0xffffffff` ==**are**== ==**reserved to the internal usage, so not accessible as a normal user but maybe accessible for a supervisor user**==
 	- **in additionthe addresses from**`0xffffff00` **to** `0xffffffff` can be acessed only during manufacturing 
 
 ### christmas_party folder analysis
@@ -419,13 +432,13 @@ We can see in it that it encodes all the CRISP-V supported instructions as class
 With a deep analysis of the file we can discover that at the end of it we can find this interesting class:
 ![[Pasted image 20240510174832.png]]
 - it seems to be a custom instruction
-- it requires a value called mode and from assemble method we can also understand that mode is a integer
+- it requires a value called `mode` 
+	- from assemble method we can also understand that `mode` is an integer
 - it seams to represent the secret instruction we can read about in the `chat.log` file
 
 So let's understand how the tool parses the file that contains the CRISP-V code we give him...
 
 ## parse.py file analysis
-
 
 If we take a look at this file we can see that when the CRISP-V instructions file is parsed, the tool uses a switch for each line of the file.
 
@@ -433,7 +446,7 @@ This switch checks the presence of CRISP-V instructions and create the equivalen
 ![[Pasted image 20240510175305.png]]
 - we can see that it contains also the custom instructions, but in this case only the `print` custom instruction
 
-It seems that the privilege one is not considered here...
+==**It seems that the privilege one is not considered here...**==
 
 
 So, what if we change the switch to add the parsing of the privilege one?
@@ -508,7 +521,17 @@ Let's try it on the real server:
 
 
 
+
+
+
+
+
+
+
+
+
 # Challenge part 3
+I asked for feedbacks in the mattermost channel.
 
 ## Introduction
 
@@ -565,7 +588,7 @@ end:
     ebreak
 ```
 - we use the `privilege` instruction since we need the `supervisor` privileges to have access to this memory portion
-- we add 4 bytes per time to `t1` because we know that RISC-V instruction are 32 bits and so 4 bytest1
+- we add 4 bytes per time to `t1` because we know that RISC-V instruction are 32 bits and so 4 bytes
 
 >NOTE: **==differently from the "code" used for flag 2 here we print also 0 values, because they we want to extract everything from this portion of memory, since we need to reconstruct the firmware byte by byte==**
 
@@ -757,7 +780,7 @@ To obtain:
 
 So we can start to compare the firmware.
 
-The first step to do it is to disassemble them and we can do it using `ace`.
+==**The first step to do it is to disassemble them**== and we can do it using `ace`.
 
 We can find the public firmware at `server-config/public_firmware.bin`. We can copy and paste it in the ace directory.
 
@@ -1207,11 +1230,13 @@ with open(input_file_name, 'r') as file:
 # create the binary file
 create_binary_file(hex_strings, output_file_name)
 ```
+- Let's save it in a file called `hex_to_binary_firmware_modified.py`
+
 
 
 So at this point we can execute:
 ```shell
-python3 hex_to_binary_firmware.py
+python3 hex_to_binary_firmware_modified.py
 ```
 
 Then in the `ace` directory:
@@ -1365,7 +1390,7 @@ In fact, if we search for it into the file `ace/instruction.py` we can see that:
 - it has the same operation code of the **==custom privilege operation==**
 
 
-So maybe it is used to change the privileges into the machine ones, we have to try it.
+**So maybe it is used to change the privileges into the machine ones, we have to try it.**
 
 
 
@@ -1377,7 +1402,7 @@ We know from the documentation of ace, and so from the file `ace/README.md` that
 	- so we can run directly this instruction without decoding it
 
 
-So what we want to do is to force the execution of `0x8d2a6aab` in order to see if it can be used to gain the machine privileges and so to print the memory non accessible without these privileges.
+So what we want to do is **==to force the execution of==** `0x8d2a6aab` ==**in order to see if it can be used to gain the machine privileges and so to print the memory non accessible without these privileges.**==
 
 So we can start to write:
 ```C
@@ -1409,6 +1434,8 @@ end:
 - we avoid here to print 0s, and we use the same approach we used for the flag 2
 
 We store this "code" into a file called `part3.txt`
+
+
 
 >NOTE: we used also the instructions `lui x21,1183318016` and `addi x21,x21,1584` because the instruction `0x8d2a6aab` uses the register x21, so it has sense to reproduce everything as it is in the remote firmware to test
 
@@ -1463,3 +1490,12 @@ And booom, it works:
 ![[Pasted image 20240518125014.png]]
 
 <mark style="background: #BBFABBA6;">The flag for the part 3 is</mark>: `FLG_PT3{chris_domas_h4s_n1c3_t4lk5_r3c0rd3d}`
+
+
+
+
+# Feedback on the challenge
+
+The first and second parts were well calibrated.
+
+The third part turned out to be a little too difficult compared to the other two, and it was very difficult to be able to solve it without additional information. The hint present did not help and if not interpreted well could even divert you leading you down the wrong path.
