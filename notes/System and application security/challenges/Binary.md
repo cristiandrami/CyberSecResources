@@ -313,4 +313,247 @@ At this point we can re-do the same actions done in local and so:
 
 
 
+# Challenge part 2
+
+## Introduction
+We can access to this challenge through this [link](https://sas.hackthe.space/#/challenges/Binary%201)
+
+
+From the description of the flag we don't get many useful information.
+
+We just understand that:
+```
+Your mind races with possibilities. The stakes are higher now, and the challenge more complex. But this is what you live for—pushing the limits, proving yourself, and making a mark.
+
+You will need the following information:
+
+- The [system files](https://sas.hackthe.space/cms/files/dd4b98a8266fb8c74061513f4a2826ea895192f6759d7c52424fcda3981bab56/binary1.zip).
+- The system running the binary and the flag can be reached via `nc cyberphant0m.sas.hackthe.space 65432`
+- The flag regex ix `FLG_\{[a-z0-9_]+\}`
+```
+- we can download the files we require for the challenge from this [link](https://sas.hackthe.space/cms/files/dd4b98a8266fb8c74061513f4a2826ea895192f6759d7c52424fcda3981bab56/binary1.zip)
+- we can reach the server that runs the binary using `nc cyberphant0m.sas.hackthe.space 65432`
+
+
+
+
+
+## Binary dynamic analysis
+What we do here is to perform a dynamical analysis of the binary, and so we try to use it in order to understand what are its functionalities.
+
+So we can easily give the execution permissions to it:
+```shell
+chmod +x chall
+```
+
+At this point we can execute it:
+```shell
+./chall
+```
+
+We can see that we have a menu here that gives us the possibility to choose what to do:
+![[Pasted image 20240528182511.png]]
+
+
+### Add bot feature interaction 
+
+Let's try to interact with the `Add bot` feature:
+![[Pasted image 20240528183003.png]]
+
+We can play with it and we can understand that maybe under the cover there is an array that takes trace about the data we put in it.
+
+The relevant things there are:
+- we can choose only `id` between 0 and 9
+	- if we try an `id` < 0 or > 9 then the program exit:
+		- ![[Pasted image 20240528183230.png]]
+- we can choose the `length` of the identifier
+- we can arbitrary identifiers (a string) 
+	- if we put a string that is greather than the `length` we chose then the program does nothing (maybe it is truncated by the code)
+
+If we try to add 2 times a bot with the same id the program terminates:
+![[Pasted image 20240528184649.png]]
+
+
+If we put a string instead an integer in the `length` or `id` input, the program terminates:
+- ![[Pasted image 20240528184737.png]]
+- ![[Pasted image 20240528184831.png]]
+
+
+### Remove bot feature interaction 
+Let's try to interact now with `Remove bot`  feature so let's remove the previous added bot (`id` 0):
+![[Pasted image 20240528183739.png]]
+
+If we play with it we can see that:
+- if we try to remove a bot already removed or never added then the program exit without errors:
+	- ![[Pasted image 20240528183900.png]]
+
+
+If we try to put a string in the `id` field the program terminates:
+- ![[Pasted image 20240528184905.png]]
+
+### Attack feature interaction 
+Let's try to interact now with `Attack` :
+![[Pasted image 20240528184035.png]]
+
+Ok, we have to assign at leat 3 botnets, so lets do it with the add feature and retry to perform the attack.
+
+![[Pasted image 20240528184150.png]]
+- so it prints our added botnets
+
+Here we can see that if we put a string longer than the `length` we chose then the program truncate it to the `length`.
+
+
+### Help feature interaction 
+Let's try to interact now with `Help` :
+![[Pasted image 20240528184331.png]]
+
+This is not so relevant, it just explains the functionalities of the program, but we can see that it says `The default capacity is 1.000 bots, which can only be changed by our admins.`
+
+Maybe there is a secret feature?
+
+### Quit feature interaction 
+This just closes the program:
+![[Pasted image 20240528184545.png]]
+
+
+
+## Binary static analysis
+At this point we cannot retrieve other information from the dynamic usage of the binary, so we can perform a static analysis of it.
+
+First of all we can see the security of the binary using `checksec` command:
+```shell
+checksec chall
+```
+
+The result of this command is:
+![[Pasted image 20240528185024.png]]
+
+Mhhh, there is No PIE and Partial RELRO, but what does this mean?
+1. **PIE (Position Independent Executable)**: Indicates whether the executable was compiled as a position-independent executable. 
+	1. An executable with PIE can be loaded into memory at random addresses, making it more difficult to exploit certain vulnerabilities. 
+	2. "No PIE" means that the binary was not compiled with this option and therefore will be loaded into memory at a fixed address (usually 0x400000 on 64-bit systems).
+	3. So this means that at each execution the binary is loaded in the same memory address and so the content of the binary will be always in the same position (like the functions in it)
+2. **RELRO (Relocation Read-Only)**: This indicates the degree to which the relocation tables of the executable are protected in memory. 
+	1. "Partial RELRO" means that only some parts of the relocation tables are made read-only, while others remain writable.
+	2. So it is possible to rewrite these parts of the relocation tables.
+
+
+
+
+Now we can try to disassemble the code with ghidra in order to see if we can get useful information about it.
+
+
+### Using ghidra on the binary
+
+What we can do is -> charge the binary file in ghidra and try to disassemble it.
+
+Looking at the function it seems to be a complete mess, the function have no meaningfull names:
+![[Pasted image 20240528190057.png]]
+
+But we can try to rename them if we get the function that represents the main menu...
+
+If we play around we can notice that the main menu is managed by the function `FUN_00401256`:
+
+![[Pasted image 20240528190212.png]]
+
+
+So let's rename it in `main_menu` using:
+- right click on the name (the yellow one in the image) -> Rename function
+- ![[Pasted image 20240528190411.png]]
+
+
+Now, looking at the switch and looking at the functionalities we can easily rename all the features functions:
+
+
+![[Pasted image 20240528190747.png]]
+
+
+We can also notice a strange value in the switch that is `0xffffffff`. with a rapid research on internet we can see that it is just `-1`
+
+So let's rename the function in this case as `maintenance_function` as adviced by the print:
+- ![[Pasted image 20240528191235.png]]
+
+
+
+Another strange function that we can see in the main menu is:
+- ![[Pasted image 20240528191342.png]]
+
+
+If we try to enter in it we can notice that it seems to be a initialization function:
+![[Pasted image 20240528191512.png]]
+
+So let's call it `init_function`:
+![[Pasted image 20240528191706.png]]
+
+In addition we can see that it initializes a value to `1000`
+
+#### add_bot function analysis
+
+What happens in this function?
+![[Pasted image 20240528191819.png]]
+
+1. it checks if the bot with the `id` we insert already exists, it checks the presence of 1 in a certain memory location
+2. if this memory location is not equal to 1 
+	1. then it asks us for the `length` of the identifier
+3. at this point it asks us to insert the identifier (a string)
+	1. interesting thing it uses `malloc` to store it, so it is stored in the heap memory space
+
+Now using the `attack` function we know that each bot has an `identifier` string and a `capacity` that for default is `1000.
+
+So maybe the `init_function` is used to initialize the bot array.
+
+So let's construct a structure in ghidra that manages directly these data, in order to make the code more readable.
+
+### bot structure adding 
+From the `init_function` we can see that a bot is composed by 3 elements.
+![[Pasted image 20240528192641.png]]
+
+1. the first one is of 8 bytes, so maybe it is used as string pointer 
+2. the second is of 4 bytes and it is initialized to 1000
+3. the third one is of 4 bytes and it is initialized to 0
+
+Maybe they can be 
+1. identifier string pointer
+2. capacity integer
+3. is or not integer
+
+
+So let's construct a bot structure in this way:
+- Data type manager -> chall -> New -> Structure
+
+And add these values:
+![[Pasted image 20240528193130.png]]
+- let's maintain this order
+
+Give it `bot` name:
+![[Pasted image 20240528193411.png]]
+
+Click on the save icon on the right:
+![[Pasted image 20240528193206.png]]
+
+![[Pasted image 20240528193421.png]]
+
+
+
+At this point we can understand also from the `init_function` that `param_1` is the start pointer for the array of bots, so let's change his name to `bot_array` and the type to `bot *` .
+
+
+![[Pasted image 20240528193617.png]]
+- it really better
+
+To do it just 
+1. right click on `param_1 ` -> Rename variable -> put `bot`
+2. right click on `bot` -> Retype Variable -> put `bot*`
+
+
+
+Let's change each function that uses it and also the variable in the main menu to `bot*`:
+- ![[Pasted image 20240528193941.png]]
+- ![[Pasted image 20240528194020.png]]
+- ![[Pasted image 20240528194114.png]]
+- ![[Pasted image 20240528194139.png]]
+- ![[Pasted image 20240528194226.png]]
+	- we changed here the name of the variable to `bot_array`
+
+Now we have a more comprensible code to analyze.
 
