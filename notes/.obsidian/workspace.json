@@ -13,26 +13,13 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "System and application security/challenges/1 - android/Android Challenges.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "c23cccb0498d25ac",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
                 "file": "System and application security/challenges/Binary.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -159,25 +146,25 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "c23cccb0498d25ac",
+  "active": "257724a98e6a8e5e",
   "lastOpenFiles": [
-    "Pasted image 20240529163705.png",
-    "Pasted image 20240529161536.png",
-    "Pasted image 20240529161313.png",
-    "Pasted image 20240529160645.png",
-    "Pasted image 20240529160641.png",
-    "Pasted image 20240529155622.png",
-    "Pasted image 20240529155600.png",
-    "Pasted image 20240529152258.png",
-    "Pasted image 20240529152247.png",
-    "Pasted image 20240529152145.png",
-    "Pasted image 20240529152104.png",
+    "Pasted image 20240531223803.png",
+    "Pasted image 20240531223551.png",
+    "Pasted image 20240531223351.png",
+    "Pasted image 20240531223349.png",
+    "Pasted image 20240531223322.png",
+    "Pasted image 20240531223306.png",
+    "Pasted image 20240531223010.png",
+    "Pasted image 20240531222841.png",
+    "Pasted image 20240531222813.png",
+    "Pasted image 20240531222431.png",
+    "Pasted image 20240531222338.png",
+    "System and application security/3 - Binary and Malware/Malware.md",
     "System and application security/challenges/1 - android/Android Challenges.md",
     "System and application security/challenges/Binary.md",
     "System and application security/3 - Binary and Malware/Binary security.md",
     "System and application security/2 - Hardware/Hardware security.md",
     "System and application security/challenges/Hardware/Hardware.md",
-    "System and application security/3 - Binary and Malware/Malware.md",
     "System and application security/challenges/IoT/IoT Challenges.md",
     "System and application security/3 - Binary and Malware",
     "System and application security/challenges/Hardware",

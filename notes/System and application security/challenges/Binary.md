@@ -6,6 +6,8 @@ For these challenges we will use some interesting tools:
 - [Ghidra](https://ghidra-sre.org/)
 - [pwntools](https://docs.pwntools.com/en/stable/install.html)
 - [gdb](https://ioflood.com/blog/install-gdb-command-linux/) with [gef](https://github.com/hugsy/gef) extension
+- [Windows 10 virtual machine](https://www.microsoft.com/en-us/software-download/windows10ISO) Version Pro
+- [Flare-Vm](https://github.com/mandiant/flare-vm) installed on the windows 10 VM
 
 
 # Challenge part 1 
@@ -339,6 +341,8 @@ You will need the following information:
 
 
 
+The system files we download are:
+![[Pasted image 20240529164002.png]]
 
 ## Binary dynamic analysis
 What we do here is to perform a dynamical analysis of the binary, and so we try to use it in order to understand what are its functionalities.
@@ -1170,6 +1174,12 @@ allocate_bot(3, 32, b'\x00\x00\x00\x00\x00\x00\x00\x00' + p64(system_real_addres
 ```
 - this line will do it, with `malloc` we are writing starting from address `0x404240` 8 bytes of `\x00` and then the `system` function real address
 
+
+##### But, why we need to allocate a 32 bytes botname in this case?
+Well we need it because of the implementation of the reading function...
+Let's take a look in ghidra:
+
+
 ### Gain a shell
 
 At this point we have overwritten the `free` GOT entry, so each call to `free` from now will trigger a real call to `system`.
@@ -1354,4 +1364,259 @@ The result is:
 
 <mark style="background: #BBFABBA6;">The flag for the part 2 is:</mark> `FLG_{m0r3_l1k3_un54f3_l1nk1n6}`
 
+
+
+# Challenge part 3-4
+
+## Introduction
+We can access to these challengse through [challenge part 3](https://sas.hackthe.space/#/challenges/Binary%2010) [challenge part 4](https://sas.hackthe.space/#/challenges/Binary%2011)
+
+From the description of the flag we don't get many useful information.
+
+We just understand that:
+```
+You will need the following information:
+
+- The [file bundle](https://sas.hackthe.space/cms/files/15de5f33f88248bee0ca063b1f225805e57e5d5b380d21ca7b076559d320b79f/wannalmao.zip).
+- The flag regex is `FLG_\{[a-z0-9_]+\}`
+
+Recommended tools:
+
+- Windows 10 VM with [FlareVM toolkit](https://github.com/mandiant/flare-vm) installed, and internet connectivity
+- IDA/Ghidra
+- ILSpy
+- Other tools found in FlareVM (PE studio, DetectItEasy, hex editors, etc.)
+
+**Important note:**
+
+- Execute the binary in a Windows 10 VM environment only.
+- It can take 1-2 minutes for the ransomware to start on first startup, as it silently downloads some dependencies in the background, so be patient. Subsequent starts should be faster.
+- It encrypts .txt files contained in the directory of the executable. Do not run it on the host machine. You can do static analysis on the host machine, though.
+- You will encounter various anti-debug/obfuscation techniques discussed in the lecture.
+- There are two flags. Submit the first one here and the final flag in the [Binary 11](https://sas.hackthe.space/#/challenges/Binary%2011) submission form.
+- 
+```
+- we can download the everything we need from [here](https://sas.hackthe.space/cms/files/15de5f33f88248bee0ca063b1f225805e57e5d5b380d21ca7b076559d320b79f/wannalmao.zip)
+- we will encounter various anti-debug/obfuscation techniques 
+
+
+We download the files and we can see that it contains:
+- ![[Pasted image 20240531213351.png]]
+
+So let's start to analyze the malware with a static analysis.
+We will focus on the usage of the tools contained in the Flare-VM so, install it on a Windows 10 VM.
+
+
+
+
+## Static analysis
+
+The first thing we can do in order to retrieve some information is to use the tool DetectItEasy.
+
+So we can easily open it and charge on it the `WANNALMAO.exe` file that turns to be the malware we need to reverse:
+- ![[Pasted image 20240531132317.png]]
+
+
+We can already notice that it uses a protection mechanism that is the packing.
+
+**Packers are used to compress and/or encrypt an executable and dynamically decompress/decrypt it during execution**
+- this makes the static analysis more difficult
+
+
+However DetectItEasy gives us some information and in fact we can understand that the packer `UPX` is used in this case to pack the code:
+- ![[Pasted image 20240531132448.png]]
+
+Another useful information can be retrieved from the section `Memory map`. This allows us to undertsand that there are 2 UPX sections in the binary file:
+- ![[Pasted image 20240531132547.png]]
+
+## Binary unpacking using UPX
+
+So we can try to unpack it using the command line tool `UPX`:
+![[Pasted image 20240531214000.png]]
+
+Mhh, we are not able to unpack it directly, for sure this is a protection mechanism used by the malware creator...
+
+So let's understand what happens.
+
+The first thing to do is to create a C++ file, compile it using `g++`, pack it using `UPX`.
+
+This gives us the possibility to have in our hand a "unprotected" packed binary, and so we can see in this way how a normal packed binary is formed.
+
+### Normal packed binary creation
+First of all we need to install `g++` on our `Windows 10` VM.
+We can easily do it following this guide here : [https://www3.cs.stonybrook.edu/~alee/g++/g++.html](https://www3.cs.stonybrook.edu/~alee/g++/g++.html)
+
+
+At this point we are able to create a normal packed binary.
+
+First of all we have to create a dummy C++ file...
+
+For example:
+```C++
+#include <iostream>
+
+int main(){
+	std::cout<<"hello";
+}
+
+```
+- we can rename it as `hello.cpp`
+- ![[Pasted image 20240531214610.png]]
+
+
+Now we compile it in a `.exe` file using this command on the `powershell`:
+```shell
+g++ -o hello.exe hello.cpp
+```
+- ![[Pasted image 20240531214914.png]]
+
+At this point we have a `.exe` binary file that we can pack...
+
+
+To pack it we will use the command `upx` on the `powershell` :
+```shell
+upx hello.exe
+```
+- ![[Pasted image 20240531214940.png]]
+
+
+Perfect! Now let's see the difference between it and the `WANNLMAO.exe` packed file.
+
+### Difference between hello.exe and WANNALMAO.exe
+To do it we need to open them using an hex editor.
+Fortunately Flare-VM has them:
+- ![[Pasted image 20240531215128.png]]
+
+So we open `010 Editor` and we open in it `hello.exe` and `WANNALMAO.exe`
+
+
+1. `hello.exe`
+	1. ![[Pasted image 20240531215420.png]]
+2. `WANNALMAO.exe`
+	1. ![[Pasted image 20240531215404.png]]
+
+
+
+
+If we study them we can see that they differ on the `SectionHeaders`.
+
+In fact we can see that `hello.exe` has the values `UPX1`, `UPX2`, `UPX!` in it, that are not present in `WANNALMAO`:
+1. `hello.exe`
+	1. ![[Pasted image 20240531215622.png]]
+2. `WANNALMAO.exe`
+	1. ![[Pasted image 20240531215654.png]]
+
+
+
+So let's try to adjust it putting the correct `headers` value also in `WANNLMAO`:
+ - ![[Pasted image 20240531215756.png]]
+	 - look at the orange values added :)
+
+
+At this point also `WANNALMAO.exe` is aligned to `UPX` standard... So save it and let's try to unpack it.
+
+### WANNALMAO.exe unpacking
+Let's use the `upx` command from the `power shell`:
+```shell
+upx -d WANNALMAO.exe
+```
+- ![[Pasted image 20240531220008.png]]
+It worked... Perfect!
+
+
+
+## Static analysis of the unpacked WANNALMAO.exe
+
+At this point we can open the uinpacked `WANNALMAO.exe` file using ghidra:
+- ![[Pasted image 20240531220223.png]]
+
+We cna start to study the functions in it and we can notice an interesting part that is the `Exports` part...
+- ![[Pasted image 20240531220316.png]]
+
+So let's start from the function `WANNALMAO_PrepareEnvironment`, that has an interesting name...
+
+
+### WANNALMAO_PrepareEnvironment analysis
+
+The function turns to be this one:
+- ![[Pasted image 20240531221456.png]]
+- ![[Pasted image 20240531221522.png]]
+
+
+We can see folloeing the code flow that it seems to load a `.dll` file called `verysus.dll` from resources...
+-  ![[Pasted image 20240531221546.png]]
+
+
+So what we want to do now is to try to extract this `.dll` file...
+
+
+So let's use `x64gdb` to do that. We will put a break point on the function `WANNALMAO_WriteToFile`
+
+### verysus.dll extraction
+Let's open `x64gdb` and upload in it `WANNALMAO.exe` (the unpacked one)...
+- ![[Pasted image 20240531221929.png]]
+
+
+
+At this point we will put a breakpoint to `WANNALMAO_WriteToFile`: 
+- ![[Pasted image 20240531222144.png]]
+
+It says that is not valid as address. So no problem we will put it on `GetEnvironmentVariableA`
+- ![[Pasted image 20240531222306.png]]
+
+
+In breakpoints we can see it correctly setted:
+- ![[Pasted image 20240531222338.png]]
+
+
+So let's start the malware, clicking the row:
+- ![[Pasted image 20240531222841.png]]
+
+We will continue to click on it until we reach the breakpoint we set:
+- ![[Pasted image 20240531222431.png]]
+
+Perfect, at this point we can start to go one step per time. The idea is to reach the code after the line:
+- ![[Pasted image 20240531223010.png]]
+
+
+So basically step by step we want to reach this point:
+- ![[Pasted image 20240531222813.png]]
+
+
+Now, we can understand that this `verysus.dll` file is stored in the `%TEMP%` forlder, a windows folder for temporary files... this because the variable `TEMP` the malware gets is this folder.
+
+In addition it seems to construct the path `TEMP\WANNALMAO\verysus.dll`
+
+So take a look into `%TEMP%` folder:
+- ![[Pasted image 20240531223306.png]]
+
+
+Bingo:
+- ![[Pasted image 20240531223322.png]]
+
+So let's see it:
+- ![[Pasted image 20240531223351.png]]
+
+
+
+Now we can study `verysus.dll` using ghidra...
+
+## verysus.dll analysis using ghidra and intermediate flag getting
+
+At this point we open it using ghidra:
+![[Pasted image 20240531223803.png]]
+
+
+
+
+And studying it we can see a very interesting stuff in the `Exports` section:
+- ![[Pasted image 20240531223551.png]]
+
+
+At this point we can take a look at the functions in it and in the function `WANNALMAO_LoadCRL` we can find this:
+- ![[Pasted image 20240531164324.png]]
+
+
+
+<mark style="background: #BBFABBA6;">So the intermediate flag is:</mark> `FLG_PT3{n3st3d_l1k3_M4try0shk4_d0lls`
 
