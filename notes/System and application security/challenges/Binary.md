@@ -1402,6 +1402,7 @@ Recommended tools:
 
 We download the files and we can see that it contains:
 - ![[Pasted image 20240531213351.png]]
+**==We are pretty sure that the flag is contained in==** `flag.txt.encrypted` **==and that we need to decrypt it...==**
 
 So let's start to analyze the malware with a static analysis.
 We will focus on the usage of the tools contained in the Flare-VM so, install it on a Windows 10 VM.
@@ -1619,4 +1620,436 @@ At this point we can take a look at the functions in it and in the function `WAN
 
 
 <mark style="background: #BBFABBA6;">So the intermediate flag is:</mark> `FLG_PT3{n3st3d_l1k3_M4try0shk4_d0lls`
+
+
+
+Let's continue our journey and let's try to figure out the other flag...
+
+## verysus.dll WANNALMAO_LoadCLR function analysis
+At this point we can focus on the functions contained in the `verysus.dll` file...
+
+We can notice that there is an interesting function `WANNALMAO_LoadCLR` in it that seems to load something:
+- ![[Pasted image 20240602155224.png]]
+
+We can understand that somtehing is dynamically decrypted decompressend and loaded looking at the lines:
+- ![[Pasted image 20240602155452.png]]
+
+
+### WANNALMAO_Decrypt_XOR function analysis
+If we enter in the `WANNALMAO_DecryptXOR` we can see that it is a decryption function that uses the XOR operation to decrypt chars:
+- ![[Pasted image 20240602155556.png]]
+
+So what it really does is taking an array of chars, the length of this array of chars and it seems to take also an array of chars that seems to be a `key`, here called `param_3`. The variable `param_4` seems to be the length of the key...
+
+The main idea here is to:
+1. iterate over the array of chars
+2. perform the XOR between the current read char (index i) and the key char at position index i % key length. This to rotate the key when the length of the array char is greater than the key one.
+
+In addition we can see in the `WANNALMAO_LoadCLR` that the key used is `WANNALMAO`.
+In fact we can notice:
+- ![[Pasted image 20240602161623.png]]
+-  if we convert the bytes in chars we can see:
+	- ![[Pasted image 20240602161807.png]]
+
+![[Pasted image 20240602161737.png]]
+
+
+
+After this we can see that the decrypted value is decompressed.
+### WANNALMAO_DecompressZstd function analysis
+Here we can easily understand that the Zstandard (Zstd) decompression algorithm is ![[Pasted image 20240602155556.png]]used to decompress the decrypted data...
+
+Zstandard (Zstd) is a high-performance data compression algorithm developed by Facebook. It's designed to provide very fast and efficient compression, making it suitable for a wide range of applications, from compressing low-latency data on mobile devices to compressing large datasets on servers.
+
+**==We can be pretty sure that nothing different form the original algorithm is done, because it is a standard...==**
+
+
+At this point we have to understand what is going on in this code, and so what is effectively decrypted and decompressed.
+
+## verysus.dll resource extracting
+We can think that what is decrypted and decompressed is some type of resources. So let's try to extract the resources of `verysus.dll` using the tool `Hacker Resource` we can find in `Flare-VM`.
+
+
+The first thing to do is try to extract the resources from the original malware `WANNLMAO.exe` in order to see if we found something:
+- ![[Pasted image 20240602160858.png]]
+Here we can see that `verysus` has 2 different resources... Maybe is what we are searching for.
+
+So let's save them as `.bin` files:
+- ![[Pasted image 20240602161008.png]]
+
+
+The result will be:
+- ![[Pasted image 20240602161039.png]]
+
+
+At this point we need to figure out a way to try to decrypt them and decompress them using `Zstd` algorithm...
+
+Fortunately we can use `python` that helps us in this activities.
+
+So let's write a python script:
+```python
+import zstandard as zstd
+
+def xor_decrypt(data, key):
+    decrypted = bytearray(len(data))
+    key_len = len(key)
+    
+    for i in range(len(data)):
+        decrypted[i] = data[i] ^ key[i % key_len]
+    
+    return decrypted
+
+def decompress_zstd(data):
+    decompressor = zstd.ZstdDecompressor()
+    decompressed = decompressor.decompress(data)
+    return decompressed
+
+with open('VERYSUS101.bin', 'rb') as f:
+    encrypted_data_1 = f.read()
+with open('VERYSUS102.bin', 'rb') as f:
+    encrypted_data_2 = f.read()
+
+
+key = bytearray("WANNALMAO", 'utf-8')
+
+try:
+    decrypted_data_1 = xor_decrypt(encrypted_data_1, key)
+    decompressed_data_1 = decompress_zstd(decrypted_data_1)
+    with open('verysus101.decrypted', 'wb') as f:
+        f.write(decompressed_data_1)
+    
+    print("VERYSUS 101 done")
+except Exception as e:
+    print(e)
+
+try:
+    decrypted_data_2 = xor_decrypt(encrypted_data_2, key)
+    decompressed_data_2 = decompress_zstd(decrypted_data_2)
+    with open('verysus102.decrypted', 'wb') as f:
+        f.write(decompressed_data_2)
+    print("VERYSUS 102 done")
+    
+except Exception as e:
+    print(e)
+```
+- we save it in a file called `xor_decrypt_and_decompress.py`
+
+
+
+You can install python using this guide [https://www.digitalocean.com/community/tutorials/install-python-windows-10](https://www.digitalocean.com/community/tutorials/install-python-windows-10)
+
+>Note: i will use it in linux since is more comfortable for me
+
+
+
+
+
+
+At this point we can execute it in the powershell to see what happens:
+- ![[Pasted image 20240602164003.png]]
+- ![[Pasted image 20240602164030.png]]
+
+
+The result will be:
+- ![[Pasted image 20240602164050.png]]
+
+>NOTE: remember to install the modules we need using `pip3 install module_name` in powershell
+
+
+So we are able only to decrypt and decompress the `VERYSUS102` file but not `VERYSUS101`.
+
+
+At this point we can analyze this file using `ILSpy` to see if we get some info...
+
+## VERYSUS102 analysis using ILSpy
+
+We open it using ILSpy and we can see:
+- ![[Pasted image 20240602164345.png]]
+
+It contains code and seems to be a `.NETCoreApp` written in `C#`.
+
+
+One relevant thing is the presence of the variable `__token`:
+- ![[Pasted image 20240602164505.png]]
+
+However we can focus on the code and we focus on the function `MainWindow`.
+
+
+### MainWindow function analysis
+
+This function turns to be very interesting:
+- ![[Pasted image 20240602164640.png]]
+
+It seems to perform a request to a server using `gRPC`:
+- ![[Pasted image 20240602165108.png]]
+
+>NOTE: 
+>gRPC is an open-source Remote Procedure Call (RPC) framework developed by Google. It enables clients and servers to communicate with each other efficiently and reliably across different programming languages and platforms.
+>
+>gRPC is based on Protocol Buffers (protobuf) and uses `.proto` files to define service interfaces and message types.
+>
+ `.proto` files define the structure of the data that will be exchanged between the client and the server. They contain definitions for messages, services, and service methods.
+
+
+After this it seems to get the field `Module` from the response and to `XOR` its bytes with the value `0x3F`:
+- ![[Pasted image 20240602165217.png]]
+
+From this "decrypted" data it seems to extract a module called `Encryptor`:
+- ![[Pasted image 20240602165346.png]]
+
+At this point it loads the method `encrypt` and uses it:
+- ![[Pasted image 20240602165423.png]]
+
+So it seems to be the code used to perform the file encryption when we run the malware...
+
+
+Let's understand how the `gRPC` client is managed in this context.
+
+If we study the content of `verysus102` we can see that it has in the resources a `.dll` file that seems to be the `gRPC` service provider...
+- ![[Pasted image 20240602165601.png]]
+	- let's save it ![[Pasted image 20240602165759.png]]
+
+At this point we have this file:
+- ![[Pasted image 20240602165836.png]]
+
+
+
+### WANNALMAO.GrpcServiceProvider.dll  analysis with ILSpy
+Let's open it using ILSpy:
+- ![[Pasted image 20240602170000.png]]
+
+
+First of all we can notice that the url on which the request is done is
+- `http://37.252.189.176:50051`
+
+Playing around we can notice that if we want to perform a request to this `gRPC` service we need to construct a request that is formed by:
+- `module type`
+- `token`
+- `os version`
+- ![[Pasted image 20240602170431.png]]
+
+
+For the module types we can find that we have 2 different possibilities:
+- ![[Pasted image 20240602170528.png]]
+
+
+This from:
+- ![[Pasted image 20240602170547.png]]
+
+
+
+So maybe our idea could be try to perform a request to the `gRPC` server using the `token` we found in the `MainWindow` code, the `module type` `MODULE_DECRYPT` and a dummy `os version`.
+
+To do that we can use python... but we first need to obtain the definition of the `.proto` file used by the `gRPC` server...
+
+So let's go back to analyze `MainWindow`, maybe we can find something there...
+
+
+
+## .proto file finding
+
+Having a look another time at `MainWindow` in `verysus102` we can find the functionality `About Us` that basically opens in the browser a `url` that points on a twitter profile...
+- ![[Pasted image 20240602171031.png]]
+
+Let's have a look at this profile:
+- ![[Pasted image 20240602171144.png]]
+
+In the posts we can find this picture:
+- ![[Pasted image 20240602171209.png]]
+
+BINGO... we have the `.proto` file ( or at least we hope :) )
+
+
+
+So let's try if we are able to perform a request to the `gRPC` server leveraging on this `service.proto` file...
+
+We can write it into a file called  `service.proto` :) 
+```C
+syntax = "proto3";
+
+option csharp_namespace = "GrpcServiceProvider";
+
+service RansomService {
+    rpc GetModule(ModuleRequest) returns (ModuleResponse);
+}
+
+message ModuleRequest{
+    ModuleType module_type = 1;
+    string token = 2;
+    string os_version = 3;
+
+}
+
+message ModuleResponse{
+    Status status = 1;
+    bytes module = 2;
+}
+
+enum ModuleType{
+    MODULE_DECRYPT = 0;
+    MODULE_ENCRYPT = 1;
+}
+
+enum Status {
+    STATUS_OK = 0;
+    STATUS_INVALID_TOKEN = 1;
+    STATUS_ERROR = 2;
+    STATUS_MODULE_NOT_FOUND = 3;
+}
+
+```
+
+
+At this point we can setup our environment in order to use python.
+
+To do that we have first to install some python modules `grpcio` and `grpcio-tools`
+
+Then we can use them to prepare our environment:
+```shell
+python -m grpc_tools.protoc --proto_path=. --python_out=. --grpc_python_out=. service.proto
+```
+- ![[Pasted image 20240602173717.png]]
+
+At this point you will find these files in the directory where is `service.proto`:
+- ![[Pasted image 20240602172509.png]]
+
+
+Perfect...
+Let's write our client that performs a request to the `gRPC` server:
+
+
+```python
+
+import grpc
+import service_pb2
+import service_pb2_grpc
+
+import base64
+
+
+with grpc.insecure_channel('37.252.189.176:50051') as channel:
+    stub = service_pb2_grpc.RansomServiceStub(channel)
+
+    request = service_pb2.ModuleRequest(
+        module_type=service_pb2.ModuleType.MODULE_DECRYPT,
+        token='1b426547968422e0c6d02ee1130cac1b028d7910b1827a70c1d529410fa45ba3',
+        os_version='Microsoft Windows NT 10.0.19042.0'
+    )
+
+    response = stub.GetModule(request)
+    module = response.module
+
+    # response xoring and saving
+    module_bytes = bytes([b ^ 0x3F for b in module])
+    dll_file_path = 'decryptor.dll' 
+    
+with open(dll_file_path, 'wb') as dll_file:
+    dll_file.write(module_bytes)
+
+```
+- save it as `get_decryptor.py`
+
+So what we are doing here?
+1. we perform a connection with the server
+2. we send a request that contains as 
+	1. `module_type` `MODULE_DECRYPT` hoping we will obtain the code that is really used to perform a decryption
+	2. `token` the token found in `verysus102` `MainWindow` file
+	3. `os_version` a dummy Windows 10 version
+3. we get the response and we get the `module` field of the response
+4. we `xor` the module we got using the technique we ahve seen in `MainWindow`
+5. we write the result of the `xoring` in a `decryptor.dll` file, because we are pretty sure it is another `.NETCoreApp` written in C# 
+
+So let's execute it...
+- ![[Pasted image 20240602173904.png]]
+
+The result will be:
+- ![[Pasted image 20240602173947.png]]
+
+
+
+So now let's analyze `decryptor.dll`
+
+## decryptor.dll analysis with ILSpy 
+We open the file using ILSpy and we can see:
+- ![[Pasted image 20240602174232.png]]
+
+It has a `Decrypt` function that is what we want to reproduce...
+
+### Decrypt function analysis
+We can have a look at it and we can see:
+- ![[Pasted image 20240602174327.png]]
+
+Basically it:
+1. uses RSA
+	1. ![[Pasted image 20240602174423.png]]
+2. loads a key from the resources
+	1. ![[Pasted image 20240602174507.png]]
+3. iterates on all files in the current directory and takes in count only the ones that ends with `.encrypted`
+	1. ![[Pasted image 20240602174546.png]]
+4. decrypts all the bytes using `RSA` with the key loaded from resources and using `Oaep SHA256` padding
+	1. ![[Pasted image 20240602174720.png]]
+5. deletes the current decrypted `.encrypted` file
+	1. ![[Pasted image 20240602174757.png]]
+
+
+So at this point we have the algorithm but we need the key
+
+### RSA key extraction
+We have seen that the key is loaded from the resources... So let's take a look on them:
+- ![[Pasted image 20240602174910.png]]
+
+
+We got it...
+
+Let's save it as `key.pem`:
+- ![[Pasted image 20240602174950.png]] 
+- ![[Pasted image 20240602175034.png]]
+
+
+
+## Decrypt function reproducing in python
+
+We have all the pieces together, so let's write a python script that decrypts the `flag.txt.encrypted` file, following the `Decrypt` function we have studied before...
+
+```python
+import os
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto.Hash import SHA256
+
+
+with open("key.pem", "r") as key_file:
+    key_data = key_file.read()
+    rsa_key = RSA.import_key(key_data)
+
+for file_name in os.listdir(os.getcwd()):
+    if file_name.endswith(".encrypted"):
+        with open(file_name, "rb") as encrypted_file:
+            encrypted_data = encrypted_file.read()
+            cipher_rsa = PKCS1_OAEP.new(rsa_key, hashAlgo=SHA256)
+            decrypted_data = cipher_rsa.decrypt(encrypted_data)
+            print(decrypted_data)
+```
+
+So here we:
+1. load the key from the file `key.pem`
+2. we get all the files in the folder that ends with `.encrypted`
+3. we read the content of the file
+4. we create a cipher
+	1. note that here we are using `PKCS1_OAEP.new(rsa_key, hashAlgo=SHA256)` because we want as in the original code the OAEP SHA256 padding
+5. we decrypt the file content using the cipher
+6. we print the decoded data
+
+
+So we run it:
+- ![[Pasted image 20240602180343.png]]
+
+And the result is:
+- ![[Pasted image 20240602180425.png]]
+
+
+Finally we got the flag.
+
+<mark style="background: #BBFABBA6;">The flag for this part is:</mark> `FLG_PT4{wh0_n33ds_h0ll0w1ng_wh3n_y0u_h4ve_r3h0st1ng}`
+
 
