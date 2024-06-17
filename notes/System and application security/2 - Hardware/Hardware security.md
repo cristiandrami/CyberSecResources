@@ -247,7 +247,7 @@ In general we have different names but same principles:
 
 
 
-### Usecase: HSM 
+### Usecase: HSM  Hardware Security Module 
 
 An example was:
 As a certificate authority we could create a root certificate in the HSM.

@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "System and application security/challenges/Binary.md",
+                "file": "System and application security/3 - Binary and Malware/Binary security.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "System and application security/challenges/Binary.md",
+                "file": "System and application security/3 - Binary and Malware/Binary security.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "System and application security/challenges/Binary.md",
+                "file": "System and application security/3 - Binary and Malware/Binary security.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "System and application security/challenges/Binary.md"
+                "file": "System and application security/3 - Binary and Malware/Binary security.md"
               }
             }
           }
@@ -148,24 +148,26 @@
   },
   "active": "257724a98e6a8e5e",
   "lastOpenFiles": [
-    "Pasted image 20240602180425.png",
-    "Pasted image 20240602180417.png",
-    "Pasted image 20240602180343.png",
-    "Pasted image 20240602175034.png",
-    "Pasted image 20240602174950.png",
-    "Pasted image 20240602174910.png",
-    "Pasted image 20240602174757.png",
-    "Pasted image 20240602174720.png",
-    "Pasted image 20240602174546.png",
-    "Pasted image 20240602174507.png",
-    "Pasted image 20240602174423.png",
-    "System and application security/3 - Binary and Malware/Malware.md",
-    "System and application security/challenges/1 - android/Android Challenges.md",
-    "System and application security/challenges/Binary.md",
-    "System and application security/3 - Binary and Malware/Binary security.md",
     "System and application security/2 - Hardware/Hardware security.md",
-    "System and application security/challenges/Hardware/Hardware.md",
+    "System and application security/3 - Binary and Malware/Malware.md",
+    "System and application security/4 - Power grid/Attacking Cyber-Physical Systems Power grid.md",
+    "Pasted image 20240614163756.png",
+    "Pasted image 20240614163713.png",
+    "Pasted image 20240614163656.png",
+    "Pasted image 20240614162516.png",
+    "Pasted image 20240614162454.png",
+    "Pasted image 20240614162427.png",
+    "Pasted image 20240614162422.png",
+    "Pasted image 20240614162254.png",
+    "Pasted image 20240614162253.png",
+    "Pasted image 20240614162207.png",
+    "System and application security/4 - Power grid",
+    "System and application security/challenges/Binary.md",
     "System and application security/challenges/IoT/IoT Challenges.md",
+    "System and application security/3 - Binary and Malware/Binary security.md",
+    "Untitled 2.md",
+    "System and application security/challenges/1 - android/Android Challenges.md",
+    "System and application security/challenges/Hardware/Hardware.md",
     "System and application security/3 - Binary and Malware",
     "System and application security/challenges/Hardware",
     "().md",
@@ -190,11 +192,8 @@
     "Thesis/Information gathering 0.md",
     "Untitled.md",
     "writeup.md",
-    "Mobile Applicaion Pentesting/3 - Android Dynamic Analysis.md",
-    "Mobile Applicaion Pentesting/1 - Android tools.md",
     "System and application security/challenges/1 - android",
     "System and application security/challenges",
-    "Mobile Applicaion Pentesting/Untitled",
     "Untitled.canvas"
   ]
 }
