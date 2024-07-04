@@ -2131,11 +2131,24 @@ The RSA encryption ensures that files can’t be decrypted without the private k
 
 ### Packing and obfuscation
 During the analysis, we discovered several techniques used for obfuscating and packing the ransomware:
-- **Code Packing with UPX**: The ransomware uses UPX (Ultimate Packer for Executables) to pack the code responsible for loading modules from the remote server. 
+- **Code Packing with UPX**: The ransomware uses UPX (Ultimate Packer for Executables) to pack the code responsible for loading modules from the remote server.ù
+	- In addition the packing was made difficult to reverse since the malware author changed the headers of the packed sections in order to make the direct reversing using `UPX` impossible. 
+	- We  had to adjust the headers in order to make the `UPX` decompressor work on the binary file.
 - **XOR Encryption**: The dynamically loaded code is encrypted using XOR encryption. This method involves combining the code with a key using the XOR operation, which obscures the code and makes it unreadable until it is decrypted during runtime.
-- **Stack Strings**: The key used for the XOR encryption, "WANNALMAO", is stored using stack strings. This technique places parts of the key on the stack rather than in the data section, making it harder to detect through static analysis.
+	- In this specific case the XORing was done using a key equal to `WANNALMAO` on the resource dinamically loaded called `verysus102` that contains basically the source code of the ransomware at all and the code needed to perform the encryption of the files.
+- **Stack Strings**: The key used for the XOR encryption, `WANNALMAO`, is stored using stack strings. This technique places parts of the key on the stack rather than in the data section, making it harder to detect through static analysis.
+	- With this technique the malware author was able to construct in a dynamic way the key `WANNALMAO` instead of putting it directly in the code, since it was constructed putting each byte (and so each char) in contigous memory locations.
+	- It this case was easy to retrieve it by converting the bytes into chars and having a look at the contigous variable declared in the code.
+- **TLS callback functions**: The ransomware uses a TLS callback function to execute malicious code before the entry point of a function.
+	- This technique is used to avoid the possibility for the debugger to have access to this malicious code and analysze it since it is executed before getting the entry point of functions, so it is not possible for a debug to break on it.
+		- ![[Pasted image 20240619161135.png]]
 - **Anti-Debugging Techniques**: The ransomware employs several methods to detect if it is being debugged. 
+	- In this specific case it seems to use some API calls to understand if the execution was under debugging or not
+	- However this techniques are used to avoid dynamic analysis on the malware execution and are managed using function calls as we can see here:
+		- ![[Pasted image 20240619160801.png]]
 
+
+However for more details on these section look at the previosu sections of the report, where these information are reported in a more detailed way, since we need to study them in order to have the possibility to get the flags...
 
 ### Process injection
 If we study the code of the unpacked `WANNALMAO.exe` file we can notice that it uses the `process injection` technique to inject code into another process that it this case turns to be `explorer.exe`...

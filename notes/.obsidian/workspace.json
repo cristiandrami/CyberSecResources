@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "System and application security/3 - Binary and Malware/Binary security.md",
+                "file": "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "System and application security/3 - Binary and Malware/Binary security.md",
+                "file": "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "System and application security/3 - Binary and Malware/Binary security.md",
+                "file": "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "System and application security/3 - Binary and Malware/Binary security.md"
+                "file": "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md"
               }
             }
           }
@@ -148,29 +148,41 @@
   },
   "active": "257724a98e6a8e5e",
   "lastOpenFiles": [
+    "Pasted image 20240704114240.png",
+    "Pasted image 20240704114009.png",
+    "Pasted image 20240704111233.png",
+    "Pasted image 20240704110951.png",
+    "Mobile Applicaion Pentesting/iOS/1 - iOS Overview.md",
+    "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md",
+    "Pasted image 20240704104902.png",
+    "Mobile Applicaion Pentesting/Android/2 - Android Static Analysis.md",
+    "Mobile Applicaion Pentesting/iOS",
+    "Mobile Applicaion Pentesting/Android/Untitled",
+    "Mobile Applicaion Pentesting/Android/4 - Android Red teaming.md",
+    "Mobile Applicaion Pentesting/Android/1 - Android tools.md",
+    "Mobile Applicaion Pentesting/Android",
+    "Mobile Applicaion Pentesting/Android/3 - Android Dynamic Analysis.md",
+    "().md",
+    "Pasted image 20240702150926.png",
+    "Pasted image 20240702150827.png",
+    "Android tool/To check.md",
+    "Android tool",
+    "Pasted image 20240702113147.png",
+    "Pasted image 20240702112349.png",
+    "System and application security/challenges/Binary.md",
+    "Pasted image 20240619161135.png",
+    "Pasted image 20240619160801.png",
+    "System and application security/3 - Binary and Malware/Binary security.md",
     "System and application security/2 - Hardware/Hardware security.md",
     "System and application security/3 - Binary and Malware/Malware.md",
     "System and application security/4 - Power grid/Attacking Cyber-Physical Systems Power grid.md",
-    "Pasted image 20240614163756.png",
-    "Pasted image 20240614163713.png",
-    "Pasted image 20240614163656.png",
-    "Pasted image 20240614162516.png",
-    "Pasted image 20240614162454.png",
-    "Pasted image 20240614162427.png",
-    "Pasted image 20240614162422.png",
-    "Pasted image 20240614162254.png",
-    "Pasted image 20240614162253.png",
-    "Pasted image 20240614162207.png",
     "System and application security/4 - Power grid",
-    "System and application security/challenges/Binary.md",
     "System and application security/challenges/IoT/IoT Challenges.md",
-    "System and application security/3 - Binary and Malware/Binary security.md",
     "Untitled 2.md",
     "System and application security/challenges/1 - android/Android Challenges.md",
     "System and application security/challenges/Hardware/Hardware.md",
     "System and application security/3 - Binary and Malware",
     "System and application security/challenges/Hardware",
-    "().md",
     "System and application security/2 - Hardware",
     "System and application security/1 - IoT/IoT security.md",
     "System and application security/exams/Exam 1 - Possible Questions.md",
@@ -182,18 +194,7 @@
     "2024-04-13.md",
     "Untitled 1.canvas",
     "Thesis/LibKit -> Detecting Third-Party Libraries in iOS Apps.md",
-    "System and application security/1 - IoT",
-    "System and application security/0 - Mobile",
     "Untitled 1.md",
-    "Mobile Applicaion Pentesting/2 - Android Static Analysis.md",
-    "Thesis/Information gathering 3.md",
-    "Thesis/Information gathering 2.md",
-    "Thesis/Information gathering 1.md",
-    "Thesis/Information gathering 0.md",
-    "Untitled.md",
-    "writeup.md",
-    "System and application security/challenges/1 - android",
-    "System and application security/challenges",
     "Untitled.canvas"
   ]
 }
