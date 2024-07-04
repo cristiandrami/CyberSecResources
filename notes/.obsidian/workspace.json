@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md",
+                "file": "Mobile Applicaion Pentesting/iOS/3 - iOS static analysis.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md",
+                "file": "Mobile Applicaion Pentesting/iOS/3 - iOS static analysis.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md",
+                "file": "Mobile Applicaion Pentesting/iOS/3 - iOS static analysis.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md"
+                "file": "Mobile Applicaion Pentesting/iOS/3 - iOS static analysis.md"
               }
             }
           }
@@ -148,6 +148,16 @@
   },
   "active": "257724a98e6a8e5e",
   "lastOpenFiles": [
+    "SystemAndApplicationSecurity/challenges/Binary/Binary.md",
+    "SystemAndApplicationSecurity/challenges/Android/Android Challenges.md",
+    "SystemAndApplicationSecurity/challenges/Android",
+    "SystemAndApplicationSecurity/challenges/Binary",
+    "SystemAndApplicationSecurity/challenges/Cartella senza nome",
+    "Mobile Applicaion Pentesting/Android/2 - Android Static Analysis.md",
+    "Mobile Applicaion Pentesting/iOS/3 - iOS static analysis.md",
+    "Pasted image 20240704143337.png",
+    "Pasted image 20240704143218.png",
+    "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md",
     "SystemAndApplicationSecurity/challenges/IoT/IoT Challenges.md",
     "SystemAndApplicationSecurity/challenges/Hardware/Hardware.md",
     "SystemAndApplicationSecurity/challenges/1 - android/Android Challenges.md",
@@ -169,18 +179,13 @@
     "SystemAndApplicationSecurity/README.md",
     "SystemAndApplicationSecurity/3 - Binary and Malware",
     "SystemAndApplicationSecurity/4 - Power grid",
-    "SystemAndApplicationSecurity/2 - Hardware",
-    "SystemAndApplicationSecurity/1 - IoT",
-    "SystemAndApplicationSecurity/0 - Mobile",
     "System and application security/README.md",
     "Pasted image 20240704114240.png",
     "Pasted image 20240704114009.png",
     "Pasted image 20240704111233.png",
     "Pasted image 20240704110951.png",
     "Mobile Applicaion Pentesting/iOS/1 - iOS Overview.md",
-    "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md",
     "Pasted image 20240704104902.png",
-    "Mobile Applicaion Pentesting/Android/2 - Android Static Analysis.md",
     "Mobile Applicaion Pentesting/Android/4 - Android Red teaming.md",
     "Mobile Applicaion Pentesting/Android/1 - Android tools.md",
     "Mobile Applicaion Pentesting/Android/3 - Android Dynamic Analysis.md",
@@ -189,11 +194,6 @@
     "Pasted image 20240702150827.png",
     "Android tool/To check.md",
     "Pasted image 20240702113147.png",
-    "Pasted image 20240702112349.png",
-    "System and application security/challenges/Binary.md",
-    "Pasted image 20240619161135.png",
-    "System and application security/3 - Binary and Malware/Binary security.md",
-    "System and application security/2 - Hardware/Hardware security.md",
     "Untitled 1.canvas",
     "Untitled.canvas"
   ]
