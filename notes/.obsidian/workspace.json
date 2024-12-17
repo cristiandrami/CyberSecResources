@@ -4,22 +4,39 @@
     "type": "split",
     "children": [
       {
-        "id": "e1a5ac4a0671801f",
+        "id": "01a4aee63da882c7",
         "type": "tabs",
         "children": [
           {
-            "id": "257724a98e6a8e5e",
+            "id": "0dc80c15407f02ed",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Mobile Applicaion Pentesting/iOS/3 - iOS static analysis.md",
+                "file": "Practical Penetration Tester course/Active Directory/0 - Active Directory.md",
                 "mode": "source",
                 "source": false
-              }
+              },
+              "icon": "lucide-file",
+              "title": "0 - Active Directory"
+            }
+          },
+          {
+            "id": "89a690896d80e32f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Practical Penetration Tester course/Active Directory/2 - Initial AD attack vectors.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2 - Initial AD attack vectors"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -38,8 +55,10 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
-              }
+                "sortOrder": "byModifiedTime"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
             }
           },
           {
@@ -54,7 +73,9 @@
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical"
-              }
+              },
+              "icon": "lucide-search",
+              "title": "Search"
             }
           },
           {
@@ -62,7 +83,9 @@
             "type": "leaf",
             "state": {
               "type": "bookmarks",
-              "state": {}
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
             }
           }
         ]
@@ -85,7 +108,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Mobile Applicaion Pentesting/iOS/3 - iOS static analysis.md",
+                "file": "Practical Penetration Tester course/Active Directory/2 - Initial AD attack vectors.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -93,7 +116,9 @@
                 "searchQuery": "",
                 "backlinkCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 2 - Initial AD attack vectors"
             }
           },
           {
@@ -102,10 +127,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Mobile Applicaion Pentesting/iOS/3 - iOS static analysis.md",
+                "file": "Practical Penetration Tester course/Active Directory/2 - Initial AD attack vectors.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from 2 - Initial AD attack vectors"
             }
           },
           {
@@ -116,7 +143,9 @@
               "state": {
                 "sortOrder": "frequency",
                 "useHierarchy": true
-              }
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
             }
           },
           {
@@ -125,8 +154,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Mobile Applicaion Pentesting/iOS/3 - iOS static analysis.md"
-              }
+                "file": "Practical Penetration Tester course/Active Directory/2 - Initial AD attack vectors.md"
+              },
+              "icon": "lucide-list",
+              "title": "Outline of 2 - Initial AD attack vectors"
             }
           }
         ]
@@ -146,20 +177,40 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "257724a98e6a8e5e",
+  "active": "89a690896d80e32f",
   "lastOpenFiles": [
+    "Pasted image 20241217161418.png",
+    "Pasted image 20241217160618.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241217160554.png",
+    "Pasted image 20241217154012.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241217153913.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241217153223.png",
+    "Practical Penetration Tester course/Active Directory/2 - Initial AD attack vectors.md",
+    "Practical Penetration Tester course/Active Directory/1 -  Lab setup.md",
+    "Practical Penetration Tester course/Active Directory/0 - Active Directory.md",
+    "Practical Penetration Tester course/Active Directory",
+    "Practical Penetration Tester course/Images/Pasted image 20241216150240.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241216150023.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241216145204.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241216144058.png",
+    "SystemAndApplicationSecurity/challenges/IoT/IoT Challenges.md",
+    "Practical Penetration Tester course/Images",
+    "Practical Penetration Tester course",
+    "SystemAndApplicationSecurity/challenges/Hardware/Hardware.md",
     "SystemAndApplicationSecurity/challenges/Binary/Binary.md",
     "SystemAndApplicationSecurity/challenges/Android/Android Challenges.md",
+    "Mobile Applicaion Pentesting/iOS/4 - iOS dynamic analysis.md",
+    "Mobile Applicaion Pentesting/iOS/3 - iOS static analysis.md",
+    "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md",
+    "Mobile Applicaion Pentesting/iOS/1 - iOS Overview.md",
+    "Mobile Applicaion Pentesting/Android/4 - Android Red teaming.md",
+    "Mobile Applicaion Pentesting/Android/3 - Android Dynamic Analysis.md",
+    "Mobile Applicaion Pentesting/Android/2 - Android Static Analysis.md",
+    "Mobile Applicaion Pentesting/Android/1 - Android tools.md",
+    "Pasted image 20240705120437.png",
     "SystemAndApplicationSecurity/challenges/Android",
     "SystemAndApplicationSecurity/challenges/Binary",
     "SystemAndApplicationSecurity/challenges/Cartella senza nome",
-    "Mobile Applicaion Pentesting/Android/2 - Android Static Analysis.md",
-    "Mobile Applicaion Pentesting/iOS/3 - iOS static analysis.md",
-    "Pasted image 20240704143337.png",
-    "Pasted image 20240704143218.png",
-    "Mobile Applicaion Pentesting/iOS/2 - iOS setup lab.md",
-    "SystemAndApplicationSecurity/challenges/IoT/IoT Challenges.md",
-    "SystemAndApplicationSecurity/challenges/Hardware/Hardware.md",
     "SystemAndApplicationSecurity/challenges/1 - android/Android Challenges.md",
     "SystemAndApplicationSecurity/exams/Exam 1 - Possible Questions.md",
     "SystemAndApplicationSecurity/challenges/IoT",
@@ -173,27 +224,7 @@
     "SystemAndApplicationSecurity/0 - Mobile/2 - Mobile Challenge.md",
     "SystemAndApplicationSecurity/0 - Mobile/1 - Mobile iOS.md",
     "SystemAndApplicationSecurity/0 - Mobile/0 - Mobile Android.md",
-    "SystemAndApplicationSecurity/1 - IoT/IoT security.md",
     "SystemAndApplicationSecurity/exams",
-    "SystemAndApplicationSecurity/challenges",
-    "SystemAndApplicationSecurity/README.md",
-    "SystemAndApplicationSecurity/3 - Binary and Malware",
-    "SystemAndApplicationSecurity/4 - Power grid",
-    "System and application security/README.md",
-    "Pasted image 20240704114240.png",
-    "Pasted image 20240704114009.png",
-    "Pasted image 20240704111233.png",
-    "Pasted image 20240704110951.png",
-    "Mobile Applicaion Pentesting/iOS/1 - iOS Overview.md",
-    "Pasted image 20240704104902.png",
-    "Mobile Applicaion Pentesting/Android/4 - Android Red teaming.md",
-    "Mobile Applicaion Pentesting/Android/1 - Android tools.md",
-    "Mobile Applicaion Pentesting/Android/3 - Android Dynamic Analysis.md",
-    "().md",
-    "Pasted image 20240702150926.png",
-    "Pasted image 20240702150827.png",
-    "Android tool/To check.md",
-    "Pasted image 20240702113147.png",
     "Untitled 1.canvas",
     "Untitled.canvas"
   ]
