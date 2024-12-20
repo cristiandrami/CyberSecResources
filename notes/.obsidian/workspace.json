@@ -25,18 +25,30 @@
             "id": "89a690896d80e32f",
             "type": "leaf",
             "state": {
+              "type": "image",
+              "state": {
+                "file": "Practical Penetration Tester course/Images/Pasted image 20241217154012.png"
+              },
+              "icon": "lucide-image",
+              "title": "Pasted image 20241217154012"
+            }
+          },
+          {
+            "id": "afab37b975a4bf74",
+            "type": "leaf",
+            "state": {
               "type": "markdown",
               "state": {
-                "file": "Practical Penetration Tester course/Active Directory/2 - Initial AD attack vectors.md",
+                "file": "Practical Penetration Tester course/Active Directory/5 - Post-domain compromise attack strategy.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2 - Initial AD attack vectors"
+              "title": "5 - Post-domain compromise attack strategy"
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -179,17 +191,20 @@
   },
   "active": "6561b5b41094bcaf",
   "lastOpenFiles": [
-    "Practical Penetration Tester course/Images/Pasted image 20241217164240.png",
-    "Practical Penetration Tester course/Images/Pasted image 20241217164021.png",
-    "Practical Penetration Tester course/Images/Pasted image 20241217163921.png",
-    "Practical Penetration Tester course/Images/Pasted image 20241217163749.png",
-    "Pasted image 20241217162034.png",
-    "Practical Penetration Tester course/Images/Pasted image 20241217161801.png",
-    "Pasted image 20241217161418.png",
-    "Pasted image 20241217160618.png",
-    "Practical Penetration Tester course/Images/Pasted image 20241217160554.png",
-    "Pasted image 20241217154012.png",
-    "Practical Penetration Tester course/Images/Pasted image 20241217153913.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241220171313.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241220171202.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241220171117.png",
+    "Pasted image 20240705120437.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241220114715.png",
+    "Practical Penetration Tester course/Active Directory/5 - Post-domain compromise attack strategy.md",
+    "Practical Penetration Tester course/Images/Pasted image 20241220170632.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241220170557.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241220165145.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241220164805.png",
+    "Practical Penetration Tester course/Active Directory/4 - Post compromise attacks.md",
+    "Practical Penetration Tester course/Images/Pasted image 20241220151635.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241220151455.png",
+    "Practical Penetration Tester course/Active Directory/3 - Post compromise enumeration.md",
     "Practical Penetration Tester course/Active Directory/2 - Initial AD attack vectors.md",
     "Practical Penetration Tester course/Active Directory/1 -  Lab setup.md",
     "Practical Penetration Tester course/Active Directory/0 - Active Directory.md",
@@ -221,9 +236,6 @@
     "SystemAndApplicationSecurity/3 - Binary and Malware/Binary security.md",
     "SystemAndApplicationSecurity/4 - Power grid/Attacking Cyber-Physical Systems Power grid.md",
     "SystemAndApplicationSecurity/2 - Hardware/Hardware security.md",
-    "SystemAndApplicationSecurity/0 - Mobile/2 - Mobile Challenge.md",
-    "SystemAndApplicationSecurity/0 - Mobile/1 - Mobile iOS.md",
-    "SystemAndApplicationSecurity/0 - Mobile/0 - Mobile Android.md",
     "SystemAndApplicationSecurity/exams",
     "Untitled 1.canvas",
     "Untitled.canvas"

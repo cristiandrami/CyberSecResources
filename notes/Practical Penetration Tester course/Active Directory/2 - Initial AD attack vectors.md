@@ -185,3 +185,41 @@ We can also use `psexec.py`:
 - ![[Pasted image 20241217164021.png]]
 - ![[Pasted image 20241217164240.png]]
 
+
+
+
+# IPv6 poisoning
+
+The idea is to spoof DNS in order to respond toall requests related to IPv6, this because generally no one replyto IPv6 requests.
+
+So when a machine authenticates to the domain controller we take the request and we use it to authenticate ourself as the victim.
+
+With `mimt6` we will able to interceot the traffic and force the creation of an account on the domain controller.
+
+ 
+
+## mimt6
+To install `mimt6` we can esaly copy the binary on `/opt/mimt6` and do `sudo pip2 install .`
+
+
+At this point we setup the proxy in this way:
+```bash
+ntlmrelayx.py -6 -t ldaps://DOMAIN CONTROLLER IP -wh fakewpad.DOMAIN -l username
+```
+- this will create a folder on `home` with all data `username`
+
+So we can run mitm6:
+```bash
+sudo mitm6 -d marvel.local
+```
+
+## Mitigation
+IPv6 poisoning abuses the fact that Windows queries for a IPv6 address even if it is only in IPv4 environment.
+
+To prevent it we can:
+- block DHCPv6 traffic and incoming router advertisement in Windows Firewall via Group Policy
+- if WPAD isnot in use, disable it via Group Policy and disabling WinHttpAutoProxySvc service
+- Put Admin into Protected Users group and don't allow delegation for it 
+
+
+
