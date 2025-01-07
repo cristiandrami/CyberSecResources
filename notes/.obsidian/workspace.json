@@ -51,18 +51,28 @@
             "id": "b9fc4ec64a61e4e9",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "image",
               "state": {
-                "file": "Practical Penetration Tester course/5 - Web App penetration tester/8 - Final Capstone Challenge.md",
-                "mode": "source",
-                "source": false
+                "file": "Practical Penetration Tester course/Images/Pasted image 20250107170603.png"
               },
-              "icon": "lucide-file",
-              "title": "8 - Final Capstone Challenge"
+              "icon": "lucide-image",
+              "title": "Pasted image 20250107170603"
+            }
+          },
+          {
+            "id": "44758d9e9ca5212a",
+            "type": "leaf",
+            "state": {
+              "type": "image",
+              "state": {
+                "file": "Practical Penetration Tester course/Images/Pasted image 20241216144058.png"
+              },
+              "icon": "lucide-image",
+              "title": "Pasted image 20241216144058"
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -203,21 +213,21 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "b9fc4ec64a61e4e9",
+  "active": "44758d9e9ca5212a",
   "lastOpenFiles": [
-    "Pasted image 20250107170603.png",
-    "Pasted image 20250107170354.png",
-    "Pasted image 20250107170332.png",
-    "Pasted image 20250107170248.png",
-    "Pasted image 20250107170008.png",
-    "Pasted image 20250107165934.png",
-    "Pasted image 20250107165826.png",
-    "Pasted image 20250107165350.png",
-    "Pasted image 20250107165002.png",
-    "Pasted image 20250107164726.png",
-    "Pasted image 20250107164543.png",
-    "Practical Penetration Tester course/5 - Web App penetration tester/7 - Insecure Direct Object Reference (or BOLA).md",
+    "Pasted image 20240705120437.png",
+    "Practical Penetration Tester course/Images/Pasted image 20250107170354.png",
+    "Practical Penetration Tester course/Images/Pasted image 20250107170603.png",
+    "Pasted image 20240705113524.png",
+    "Pasted image 20240705113434.png",
+    "Practical Penetration Tester course/Images/Pasted image 20250106180156.png",
+    "Practical Penetration Tester course/Images/Pasted image 20250107160729.png",
+    "Practical Penetration Tester course/Images/Pasted image 20250107163745.png",
+    "Practical Penetration Tester course/Images/Pasted image 20250107164207.png",
+    "Practical Penetration Tester course/Images/Pasted image 20250107164538.png",
+    "Practical Penetration Tester course/Images/Pasted image 20250107164543.png",
     "Practical Penetration Tester course/5 - Web App penetration tester/8 - Final Capstone Challenge.md",
+    "Practical Penetration Tester course/5 - Web App penetration tester/7 - Insecure Direct Object Reference (or BOLA).md",
     "Practical Penetration Tester course/5 - Web App penetration tester/6 - XXE (external XML entity).md",
     "Practical Penetration Tester course/2 - Active Directory/6 - Additional AD attacks.md",
     "Practical Penetration Tester course/2 - Active Directory/5 - Post-domain compromise attack strategy.md",
