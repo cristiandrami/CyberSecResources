@@ -46,33 +46,9 @@
               "icon": "lucide-file",
               "title": "2 - XSS"
             }
-          },
-          {
-            "id": "b9fc4ec64a61e4e9",
-            "type": "leaf",
-            "state": {
-              "type": "image",
-              "state": {
-                "file": "Practical Penetration Tester course/Images/Pasted image 20250107170603.png"
-              },
-              "icon": "lucide-image",
-              "title": "Pasted image 20250107170603"
-            }
-          },
-          {
-            "id": "44758d9e9ca5212a",
-            "type": "leaf",
-            "state": {
-              "type": "image",
-              "state": {
-                "file": "Practical Penetration Tester course/Images/Pasted image 20241216144058.png"
-              },
-              "icon": "lucide-image",
-              "title": "Pasted image 20241216144058"
-            }
           }
         ],
-        "currentTab": 4
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -91,7 +67,7 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "byModifiedTime"
+                "sortOrder": "alphabetical"
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -213,19 +189,39 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "44758d9e9ca5212a",
+  "active": "afab37b975a4bf74",
   "lastOpenFiles": [
-    "Pasted image 20240705120437.png",
-    "Practical Penetration Tester course/Images/Pasted image 20250107170354.png",
+    "Cyber Offense and defense/OAuth vulnerabilities.pdf",
+    "Cyber Offense and defense/[Th 9] OAuth.pdf",
+    "Cyber Offense and defense/Cors-Origin Resource Sharing (CORS) and Clickjacking.pdf",
+    "Cyber Offense and defense/Cross-Site Request Forgery.pdf",
+    "Cyber Offense and defense/Cross-site scripting (XSS).pdf",
+    "Cyber Offense and defense/Server-side request forgery (SSRF) and XXE injection.pdf",
+    "Cyber Offense and defense/Access Control - Authorization.pdf",
+    "Cyber Offense and defense/Command injection and file upload vulnerabilities.pdf",
+    "Cyber Offense and defense/Information Disclosure and Directory traversal.pdf",
+    "Cyber Offense and defense/Authentication and business logic vulnerabilities.pdf",
+    "Cyber Offense and defense/SQL injection.pdf",
+    "Cyber Offense and defense/SQL INJECTION.md",
+    "Cyber Offense and defense/sss.md",
     "Practical Penetration Tester course/Images/Pasted image 20250107170603.png",
-    "Pasted image 20240705113524.png",
-    "Pasted image 20240705113434.png",
-    "Practical Penetration Tester course/Images/Pasted image 20250106180156.png",
-    "Practical Penetration Tester course/Images/Pasted image 20250107160729.png",
-    "Practical Penetration Tester course/Images/Pasted image 20250107163745.png",
-    "Practical Penetration Tester course/Images/Pasted image 20250107164207.png",
-    "Practical Penetration Tester course/Images/Pasted image 20250107164538.png",
-    "Practical Penetration Tester course/Images/Pasted image 20250107164543.png",
+    "Images/writeup.md",
+    "Images/Untitled.md",
+    "Images/Untitled 1.md",
+    "Images/Untitled 1.canvas",
+    "Images/Untitled.canvas",
+    "Images/Pasted image 20240324141345.png",
+    "Images/2024-04-13.md",
+    "Images/Pasted image 20240609150505.png",
+    "Images/Pasted image 20240614161506.png",
+    "Untitled 2.md",
+    "Images/Pasted image 20240619161135.png",
+    "Practical Penetration Tester course/Images/Pasted image 20241216144058.png",
+    "().md",
+    "Images/Pasted image 20240705120437.png",
+    "Practical Penetration Tester course/Images/Pasted image 20250107170354.png",
+    "Images/Pasted image 20240705113524.png",
+    "Images/Pasted image 20240705113434.png",
     "Practical Penetration Tester course/5 - Web App penetration tester/8 - Final Capstone Challenge.md",
     "Practical Penetration Tester course/5 - Web App penetration tester/7 - Insecure Direct Object Reference (or BOLA).md",
     "Practical Penetration Tester course/5 - Web App penetration tester/6 - XXE (external XML entity).md",
@@ -242,26 +238,6 @@
     "Practical Penetration Tester course/5 - Web App penetration tester/2 - XSS.md",
     "Practical Penetration Tester course/5 - Web App penetration tester/1 - SQL injection.md",
     "Practical Penetration Tester course/5 - Web App penetration tester/0 - Lab setup.md",
-    "Practical Penetration Tester course/4 - Web application Enum Revisited/Web App Enumeration.md",
-    "Practical Penetration Tester course/5 - Web App penetration tester",
-    "Practical Penetration Tester course/3 - Post Exploitation/Post Exploitation.md",
-    "Practical Penetration Tester course/4 - Web application Enum Revisited",
-    "Practical Penetration Tester course/2 - Active Directory/7 - AD case studies.md",
-    "Practical Penetration Tester course/3 - Post Exploitation",
-    "Practical Penetration Tester course/2 - Active Directory/1 -  Lab setup.md",
-    "Practical Penetration Tester course/2 - Active Directory",
-    "SystemAndApplicationSecurity/challenges/IoT/IoT Challenges.md",
-    "Practical Penetration Tester course/Images",
-    "Practical Penetration Tester course",
-    "SystemAndApplicationSecurity/challenges/Hardware/Hardware.md",
-    "SystemAndApplicationSecurity/challenges/Binary/Binary.md",
-    "SystemAndApplicationSecurity/challenges/Android/Android Challenges.md",
-    "Mobile Applicaion Pentesting/iOS/4 - iOS dynamic analysis.md",
-    "SystemAndApplicationSecurity/challenges/Android",
-    "SystemAndApplicationSecurity/challenges/Binary",
-    "SystemAndApplicationSecurity/challenges/Cartella senza nome",
-    "SystemAndApplicationSecurity/challenges/IoT",
-    "Untitled 1.canvas",
-    "Untitled.canvas"
+    "Practical Penetration Tester course/4 - Web application Enum Revisited/Web App Enumeration.md"
   ]
 }
