@@ -18,7 +18,7 @@ ALWAYS CLEAN THE ENVIRONMENT FROM STUFF WE CREATED!
 
 # Dumping NTDS.dit file
 
-This file is a database used to store Active Directory data, including:
+**==This file is a database used to store Active Directory data, including:==**
 - user info
 - group info
 - security descriptors
@@ -56,7 +56,7 @@ Now what we can do is to organize the passwords and have the access to the users
 
 
 # Golden Ticket attacks
-A golden ticket is a ticket that gives us the complete access to every machine in the Active Directory.
+**==A golden ticket is a ticket that gives us the complete access to every machine in the Active Directory.==**
 
 This can be retrieved if we are able to compromise the `krbtgt` account on the domain.
 
@@ -112,3 +112,10 @@ Now we can run psexec to get a machine:
 ```bash
 psexec.exe \\PC_VICTIM cmd.exe
 ```
+
+
+
+**==SO basically to use this attack we need to know the:==**
+- **==NTLM hash of the KRBTGT account that is responsible to sign the tickets==**
+- **==SID of the domain that identify the domain==**
+- ==**an user RID (the user id we want impersonate)**==

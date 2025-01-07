@@ -30,7 +30,6 @@ This command responds to the traffic we receive.
 Since the request for accessing a client is in broadcast it will respond to the victim:
 - do it in the morning or after lunch (the idea is that it will work when a pc does requests)
 
-
 ## Step 2: trigger an event
 Example we request on network at 
 ```bash
@@ -41,6 +40,7 @@ Example we request on network at
 ![[Pasted image 20241217153913.png]]
 
 
+**==The responder replies to the victim request forcing it to send his credentials as NTLMv2 hash value.==**
 ## Step 3: intercept hash with responder
 As soon as the traffic is generated then we will see on our responder:
 - ![[Pasted image 20241217154012.png]]
@@ -133,7 +133,9 @@ Example we request on network at
 ![[Pasted image 20241217153913.png]]
 
 
+**==In this case we force the victim to send us his credentials as NTLMv2 hash value. But we don't crack it.**==
 
+==**We resend them directly to a host that has the SMB Signing disabled.==**
 ## Step 5: analyse traffic
 At this point we can analyse traffic to see if something is captured on the relay:
 - ![[Pasted image 20241217162034.png]]
@@ -190,13 +192,12 @@ We can also use `psexec.py`:
 
 # IPv6 poisoning
 
-The idea is to spoof DNS in order to respond toall requests related to IPv6, this because generally no one replyto IPv6 requests.
+**==The idea is to spoof DNS in order to respond toall requests related to IPv6, this because generally no one reply to IPv6 requests.==**
 
 So when a machine authenticates to the domain controller we take the request and we use it to authenticate ourself as the victim.
 
 With `mimt6` we will able to interceot the traffic and force the creation of an account on the domain controller.
 
- 
 
 ## mimt6
 To install `mimt6` we can esaly copy the binary on `/opt/mimt6` and do `sudo pip2 install .`

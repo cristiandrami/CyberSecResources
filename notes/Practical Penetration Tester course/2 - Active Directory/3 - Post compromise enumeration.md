@@ -3,6 +3,10 @@ Now we have compromise a user, so what we can do?
 # ldapdomaindump
 This tool is used to enumerate the domain from internally.
 
+**==We can use it to get info on the domain in the Active directory such as users, groups, computers and so on.==**
+
+==**In this case we need to have access to the Active Directory, so we need a username and his access.**==
+
 We have to create first a dir in our attacker machine to collect data:
 ```bash
 mkdir domain.name
@@ -19,6 +23,8 @@ Now in the folder we have a lot of information.
 
 
 # bloodhound
+**==It is a tool used to map graphically the relations and the dependencies of the AD domain, in order to get a path to perform privilege escalation.==**
+
 
 First of all we need to install it:
 ```bash
@@ -51,6 +57,9 @@ sudo bloodhoud-python -d DOMAIN -u username -p Password -ns DOMAIN CONTROLLER IP
 
 
 # plumhoud
+
+**==It is an extension of BloodHound that generates for us reports based on the collected data of the domain.==**
+
 We can get it from github:
 - https://github.com/PlumHound/PlumHound
 
@@ -75,4 +84,4 @@ sudo python3 PlumHoud.py -x tasks/default.tasks -p neo4j1
 At this point we have a report in the `reports` folder.
 
 
-#
+

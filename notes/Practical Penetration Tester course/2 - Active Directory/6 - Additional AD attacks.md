@@ -10,7 +10,7 @@ These vulnerbilities are very severe and can be dangerous for the domain.
 
 
 # Abusing ZeroLogon
-This type of attack can set the domain controller password to `null` and give then completely access to it.
+**==This type of attack can set the domain controller password to `null` and give then completely access to it.==**
 
 ==**But if we don't restore the password we will destroy the domain.**==
 

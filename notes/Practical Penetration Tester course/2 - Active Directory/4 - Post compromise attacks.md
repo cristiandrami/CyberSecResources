@@ -1,11 +1,15 @@
 
 # Pass attacks (pass password or hash)
 
-If we crack a password or we can dump the SAM hashes we can leverage on them to perform lateral movments in the networks.
+If we crack a password or we can dump the SAM hashes we can leverage on them to perform lateral movements in the networks.
 
+**==Basically we have a password of an user and we want to move on the domain, maybe to performm a privilege escalation.==**
 
+**==If the compromised user has access to different resources or hosts we use the password to access to them.==**
 ## crackmapexec
 With the tool `crackmapexec` we can see if it is possible to move laterally on the network with the retrieved password.
+
+**==It checks if the password we have can be used on other hosts or resources in the domain.==**
 
 We can run it in this way:
 ```bash
@@ -15,6 +19,13 @@ crackmapexec smb AD_NETWORK (10.0.0.0/24) -u username_we_have -d DOMAIN_AD -p pa
 *For example:*
 - ![[Pasted image 20241218150113.png]]
 - we can have access on 2 machines here with a single username and password
+
+# Pass the hash
+==**In this case we have or we retrieve the NTLM hashes but we cannot crack them.**==
+
+**==The idea is to use the hash to authenticate ourself without the password.==**
+
+**==This works because Windows uss the NTLM hash to authenticate the users also without the password. ==
 
 
 We can retrieve some hashes with the tool `secretdump.py`
@@ -31,6 +42,8 @@ crackmapexec smb AD_NETWORK (10.0.0.0/24) -u username_we_have -d DOMAIN_AD -H ha
 ```
 - ![[Pasted image 20241218150643.png]]
 
+## enumeration and shares (SMB shares)
+**==Once we get the credentials hashes we can explore the resources on the network.==**
 
 To get all informations about the shares we can do:
 ```bash
@@ -97,6 +110,8 @@ The TGS is encrypted with the hash of the Application server.
 
 So the idea here is to use the tool GetUserSPN to dump the Service server Hash value (contained in the TGS).
 
+
+**==The attack idea is to use services accounts (SQL Service or IIS) that uses weak passwords.==**
 ## Step 1: Dump hash with GET SPNs
 Here we can use 
 ```bash
@@ -127,6 +142,7 @@ There are two types of token  impersonation:
 - Impersonate, "non interactive", so we create a script to attack network drive and so on
 
 
+**==The idea here is to use the access tickets stored in the memory to impersonate a user or a group.==**
 
 
 ## Step 1 : use metasploit
@@ -217,8 +233,10 @@ The idea to mitigate this attack is to:
  
 # LNK file attack
 
-The idea is to store a file into shared folders in order to get some results.
+**==The idea is to store a file into shared folders in order to get some results, or in general in order to point to our host.==**
 
+
+**==When a user clicks on the link file his host tries to resolve the link and sends to your attacker host the `NTLM` hash value.==**
 
 The first way to do that is to create a file by our own with the using of **==elevated (admin) powershell==** (if we have access to the file share):
 ```powershell
@@ -290,6 +308,7 @@ We can also use ==**metasploit to do this type of attack with the module**== `sm
 - ![[Pasted image 20241220145327.png]]
 
 
+**==The idea is to extract XML credentials contianed in clear on the memory.==**
 ## Mitigation
 We can fix it in this way:
 - Use the patch and update
@@ -309,7 +328,7 @@ It can dump credentials stored in memory and can do some attacks like:
 
 It can be detected from antivirus so we have to obfuscate it.
 
-
+**==The idea is to use this tool to extract credentials from the memory and to manipulate the Kerberos tickets.==**
 
 ## credential dumping with minikatz
 
