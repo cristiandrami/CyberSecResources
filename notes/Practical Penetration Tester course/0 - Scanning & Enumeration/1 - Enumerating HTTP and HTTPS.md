@@ -11,27 +11,27 @@ This because generally we can retrieve a lot of information and in some cases al
 
 
 # Scanning with nikto
-Nikto is a tool used to perform web vulnerabilities scanning:
+`Nikto` is a tool used to perform **==web vulnerabilities scanning==**:
 ```bash
 nikto -h website_to_analyze
 ```
 - ![[Pasted image 20250111170223.png]]
 
 
-In general if the website has a good security of firewalls then it could be unuseful at all, because it could be blocked.
+<mark style="background: #FF5582A6;">In general if the website has a good security of firewalls then it could be unuseful at all, because it could be blocked.</mark>
 
 
 # Directory busting (find files and dirs)
 This is a very useful activity to do, to understand which files and directories are accessible on the website using a wordlist.
 
 # Dirbuster
-Dirbuster is a tool created by OWASP. It uses a bruteforce approach using a wordlist:
+`Dirbuster` is a tool created by OWASP. ==**It uses a bruteforce approach using a wordlist**==:
 - ![[Pasted image 20250111171014.png]]
 - **important: we have to add the port at the end of the Target URL**
 
 Generally we can use the `/usr/share/wordlists/dirbuster/directory-list2.3-small.txt` wordlist and file extension as `php,txt,html,zip,rar,pdf,docx,csv,xlsx` and so on.
 
-More file extensions means more time to scan.
+<mark style="background: #FF5582A6;">More file extensions means more time to scan.</mark>
 
 It can give us interesting results:
 - ![[Pasted image 20250111171101.png]]

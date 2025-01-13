@@ -1,7 +1,7 @@
 In this case we are searching to get all subdomains of a domain to perform a enumeration.
 
 # Sublist3r
-First of all we can use `sublist3r` that is a useful tool we can install with 
+First of all we can use `sublist3r` that is a useful tool we can install with: 
 ```bash
 sudo apt install sublist3r
 ```
@@ -25,7 +25,7 @@ The website can be accessed through [https://crt.sh/](https://crt.sh/)
 # OWASP Amass
 We can download it on github:
 - [https://github.com/owasp-amass/amass](https://github.com/owasp-amass/amass)
-It is a poweful tool that can do a lot of things but it requires a lot of time.
+<mark style="background: #FF5582A6;">It is a poweful tool that can do a lot of things but it requires a lot of time.</mark>
 
 # Analyzing results
 ## sublist3r
@@ -41,8 +41,3 @@ sublist3r -d DOMAIN -t 100
 ```
 - ![[Pasted image 20250110170206.png]]
 
-
-# OWASP Amass
-We can download it on github:
-- [https://github.com/owasp-amass/amass](https://github.com/owasp-amass/amass)
-It is a poweful tool 

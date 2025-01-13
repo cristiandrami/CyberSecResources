@@ -1,3 +1,5 @@
+<mark style="background: #FF5582A6;">SQL Injection (SQLi) is a type of security vulnerability that occurs when an attacker can manipulate a web application’s SQL queries by injecting malicious input. This can allow the attacker to gain unauthorized access to data, modify it, or even take control of the database.</mark>
+
 First of all we need to setup the db adding some data in it
 ```bash
 sudo systemctl start mysql
@@ -37,21 +39,21 @@ So the app is vulnerable to SQLi.
 
 We can start to retrieve info from other tables.
 
-First we need to understand how many columns the current query chooses:
+**==First we need to understand how many columns the current query chooses:==**
 ```sql
 jeremy' union select null#
 ```
 - we can see that with  `union select null,null,null#` it works, so we have 3 columns
 
 ## Version of the db
-Now we can see the version of the db using:
+**==Now we can see the version of the db using:==**
 ```sql
 jeremy' union select null,null,version()#
 ```
 
 
 ## tables in the db
-Now we need to extract the table names in the db:
+**==Now we need to extract the table names in the db:==**
 ```sql
 jeremy' union select null,null, table_name from informational_schema.tables#
 ```
@@ -79,7 +81,7 @@ jeremy' union select null,null, password from injection0x01 #
 What we have to do here is to login as `jeremy:jeremy` to go far with the challenge.
 
 
-At this point with burp we can see the post request and understand if it is possible to manipulate it to bypass the login with sql injection:
+**==At this point with burp we can see the post request and understand if it is possible to manipulate it to bypass the login with sql injection:==**
 - ![[Pasted image 20250104152146.png]]
 Here we added 
 ``` sql
@@ -99,7 +101,7 @@ But nothing.
 
 ## Automate it with sqlmap
 
-we copy the request in burp and we put it into a `.txt` file:
+==**We copy the request in burp and we put it into a**== We copy the request in burp and we put it into a`.txt` file:
 - ![[Pasted image 20250104152438.png]]
 
 At this point we can run sqlmap:
@@ -113,7 +115,7 @@ Also in this case we don't get results.
 So we move to other injectable items.
 
 ## injecting the session cookie
-With the repeter we resend the `GET` request after the `POST` login request:
+**==With the repeter we resend the==** `GET` request after the `POST` login request:
 -  ![[Pasted image 20250104152731.png]]
 
 We can see that if we modify it we obtain a different page without `Welcome` string.
@@ -124,10 +126,10 @@ COOKIE_VALUE' or 1=1#
 ```
 - ![[Pasted image 20250104153032.png]]
 
-We cansee that we can bypass the login in this way and we have the sql injection.
+We can see that we can bypass the login in this way and we have the sql injection.
 
 
-This is a blind injection because it only changes the behavior of the application but doesn't give us any data from the db.
+**==This is a blind injection because it only changes the behavior of the application but doesn't give us any data from the db.==**
 
 
 So in this case we can extract data from the db with `yes or no` responses.

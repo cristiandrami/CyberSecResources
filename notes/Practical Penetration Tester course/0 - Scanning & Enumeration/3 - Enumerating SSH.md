@@ -9,5 +9,5 @@ In this specific cases we can choose the offered algorithm:
 
 But it asks for a password!
 
-Sometimes a banner is exposed and we get information about ssh, but no banner in this example.
+<mark style="background: #BBFABBA6;">Sometimes a banner is exposed and we get information about ssh, but no banner in this example.</mark>
 

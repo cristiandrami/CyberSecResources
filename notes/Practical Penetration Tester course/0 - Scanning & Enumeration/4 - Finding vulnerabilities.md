@@ -1,6 +1,6 @@
 
 # exploit db
-One of the most used tool to find vulnerabilites for services and so on is `exploit-db` :
+One of the most used tool to **==find vulnerabilites for services and so==** on is `exploit-db` :
 - [https://www.exploit-db.com/](https://www.exploit-db.com/)
 
 The idea is to search for the service and version we have and see if there are exploits:

@@ -6,7 +6,7 @@ It is generally used in work environments.
 # Metasploit
 We will use this tool to enumerate `smb`
 
-To access to metasploit we have to use the console
+**==To access to metasploit we have to use the console:==**
 ```bash
 msfconsole
 ```
@@ -67,7 +67,7 @@ But commands are not allowed for us.
 
 
 
-## solving Protocol negotiation failed: NT_STATUS_IO_TIMEOUT
+## ==solving Protocol negotiation failed: NT_STATUS_IO_TIMEOUT==
 
 When we use `enum4linux` or `smbclient` and we obtain `Protocol negotiation failed: NT_STATUS_IO_TIMEOUT`
 

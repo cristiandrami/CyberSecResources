@@ -1,10 +1,11 @@
-XML contians some pontentially dangerous features that can be used to perform an attack.
+**==XML contians some pontentially dangerous features that can be used to perform an attack.==**
 
-# XXe 0x01
+<mark style="background: #FF5582A6;">XXE (XML External Entity) is a type of security vulnerability that happens when an application processes XML input from an untrusted source and doesn’t properly restrict how external entities are handled. This can allow attackers to access sensitive data, execute code, or perform malicious actions on the server.</mark>
+# XXE 0x01
 In this case we have an application that allows us to upload a XML file:
 - ![[Pasted image 20250107160729.png]]
 
-So we want to create a malicious XML file to execute commands.
+**==So we want to create a malicious XML file to execute commands.==**
 
 Our legitimate file must be on the form:
 ```XML

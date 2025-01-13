@@ -1,6 +1,6 @@
-DeHashed is a website that has a month cost of 15 dollars.
+<mark style="background: #FF5582A6;">DeHashed is a website that has a month cost of 15 dollars.</mark>
 
-In this case we have the ability to search emails, usernames, IP, names, addresses, phones and so on.
+**==In this case we have the ability to search emails, usernames, IP, names, addresses, phones and so on.==**
 - ![[Pasted image 20250110164505.png]]
 - ![[Pasted image 20250110164520.png]]
 

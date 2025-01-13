@@ -1,10 +1,12 @@
-These attacks are used to break the authentication and to be recognized from the server as legitimate and authenticated users.
+**==These attacks are used to break the authentication and to be recognized from the server as legitimate and authenticated users.==**
+
+<mark style="background: #FF5582A6;">Authentication Bypass is a security vulnerability that allows an attacker to gain unauthorized access to an application or system by circumventing the authentication mechanism. This can happen due to weak implementation, design flaws, or improper validation of authentication processes.</mark>
 
 In general we try to steal passwords and to bypass logins.
 # Brute force Auth 0x01
 In this case we try to bruteforce the password of a known user on the sever.
 
-This is possible if the server doen's implement anti-brute force mechanisms, such as disabling the user or stopping the login attempt for a certain period of time.
+<mark style="background: #FF5582A6;">This is possible if the server doesn't implement anti-brute force mechanisms, such as disabling the user or stopping the login attempt for a certain period of time.</mark>
 
 ## Using burp
 First of all we need to send the request in burp to the Intruder and select the password as target:
@@ -32,7 +34,7 @@ First of all we need to copy the `POST`request:
 - ![[Pasted image 20250106163748.png]]
 - we put in password field `FUZZ`
 
-At this point we can use the command:
+**==At this point we can use the command:==**
 ```bash
 ffuf -request request.txt -request-proto http -w /usr/share/seclists/Passwords/xato-net-10-million-passwords-1000.txt  
 ```

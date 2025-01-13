@@ -1,13 +1,13 @@
 
 # Installing go
-In order to install go we can easily use this tool [https://github.com/Dewalt-arch/pimpmykali](https://github.com/Dewalt-arch/pimpmykali)
+**==In order to install go we can easily use this tool==** [https://github.com/Dewalt-arch/pimpmykali](https://github.com/Dewalt-arch/pimpmykali)
 
 We run it and we choose `3 - Fix Golang`
 
 
 ## Finding subdomains with Assetfinder
 
-We can download this tool from [https://github.com/tomnomnom/assetfinder](https://github.com/tomnomnom/assetfinder)
+**==We can download this tool from==** [https://github.com/tomnomnom/assetfinder](https://github.com/tomnomnom/assetfinder)
 
 Or easily running:
 ```bash
@@ -61,7 +61,7 @@ chmod +x script.sh
 
 # Finding subdomains with Amass
 
-We can download it from [https://github.com/owasp-amass/amass](https://github.com/owasp-amass/amass)
+**==We can download it from==** [https://github.com/owasp-amass/amass](https://github.com/owasp-amass/amass)
 Just follow the part `From Source`:
 ``` bash
 go install -v github.com/owasp-amass/amass/v4/...@master
@@ -171,7 +171,7 @@ We can filter on `dev` `test` `admin` to see if we reach something.
 # Screenshots with GoWitness
 We can download it from [https://github.com/sensepost/gowitness](https://github.com/sensepost/gowitness)
 
-Before installing it we need to run first:
+**==Before installing it we need to run first:==**
 ```bash
 go get -u gorm.io/gorm
 ```

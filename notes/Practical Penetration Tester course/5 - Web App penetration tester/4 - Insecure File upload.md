@@ -1,5 +1,7 @@
+<mark style="background: #FF5582A6;">Insecure File Upload is a security vulnerability that occurs when a web application allows users to upload files without properly validating, sanitizing, or restricting those files. Attackers can exploit this to upload malicious files (e.g., scripts, malware) that can compromise the application or server.</mark>
+
 # Basic Bypass
-The vulnerability here arises when we are able to upload files on the server and these files are not verified. So basically we can upload malicious file with malicious content.
+**==The vulnerability here arises when we are able to upload files on the server and these files are not verified. So basically we can upload malicious file with malicious content.==**
 
 In general we are able to gain a web shell, for example uploading a php file.
 
@@ -16,7 +18,7 @@ We perform the `POST` request to upload an image.
 Then we go to burp and we send this request to the repeter:
 - ![[Pasted image 20250106155735.png]]
 
-We delete the png content and we put a random text and we change the extension of the file uploaded, for example in `txt`:
+**==We delete the png content and we put a random text and we change the extension of the file uploaded, for example in==** `txt`:
 - ![[Pasted image 20250106155824.png]]
 
 
@@ -44,14 +46,14 @@ ffuf -u URL/FUZZ -w /usr/share/wordlists/dirb/common.txt
 In this case we find the `labs` folder and the `uploads` folder, so we can try to navigate it.
 - ![[Pasted image 20250106160806.png]]
 
-At this ppoint we insert a command and we are done:
+At this point we insert a command and we are done:
 - ![[Pasted image 20250106160828.png]]
 
 
 
 # Magic bytes FileUpload 0x02
 
-In this case the checks are done on the server so we are not able to upload a php webshell changing the  content and the extensions:
+**==In this case the checks are done on the server so we are not able to upload a php webshell changing the  content and the extensions:==**
 - ![[Pasted image 20250106161027.png]]
 
 So we can try the `null byte` bypass adding
@@ -67,9 +69,9 @@ file.php.png
 - if the it uses a wrong regex we are able to bypass it
 
 
-In this case the filter is done on the magic bytes, so the first bytes of the content of the file.
+<mark style="background: #FF5582A6;">In this case the filter is done on the magic bytes, so the first bytes of the content of the file.</mark>
 
-the idea is to insert our payload in the magic bytes of a valid image:
+<mark style="background: #FF5582A6;">The idea is to insert our payload in the magic bytes of a valid image:</mark>
 - ![[Pasted image 20250106161619.png]]
 - using the `php` extension and removing the useless content
 

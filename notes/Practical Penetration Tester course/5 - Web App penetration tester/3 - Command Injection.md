@@ -1,11 +1,12 @@
-In this case we are able to inject commands that are executed by the server.
+**==In this case we are able to inject commands that are executed by the server.==**
 
+<mark style="background: #FF5582A6;">Command Injection is a type of security vulnerability that occurs when an attacker can execute arbitrary system-level commands on a server or application by manipulating untrusted input. This happens when the application improperly passes user input to system commands without proper validation or sanitization.</mark>
 # Command injection 0x01
 In this case we can see that we can pass an url that is executed in the command:
 - ![[Pasted image 20250104235110.png]]
 
 
-So basically we can try to use 
+**==So basically we can try to use:==** 
 ```bash
 ; whoami; hello
 ```

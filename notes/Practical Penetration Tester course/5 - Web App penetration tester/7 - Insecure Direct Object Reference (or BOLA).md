@@ -1,6 +1,8 @@
-Basically it is arises when we are able to access an object, on which we have no authorization, using his id.
+**==Basically it is arises when we are able to access an object, on which we have no authorization, using his id.==**
 
 It is very common in API driven applications.
+
+<mark style="background: #FF5582A6;">**Insecure Direct Object Reference (IDOR)** is a security vulnerability that occurs when an application directly exposes a reference to an internal object (like a file, database record, or URL) without properly checking whether the user is authorized to access it. This allows attackers to manipulate the reference to access data or actions they shouldn’t be allowed to.</mark>
 
 # IDOR 0x01
 Here we can see thta using the account ID we can access to user information:

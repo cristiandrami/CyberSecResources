@@ -1,6 +1,6 @@
 Burp suite is used to intercept traffic.
 
-# Firefox as browser
+# Firefox as browser on Burp
 To add firefox as browser of burp suite we can go to `Preferences` -> `Network Proxy` -> `Settings` and set a manual proxy:
 - ![[Pasted image 20250110171053.png]]
 

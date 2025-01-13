@@ -5,16 +5,17 @@ BugCrowd is a platform where we can do bug bounty.
 ## Hunter.io
 One of the most used tools is `hunter.io`
 
-Here we just need to put the website of the company we need to attack and it shows us the emails:
+**==Here we just need to put the website of the company we need to attack and it shows us the emails:==**
 - ![[Pasted image 20250110162251.png]]
-- It gives us some information also about the patterns used to create the emails
+- It gives us some <mark style="background: #BBFABBA6;">information also about the patterns used to create the emails</mark>
 - we need to login to see the complete results
 
 We can access to it through [https://hunter.io/domain-search](https://hunter.io/domain-search)
+
 # Phonebook.cz
 Another tool is `phonebook.cz`
 
-We just need to put also here the domain and it willl show us the emails:
+**==We just need to put also here the domain and it willl show us the emails:==**
 - ![[Pasted image 20250110162607.png]]
 
 
@@ -29,17 +30,19 @@ It is equal to hunter.io
 
 
 ## Clearbit extension (Chrome)
-It is a chrome extension and we can use it in gmail:
+It is a **==chrome extension and we can use it in gmail==**:
 - ![[Pasted image 20250110162920.png]]
 
 
 It is very useful because it gives us also the roles of the people and so on.
 
+
+
 # Validation
 
-We need a way to validate the emails because it can be there are false positives...
+**==We need a way to validate the emails because it can be there are false positives...==**
 ## Validation with tools.emailhippo.com
-We can use email hippo to validate an email existence:
+We can use email `hippo` to validate an email existence:
 - ![[Pasted image 20250110163333.png]]
 
 We can access to it through [https://tools.emailhippo.com/](https://tools.emailhippo.com/)

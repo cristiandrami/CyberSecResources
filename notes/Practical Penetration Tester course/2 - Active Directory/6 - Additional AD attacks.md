@@ -1,7 +1,7 @@
 There are new and recent vulnerabilities in Active Directory such as:
-- ZeroLogon (if not executed in the right way can destroy the domain)
-- PrintNightmare
-- Sam the Admin
+- `ZeroLogon` (if not executed in the right way can destroy the domain)
+- `PrintNightmare`
+- `Sam the Admin`
 
 It has sense to check for them in the environment.
 
@@ -52,6 +52,9 @@ So we have all the infomration now and we are in.
 
 
 ## Step 3 : restore the machine
+
+**==It is very important, otherwise we corrupt the system.==**
+
 At this point we get the administrator hash (the last part) from the results of the command `secretsdump` and we run:
 ```bash
 secretsdump.py administrator@DOMAIN_C_IP -hashes ADMIN_HASH
@@ -72,7 +75,7 @@ python3 restorepassword.py DOMAIN/DC_NAME@DC_NAME -target-ip DC_IP -hexpass HEX_
 
 
 # PrintNightmare attack
-This attack takes advatage of the printer spooler (used to add printers and so on).
+**==This attack takes advantages of the printer spooler (used to add printers and so on).==**
 The problem is that it is run with privilege on the system.
 
 So this attacks allows to execute code in a privilege mode.

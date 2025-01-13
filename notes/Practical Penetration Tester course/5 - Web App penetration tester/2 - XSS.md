@@ -1,15 +1,17 @@
-It allows use to execute javascript code in the browser of the victim.
+**==It allows use to execute javascript code in the browser of the victim.==**
+
+<mark style="background: #FF5582A6;">Cross-Site Scripting (XSS) is a security vulnerability that allows attackers to inject malicious scripts into web pages viewed by other users. These scripts can steal sensitive information, manipulate the web page’s behavior, or perform actions on behalf of the user without their knowledge.</mark>
 
 It is split in:
-1. reflected, when we send data to a request (javascript code) to the server and it replies with this data we sent
+1. `reflected`, when we send data to a request (javascript code) to the server and it replies with this data we sent
 	1. ![[Pasted image 20250104155943.png]]
-2. Stored, when the data is stored in the server and then served to other victims
+2. `Stored`, when the data is stored in the server and then served to other victims
 	1. ![[Pasted image 20250104160016.png]]
-3. DOM-Based, when it happens locally in the browser without any interaction with the server (we change the html document without intercting with the server). It this case the page uses vulnerable javascript that gets untrusted input.
+3. `DOM-Based`, when it happens locally in the browser without any interaction with the server (we change the html document without intercting with the server). It this case the page uses vulnerable javascript that gets untrusted input.
 	1. ![[Pasted image 20250104160114.png]]
 
 
-**In general `alert()` is used but now chrome blocks it so we prefer to use `print()` or `prompt("hello")`**
+**==In general== `alert()` ==is used but now chrome blocks it so we prefer to use== `print()` or `prompt("hello")`**
 - ![[Pasted image 20250104160443.png]]
 
 
