@@ -25,14 +25,12 @@
             "id": "39aca6e6dd2221dc",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "image",
               "state": {
-                "file": "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/Challenge/1 - Challenge Walktrough.md",
-                "mode": "source",
-                "source": false
+                "file": "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117153831.png"
               },
-              "icon": "lucide-file",
-              "title": "1 - Challenge Walktrough"
+              "icon": "lucide-image",
+              "title": "Pasted image 20250117153831"
             }
           }
         ],
@@ -177,22 +175,21 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "39aca6e6dd2221dc",
+  "active": "6561b5b41094bcaf",
   "lastOpenFiles": [
-    "Pasted image 20250117170202.png",
-    "Pasted image 20250117170134.png",
+    "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/Challenge/1 - Challenge Walktrough.md",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117170202.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117170134.png",
     "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/3 - Escalation via Cron File Overwrites.md",
     "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/2 - Escalation via Cron Wildcards.md",
-    "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/Challenge/1 - Challenge Walktrough.md",
-    "Pasted image 20250117165829.png",
-    "Pasted image 20250117165737.png",
-    "Pasted image 20250117165634.png",
-    "Pasted image 20250117165542.png",
-    "Pasted image 20250117165457.png",
-    "Pasted image 20250117165452.png",
-    "Pasted image 20250117165219.png",
-    "Pasted image 20250117165040.png",
-    "Pasted image 20250117165030.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165829.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165737.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165634.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165542.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165457.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165452.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165219.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165040.png",
     "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/Challenge/0 - Challenge overview.md",
     "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/Challenge",
     "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/1 - Escalation via Cron paths.md",
