@@ -8,45 +8,35 @@
         "type": "tabs",
         "children": [
           {
-            "id": "0dc80c15407f02ed",
+            "id": "afab37b975a4bf74",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Practical Penetration Tester course/Active Directory/0 - Active Directory.md",
+                "file": "Linux Privilege Escalation for Beginners/7 - Escalation - SUID/3 - Escalation via Shared Object Injection.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "0 - Active Directory"
+              "title": "3 - Escalation via Shared Object Injection"
             }
           },
           {
-            "id": "89a690896d80e32f",
+            "id": "39aca6e6dd2221dc",
             "type": "leaf",
             "state": {
-              "type": "image",
+              "type": "markdown",
               "state": {
-                "file": "Practical Penetration Tester course/Images/Pasted image 20241217154012.png"
+                "file": "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/Challenge/1 - Challenge Walktrough.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-image",
-              "title": "Pasted image 20241217154012"
-            }
-          },
-          {
-            "id": "afab37b975a4bf74",
-            "type": "leaf",
-            "state": {
-              "type": "image",
-              "state": {
-                "file": "Linux Privilege Escalation for Beginners/Images/Pasted image 20250113163356.png"
-              },
-              "icon": "lucide-image",
-              "title": "Pasted image 20250113163356"
+              "icon": "lucide-file",
+              "title": "1 - Challenge Walktrough"
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -187,20 +177,39 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "6561b5b41094bcaf",
+  "active": "39aca6e6dd2221dc",
   "lastOpenFiles": [
+    "Pasted image 20250117170202.png",
+    "Pasted image 20250117170134.png",
+    "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/3 - Escalation via Cron File Overwrites.md",
+    "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/2 - Escalation via Cron Wildcards.md",
+    "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/Challenge/1 - Challenge Walktrough.md",
+    "Pasted image 20250117165829.png",
+    "Pasted image 20250117165737.png",
+    "Pasted image 20250117165634.png",
+    "Pasted image 20250117165542.png",
+    "Pasted image 20250117165457.png",
+    "Pasted image 20250117165452.png",
+    "Pasted image 20250117165219.png",
+    "Pasted image 20250117165040.png",
+    "Pasted image 20250117165030.png",
+    "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/Challenge/0 - Challenge overview.md",
+    "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/Challenge",
+    "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/1 - Escalation via Cron paths.md",
+    "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/0 - Cron & timers overview.md",
+    "Linux Privilege Escalation for Beginners/8 - Escalation - Capabilities/1 - Escalation with capabilities.md",
+    "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)",
+    "Linux Privilege Escalation for Beginners/8 - Escalation - Capabilities/0 - Capabilities overview.md",
+    "Linux Privilege Escalation for Beginners/8 - Escalation - Capabilities",
+    "Linux Privilege Escalation for Beginners/7 - Escalation - SUID/5 - Escalation with environmental variables.md",
+    "Linux Privilege Escalation for Beginners/7 - Escalation - SUID/4 - Escalation via Binary Symlinks.md",
+    "Linux Privilege Escalation for Beginners/7 - Escalation - SUID/3 - Escalation via Shared Object Injection.md",
+    "Linux Privilege Escalation for Beginners/7 - Escalation - SUID/2 - Escalation via SUID.md",
+    "Linux Privilege Escalation for Beginners/7 - Escalation - SUID/1 - Gaining a Foothold (challenge walktrough).md",
+    "Linux Privilege Escalation for Beginners/7 - Escalation - SUID/0 - SUID overview.md",
+    "Linux Privilege Escalation for Beginners/7 - Escalation - SUID",
     "Linux Privilege Escalation for Beginners/6 - Escalation - SUDO/CVE Escalation/1 - CVE-2019-18634.md",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250116171049.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250116170726.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250116170651.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250116170611.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250116170527.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250116170510.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250116170316.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250116170237.png",
     "Linux Privilege Escalation for Beginners/6 - Escalation - SUDO/CVE Escalation/0 - CVE-2019-14287 ( (ALL, !root)  bin bash ).md",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250116163924.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250116163904.png",
     "Linux Privilege Escalation for Beginners/6 - Escalation - SUDO/Challenge/1 -  Challenge Walktrough.md",
     "Linux Privilege Escalation for Beginners/6 - Escalation - SUDO/CVE Escalation",
     "Linux Privilege Escalation for Beginners/6 - Escalation - SUDO/Challenge/0 - Challenge overview.md",
@@ -213,27 +222,9 @@
     "Linux Privilege Escalation for Beginners/6 - Escalation - SUDO",
     "Linux Privilege Escalation for Beginners/5 - Escalation - Passwords & File Permissions/2 - Escalation via Filel Permissions.md",
     "Linux Privilege Escalation for Beginners/5 - Escalation - Passwords & File Permissions/1 - Escalation via Stored Password.md",
-    "Linux Privilege Escalation for Beginners/5 - Escalation - Passwords & File Permissions/0 - Overview.md",
-    "Linux Privilege Escalation for Beginners/4 - Escalation - KERNEL/1 - Escalation via kernel exploit.md",
     "Linux Privilege Escalation for Beginners/5 - Escalation - Passwords & File Permissions",
-    "Linux Privilege Escalation for Beginners/4 - Escalation - KERNEL/0 - Kernel Exploits Overview.md",
-    "Linux Privilege Escalation for Beginners/3 - Automated tools/1 - Exploring Automated tools.md",
     "Linux Privilege Escalation for Beginners/4 - Escalation - KERNEL",
-    "Linux Privilege Escalation for Beginners/3 - Automated tools/0 - Intro.md",
-    "Linux Privilege Escalation for Beginners/2 - Initial Enumeration/2 - Network enumeration.md",
     "Linux Privilege Escalation for Beginners/3 - Automated tools",
-    "Linux Privilege Escalation for Beginners/2 - Initial Enumeration/3 - Password Hunting.md",
-    "Linux Privilege Escalation for Beginners/2 - Initial Enumeration/Untitled",
-    "Linux Privilege Escalation for Beginners/2 - Initial Enumeration/1 - User enumeration.md",
-    "Linux Privilege Escalation for Beginners/2 - Initial Enumeration/0 - System Enumeration.md",
-    "Linux Privilege Escalation for Beginners/0.1 - Lab overvieew & inital access/0 - Lab overvieew & inital access.md",
-    "Linux Privilege Escalation for Beginners/0 - Introduction/0 - Introduction.md",
-    "Linux Privilege Escalation for Beginners/2 - Initial Enumeration",
-    "Linux Privilege Escalation for Beginners/0.1 - Lab overvieew & inital access",
-    "Linux Privilege Escalation for Beginners/0 - Introduction/2 - Course Tip & Resources.md",
-    "Linux Privilege Escalation for Beginners/0 - Introduction/1 - Course Discord team.md",
-    "Linux Privilege Escalation for Beginners/0 - Introduction",
-    "Untitled.md",
     "Images/Untitled 1.canvas",
     "Images/Untitled.canvas"
   ]
