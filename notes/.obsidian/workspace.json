@@ -27,10 +27,10 @@
             "state": {
               "type": "image",
               "state": {
-                "file": "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117153831.png"
+                "file": "Linux Privilege Escalation for Beginners/Images/Pasted image 20250118162543.png"
               },
               "icon": "lucide-image",
-              "title": "Pasted image 20250117153831"
+              "title": "Pasted image 20250118162543"
             }
           }
         ],
@@ -177,19 +177,27 @@
   },
   "active": "6561b5b41094bcaf",
   "lastOpenFiles": [
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250118162401.png",
+    "Linux Privilege Escalation for Beginners/11 - Escalation - Docker/2 - Escalation with docker.md",
+    "Linux Privilege Escalation for Beginners/12 - Capstone (5 machines)",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250118171114.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250118170936.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250118170855.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250118170721.png",
+    "Linux Privilege Escalation for Beginners/11 - Escalation - Docker/1 - Access to the machine (no escalation).md",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250118170227.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250118170020.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250118165932.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250118165822.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250118165305.png",
+    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250118165107.png",
+    "Linux Privilege Escalation for Beginners/11 - Escalation - Docker/0 - Overview.md",
+    "Linux Privilege Escalation for Beginners/10 - Escalation - NFS Root Squashing/0 - Escalation via NFS Root Squashing.md",
+    "Linux Privilege Escalation for Beginners/11 - Escalation - Docker",
+    "Linux Privilege Escalation for Beginners/10 - Escalation - NFS Root Squashing",
     "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/Challenge/1 - Challenge Walktrough.md",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117170202.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117170134.png",
     "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/3 - Escalation via Cron File Overwrites.md",
     "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/2 - Escalation via Cron Wildcards.md",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165829.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165737.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165634.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165542.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165457.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165452.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165219.png",
-    "Linux Privilege Escalation for Beginners/Images/Pasted image 20250117165040.png",
     "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/Challenge/0 - Challenge overview.md",
     "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/Challenge",
     "Linux Privilege Escalation for Beginners/9 - Escalation - Scheduled tasks (cron and timers)/1 - Escalation via Cron paths.md",
@@ -214,14 +222,7 @@
     "Linux Privilege Escalation for Beginners/6 - Escalation - SUDO/Challenge",
     "Linux Privilege Escalation for Beginners/6 - Escalation - SUDO/2 - Escalation via Intended Functionality.md",
     "Linux Privilege Escalation for Beginners/6 - Escalation - SUDO/1 - Escalation via Sudo Shell Escaping.md",
-    "Linux Privilege Escalation for Beginners/6 - Escalation - SUDO/0 - Overview.md",
-    "Linux Privilege Escalation for Beginners/5 - Escalation - Passwords & File Permissions/3 - Escalation with SSH key.md",
     "Linux Privilege Escalation for Beginners/6 - Escalation - SUDO",
-    "Linux Privilege Escalation for Beginners/5 - Escalation - Passwords & File Permissions/2 - Escalation via Filel Permissions.md",
-    "Linux Privilege Escalation for Beginners/5 - Escalation - Passwords & File Permissions/1 - Escalation via Stored Password.md",
-    "Linux Privilege Escalation for Beginners/5 - Escalation - Passwords & File Permissions",
-    "Linux Privilege Escalation for Beginners/4 - Escalation - KERNEL",
-    "Linux Privilege Escalation for Beginners/3 - Automated tools",
     "Images/Untitled 1.canvas",
     "Images/Untitled.canvas"
   ]
