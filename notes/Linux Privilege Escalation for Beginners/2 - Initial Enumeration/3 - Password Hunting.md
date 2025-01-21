@@ -1,7 +1,8 @@
 This process is used to see if we have access to passwords and sensitive files.
 
 # Searching the word password in all files
-A simple command we can use to search in all files the string `Password` is:
+
+**==A simple command we can use to search in all files the string ==`Password` ==is:==**
 ```bash
 grep --color=auto -rnw '/' -ie "PASSWORD" --color=always 2> /dev/null
 ```
@@ -15,7 +16,7 @@ Useful is also `pass=`
 
 # Searching for password in file names
 
-In this case we want to search:
+**==In this case we want to search:==**
 ```bash
 locate password | more
 ```

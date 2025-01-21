@@ -1,7 +1,7 @@
 Here we will see how to modify the path on which the cron executes the scripts in order to force the execution of a malicious one.
 
 
-As we can see using:
+<mark style="background: #BBFABBA6;">As we can see using:</mark>
 ```bash
 cat /etc/crontab
 ```

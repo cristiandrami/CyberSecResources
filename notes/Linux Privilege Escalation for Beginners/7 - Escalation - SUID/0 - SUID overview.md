@@ -34,7 +34,7 @@ When we have the `SUID` mechanism of a file we will see in the `x` part a `s` (f
 
 # Find files with SUID set on them
 
-To find all file with the permission `s` we can use:
+**==To find all file with the permission== `s` ==we can use:==**
 ```bash
 find / -perm -u=s -type f 2>/dev/null
 ```
@@ -44,7 +44,7 @@ find / -perm -u=s -type f 2>/dev/null
 
 
 
-So basically we are searching all files that our user can run as root.
+<mark style="background: #BBFABBA6;">So basically we are searching all files that our user can run as root.</mark>
 
 
 *For example we can see:*

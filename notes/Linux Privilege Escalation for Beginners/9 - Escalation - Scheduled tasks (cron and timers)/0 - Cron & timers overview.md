@@ -2,7 +2,7 @@ A cron job is a scheduled task that is executed using a timer.
 
 They are used to execute task repeteadly or in general with a specific schedule.
 
-We can see which scheduled jobs and cron there are in the system with:
+<mark style="background: #BBFABBA6;">We can see which scheduled jobs and cron there are in the system with:</mark>
 ```bash
 cat /etc/crontab
 ```

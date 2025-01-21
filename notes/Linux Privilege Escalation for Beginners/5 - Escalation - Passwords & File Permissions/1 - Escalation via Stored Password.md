@@ -1,4 +1,4 @@
-The first thing we need to do, to see if there are passwords on the terminal is:
+<mark style="background: #BBFABBA6;">The first thing we need to do, to see if there are passwords on the terminal is:</mark>
 ```bash
 history
 ```

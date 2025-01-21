@@ -1,6 +1,6 @@
 # Find file with `SUID` mechanism
 
-First of all we need to run:
+<mark style="background: #BBFABBA6;">First of all we need to run:</mark>
 ```bash
 find / -perm -u=s -type f 2 > /dev/null
 ```

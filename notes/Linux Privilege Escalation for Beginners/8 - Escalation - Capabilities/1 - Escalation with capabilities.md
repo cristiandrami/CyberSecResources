@@ -38,3 +38,9 @@ getcap -r / 2>/dev/null
 
 And then search on google.
 
+# STEP TO PERFORM
+
+- [ ] **Search for capabilities**
+- `getcap -r / 2>/dev/null`
+
+- [ ] **Run commands we find with high capabilities in order to gain root shell**

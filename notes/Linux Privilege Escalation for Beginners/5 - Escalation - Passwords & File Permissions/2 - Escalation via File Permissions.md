@@ -1,6 +1,6 @@
 In this case what we want to do is to access to files that are run or accessed as root and try to modify them to gain the privilege.
 
-For example to see our permissions on files we can do:
+<mark style="background: #BBFABBA6;">For example to see our permissions on files we can do:</mark>
 ```bash
 ls -la file
 ```
@@ -20,7 +20,7 @@ One thing we can do is to copy and paste the `/etc/passwd` and the `/etc/shadow`
 - ![[Pasted image 20250116135510.png]]
 
 ## Unshadow tool
-At this point with a tool called `unshadow` we can retrieve the hash of the password we want to crack:
+<mark style="background: #BBFABBA6;">At this point with a tool called `unshadow` we can retrieve the hash of the password we want to crack:</mark>
 ```bash
 unshadow passwd_created shadow_created
 ```
@@ -28,7 +28,6 @@ unshadow passwd_created shadow_created
 - ![[Pasted image 20250116135655.png]]
 
 We can see that it changed the `x` in the `passwd` with the hash contained in `shadow`.
-
 
 
 At this point we copy the unshadowed file (removing the users we don't want):

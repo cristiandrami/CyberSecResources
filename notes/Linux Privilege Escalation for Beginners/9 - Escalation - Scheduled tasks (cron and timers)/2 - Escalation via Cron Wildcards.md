@@ -2,7 +2,7 @@ This type of escalation leverages on the wildcards of cron ( `*` ) are used in t
 
 
 
-In this case we can see that there is a cron with a specific path:
+<mark style="background: #BBFABBA6;">In this case we can see that there is a cron with a specific path:</mark>
 ```bash
 cat /etc/crontab
 ```
@@ -20,7 +20,7 @@ So it creates a `backup` compressed file with the content of `/home/user`.
 We can see in it that it uses a wildcard `*`:
 - ![[Pasted image 20250117161206.png]]
 
-So we can inject this `*` wildcard.
+==**So we can inject this**== `*` **==wildcard.==**
 
 
 Using:

@@ -30,7 +30,7 @@ cat /etc/issue
 - ![[Pasted image 20250115163900.png]]
 
 # CPU info
-To get info about the CPU we will use:
+**==To get info about the CPU we will use:==**
 ```bahs
 lscpu
 ```
@@ -40,7 +40,7 @@ It is useful because some exploit can be done only on certain cpus.
 
 
 # Listing processes
-Another important information is the processes that runs on the system:
+**==Another important information is the processes that runs on the system:==**
 ```bash
 ps aux
 ```

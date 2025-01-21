@@ -6,7 +6,7 @@ When the `root squashing` is not well configured or disabled then a user with `r
 
 # Root squashing identification
 
-To understand if our host has the root squashing configured we can use:
+<mark style="background: #BBFABBA6;">To understand if our host has the root squashing configured we can use:</mark>
 ```bash
 cat /etc/exports
 ```

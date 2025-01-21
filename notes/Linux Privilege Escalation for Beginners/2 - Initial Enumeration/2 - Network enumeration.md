@@ -1,6 +1,6 @@
 This is very important to understand the structure of the network and to see which ports are exposed to the extern and open.
 
-To understand our network adapter IP and othe info we can run:
+**==To understand our network adapter IP and othe info we can run:==**
 ```bash
 ifconfig
 ```
@@ -22,7 +22,7 @@ ip neigh
 
 # Open ports on our host
 
-To see all the open ports on our host we can do:
+**==To see all the open ports on our host we can do:==**
 ```bash
 netstat -ano
 ```
