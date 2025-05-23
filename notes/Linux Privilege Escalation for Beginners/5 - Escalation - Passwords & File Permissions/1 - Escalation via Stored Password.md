@@ -67,3 +67,7 @@ So what we can access to that file `/etc/openvpn/auth.txt`
 
 But this user doesn't exists anymore
 
+
+# STEP
+- [ ] In command prompt type: **cat ~/.bash_history | grep -i passw**
+

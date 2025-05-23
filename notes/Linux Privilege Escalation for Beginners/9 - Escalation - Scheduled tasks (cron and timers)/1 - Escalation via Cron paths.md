@@ -48,5 +48,7 @@ So we just need to run it:
 - and the game is done
 - ![[Pasted image 20250117160242.png]]
 
-<mark style="background: #BBFABBA6;">We gain the root shell!</mark>
 
+>NOTE: we need `-p` <mark style="background: #FF5582A6;">when we execute the bash file. It means privileged otherwise the shell is a user shell</mark>
+
+<mark style="background: #BBFABBA6;">We gain the root shell!</mark>

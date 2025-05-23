@@ -41,3 +41,14 @@ ssh -i id_rsa root@OUR_HOST_IP
 Now as root if we access to the `.ssh` folder we can see the authorized keys (we can see that there is our public key not the `id_rsa`):
 - ![[Pasted image 20250116151916.png]]
 
+
+# STEP
+- [ ] In command prompt type:
+- `find / -name authorized_keys 2> /dev/null`
+
+- [ ] In a command prompt type:
+- `find / -name id_rsa 2> /dev/null ` 
+
+- [ ] use the results to try to connect in ssh as root
+
+
