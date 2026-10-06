@@ -19,6 +19,7 @@ The key principles which define the cloud security are:
 3. zero trust architecture
 4. security as code
 5. automation in incident response
+6. 
 
 ## Shared Responsibility
 The shared responsibility model is a principle that is shared between all cloud providers and states that security is an obligation that is shared between the cloud provider and the customer.
