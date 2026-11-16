@@ -1,0 +1,210 @@
+{
+  "main": {
+    "id": "b6acae6f0bc39064",
+    "type": "split",
+    "children": [
+      {
+        "id": "ec3e1f1269153b28",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "47eac43a21560be2",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "notes/CRTP - Certification/03 - Domain Enumeration.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "03 - Domain Enumeration"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5491b8787c40d321",
+    "type": "split",
+    "children": [
+      {
+        "id": "52b819e713e5edec",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9af61b225dcfa5ed",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Esplora file"
+            }
+          },
+          {
+            "id": "55a65ee69e737f6b",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Ricerca"
+            }
+          },
+          {
+            "id": "9638ee52a13ea8f4",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Segnalibri"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "88d5759f3e2b8c48",
+    "type": "split",
+    "children": [
+      {
+        "id": "3bfd66cecc5fcf16",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "de64ec2bb14f8c3b",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "notes/CRTP - Certification/02 - Offensive Powershell and .NET tradecraft.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Riferimenti"
+            }
+          },
+          {
+            "id": "a86735e2f0fb4e73",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "notes/CRTP - Certification/02 - Offensive Powershell and .NET tradecraft.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Collegamenti in uscita"
+            }
+          },
+          {
+            "id": "ac3c83e1bae85481",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etichette"
+            }
+          },
+          {
+            "id": "4176459e60f67704",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Tutte le proprietà"
+            }
+          },
+          {
+            "id": "d9b65a523b9fd018",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "notes/CRTP - Certification/02 - Offensive Powershell and .NET tradecraft.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Struttura"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Apri selettore rapido": false,
+      "graph:Apri vista grafo": false,
+      "canvas:Crea nuova lavagna": false,
+      "daily-notes:Apri nota giornaliera": false,
+      "templates:Inserisci modello": false,
+      "command-palette:Apri riquadro comandi": false,
+      "bases:Crea nuova Base": false
+    }
+  },
+  "active": "9af61b225dcfa5ed",
+  "lastOpenFiles": [
+    "notes/CRTP - Certification/Images/Pasted image 20261116160356.png",
+    "notes/CRTP - Certification/Images/Pasted image 20261116112503.png",
+    "notes/CRTP - Certification/Images/Pasted image 20261116112412.png",
+    "notes/CRTP - Certification/Images/Pasted image 20261116112607.png",
+    "notes/CRTP - Certification/Images/Pasted image 20261116102547.png",
+    "notes/CRTP - Certification/Images/Pasted image 20261116105410.png",
+    "notes/CRTP - Certification/03 - Domain Enumeration.md",
+    "notes/CRTP - Certification/Images/Pasted image 20261116180951.png",
+    "notes/CRTP - Certification/Images/Pasted image 20261116180934.png",
+    "notes/CRTP - Certification/Images/Pasted image 20261116161048.png",
+    "notes/CRTP - Certification/Images/Pasted image 20261116160615.png",
+    "notes/CRTP - Certification/Images/Pasted image 20261116155839.png",
+    "notes/CRTP - Certification/02 - Offensive Powershell and .NET tradecraft.md",
+    "notes/CRTP - Certification/01 - Introduction to Active Directory and Attack Methodology.md",
+    "notes/CRTP - Certification/Images",
+    "notes/CRTP - Certification"
+  ]
+}
