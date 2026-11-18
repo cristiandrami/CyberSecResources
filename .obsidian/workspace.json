@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "notes/CRTP - Certification/03 - Domain Enumeration.md",
+                "file": "notes/CRTP - Certification/Lab/Privilege Escalation/4 - Learning Objectvie 5.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "03 - Domain Enumeration"
+              "title": "4 - Learning Objectvie 5"
             }
           }
         ]
@@ -83,7 +83,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 318.5
   },
   "right": {
     "id": "88d5759f3e2b8c48",
@@ -188,22 +188,41 @@
       "bases:Crea nuova Base": false
     }
   },
-  "active": "9af61b225dcfa5ed",
+  "active": "47eac43a21560be2",
   "lastOpenFiles": [
-    "notes/CRTP - Certification/Images/Pasted image 20261116160356.png",
-    "notes/CRTP - Certification/Images/Pasted image 20261116112503.png",
-    "notes/CRTP - Certification/Images/Pasted image 20261116112412.png",
-    "notes/CRTP - Certification/Images/Pasted image 20261116112607.png",
-    "notes/CRTP - Certification/Images/Pasted image 20261116102547.png",
-    "notes/CRTP - Certification/Images/Pasted image 20261116105410.png",
-    "notes/CRTP - Certification/03 - Domain Enumeration.md",
-    "notes/CRTP - Certification/Images/Pasted image 20261116180951.png",
-    "notes/CRTP - Certification/Images/Pasted image 20261116180934.png",
-    "notes/CRTP - Certification/Images/Pasted image 20261116161048.png",
-    "notes/CRTP - Certification/Images/Pasted image 20261116160615.png",
-    "notes/CRTP - Certification/Images/Pasted image 20261116155839.png",
-    "notes/CRTP - Certification/02 - Offensive Powershell and .NET tradecraft.md",
-    "notes/CRTP - Certification/01 - Introduction to Active Directory and Attack Methodology.md",
+    "Pasted image 20261118125321.png",
+    "Pasted image 20261118125251.png",
+    "Pasted image 20261118125237.png",
+    "Pasted image 20261118113606.png",
+    "Pasted image 20261118113528.png",
+    "Pasted image 20261118113222.png",
+    "Pasted image 20261118112924.png",
+    "Pasted image 20261118112849.png",
+    "Pasted image 20261118112825.png",
+    "Pasted image 20261118112709.png",
+    "Pasted image 20261118112445.png",
+    "notes/CRTP - Certification/03 - Domain Enumeration/6 - User Hunting.md",
+    "notes/CRTP - Certification/04 - Privilege Escalation/1 - Privilege Escaation.md",
+    "notes/CRTP - Certification/Lab/Privilege Escalation/4 - Learning Objectvie 5.md",
+    "notes/CRTP - Certification/04 - Privilege Escalation/2 - Feature Abuse.md",
+    "notes/CRTP - Certification/Lab/Domain Enum/3 - Learning Objective 4.md",
+    "notes/CRTP - Certification/Lab/Privilege Escalation",
+    "notes/CRTP - Certification/03 - Domain Enumeration/5 - Domain Trusts.md",
+    "notes/CRTP - Certification/03 - Domain Enumeration/4 - Group Policy.md",
+    "notes/CRTP - Certification/Lab/Domain Enum/2 - Learning Objective 3.md",
+    "notes/CRTP - Certification/Lab/Domain Enum/1 - Learning Objective 2.md",
+    "notes/CRTP - Certification/03 - Domain Enumeration/3 - Enumeration ACLs.md",
+    "notes/CRTP - Certification/Lab/Domain Enum/0 - Learning objective 1.md",
+    "notes/CRTP - Certification/Lab/Domain Enum",
+    "notes/CRTP - Certification/03 - Domain Enumeration/1 - Domain Enumeration.md",
+    "notes/CRTP - Certification/03 - Domain Enumeration/2 - BloodHound.md",
+    "notes/CRTP - Certification/02 - offensive powershell and .net/02 - Offensive Powershell and .NET tradecraft.md",
+    "notes/CRTP - Certification/01 - Intro/01 - Introduction to Active Directory and Attack Methodology.md",
+    "notes/CRTP - Certification/Lab",
+    "notes/CRTP - Certification/04 - Privilege Escalation",
+    "notes/CRTP - Certification/02 - offensive powershell and .net",
+    "notes/CRTP - Certification/01 - Intro",
+    "notes/CRTP - Certification/03 - Domain Enumeration",
     "notes/CRTP - Certification/Images",
     "notes/CRTP - Certification"
   ]
