@@ -78,6 +78,13 @@ C:\AD\Tools\InviShell\RunWithPathAsAdmin.bat
 
 ## 2. Modify the WMI security descriptors on `dcorp-dc`
 
+> [!warning] HINTS
+> We should distinguish rights to a WMI namespace from membership in the local Administrators group. 
+> 
+> A successful `Win32_OperatingSystem` query demonstrates read access, not arbitrary command execution.
+
+
+
 Now we want to allow `student555` to access WMI remotely on the Domain Controller, even though this account is not a local administrator there.
 
 From the **privileged `svcadmin` shell**, we use the RACE function:
@@ -136,6 +143,12 @@ SystemDirectory : C:\Windows\system32
 
 ## 3. Modify the PowerShell Remoting endpoint permission
 
+> [!warning] HINTS
+> PowerShell Remoting endpoints have authorization settings separate from WMI/DCOM. 
+> 
+> We should record which endpoint accepted the operation and avoid treating an I/O error as harmless without checking the actual result.
+
+
 > [!WARNING] 
 > This attack using `Set-RemotePSRemoting` is unstable since August 2020
 We also want to investigate another remote-access mechanism: PowerShell Remoting over WinRM.
@@ -183,6 +196,14 @@ Invoke-Command -ScriptBlock{$env:username} -ComputerName dcorp-dc.dollarcorp.mon
 
 ## 4. Understand the Remote Registry permission change and the machine-account secret
 
+
+> [!warning] HINTS
+> The machine account `DCORP-DC$` is separate from `krbtgt` and from the DSRM Administrator. 
+> 
+> When we analyze credential exposure, we should identify the source store and account before drawing conclusions about the scope of access.
+
+
+
 Next, we investigate a different type of security descriptor: **permissions associated with the remote registry and its sensitive data**.
 
 From the **privileged `svcadmin` shell**, we can run:
@@ -221,6 +242,12 @@ We retrieved thefollowing NTLM hash for the machine account `DCORP-DC$`:
 ---
 ## 5. Understand the Silver Ticket stage
 
+> [!warning] HINTS
+> A Silver Ticket targets a particular service principal. 
+> 
+> The exact services involved depend on the remote protocol and configuration; the two-ticket pattern shown here is not a universal rule for WMI.
+
+
 At this point, the lab examines the impact of a compromised **service-account key** through the concept of a **Silver Ticket**.
 
 A Silver Ticket is a forged Kerberos **service ticket (TGS)** for a particular service. It differs from a Golden Ticket, which concerns a forged **Ticket Granting Ticket (TGT)** using `krbtgt` key material.
@@ -244,6 +271,13 @@ C:\AD\Tools\Loader.exe -path C:\AD\Tools\Rubeus.exe -args evasive-silver /servic
 
 
 ### 5.1 Verify the WMI result 
+
+
+> [!warning] HINTS
+> The observed output proves the remote WMI query worked in the tested context. 
+> 
+> We should not report that arbitrary code execution succeeded when the only evidence is read-only system information.
+
 
 Finally, we can check remote WMI access from the same shell where we generated the silver tickets:
   

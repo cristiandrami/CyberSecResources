@@ -64,11 +64,21 @@ flowchart TD
 ---
 
 ## 2. Objective 1 — Local privilege escalation on `dcorp-student555`
+
+> [!warning] HINTS
+> When we find a service misconfiguration, we should verify the executable path, relevant write permissions, and restart conditions before considering it a realistic privilege-escalation path. 
+> 
+> A finding alone is not proof of exploitability
+
+
 ### 2.1 Enumerate privilege-escalation opportunities
+
 Run the PowerUp checks:
+
 ```powershell
 Invoke-AllChecks
 ```
+
 - ![[Pasted image 20261118104754.png|612]]
 - It runs PowerUp's collection of local checks to look for potentially exploitable service configurations and other privilege-escalation opportunities.
 
@@ -134,6 +144,13 @@ Invoke-serviceAbuse -Name AbyssServer -username "dcorp\student555" -verbose
 > Non equivale a ottenere i privilegi di Domain Admin: il cambiamento riguarda questa macchina.
 
 ### 2.6 Validate local administrator membership
+
+> [!warning] HINTS
+> After a local privilege-escalation test, we should confirm the changed group membership independently. 
+> 
+> Local Administrators on one computer is different from Domain Admins, and an existing logon session may not immediately reflect new group membership.
+
+
 ```powershell
 net localgroup Administrators
 ```
@@ -149,6 +166,11 @@ It lists members of the local Administrators group. The expected evidence is the
 ---
 
 ## 3. Objective 2 — Identify other computers where `student555` is a local administrator
+
+> [!warning] HINTS
+> This step helps us distinguish a local foothold from possible lateral-movement opportunities. 
+> 
+> We should prioritize the machines where our current identity has verified administrative access, while checking the actual remoting permissions.
 
 ### 3.1 Load the PowerShell Remoting enumeration function
   
@@ -196,6 +218,12 @@ exit
 
 ---
 ## 4. Objective 3 — Jenkins foothold on `dcorp-ci` (`172.16.3.11:8080`)
+
+> [!warning] HINTS
+> 
+> When inspecting a CI/CD application, we should distinguish its web login from the operating-system account used by the build executor. 
+> 
+> The latter determines which machine and privileges a build actually has.
 
 ### 4.1 Visit Jenkins and inspect available user
 Open the Jenkins web interface:
@@ -298,6 +326,11 @@ The sequence to force jenkins to run our malicious code is **Save → Build Now*
 > L'esecuzione del job fa eseguire il comando al processo Jenkins o all'agente configurato per il job. Una connessione in arrivo sul listener è l'evidenza dell'esecuzione del payload nel contesto di quel processo.
 
 ### 4.7 Observe the shell on `dcorp-ci`
+
+> [!warning] HINTS
+> We should record the machine name, process identity, and effective privileges separately. 
+> 
+> A shell confirms code execution, but it does not by itself establish local administrator or domain administrator rights.
 
 ![[Pasted image 20261118125321.png]]
 

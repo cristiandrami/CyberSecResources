@@ -38,6 +38,13 @@ flowchart TD
 
 ## 1. Understanding the DSRM account
 
+> [!warning] HINTS
+> We should not confuse the local DSRM Administrator with `dcorp\Administrator`. 
+> 
+> They are different security principals, even though both can be displayed with the name Administrator in different contexts.
+
+
+
 Before we start, we need to distinguish **DSRM Administrator** from the **domain Administrator** account.
 - DSRM stands for *Directory Services Restore Mode*.
 - The DSRM account is a **local recovery administrator account on a Domain Controller**.
@@ -52,6 +59,7 @@ Before we start, we need to distinguish **DSRM Administrator** from the **domain
 
 
 ## 2. Re-establish our privileged session on `dcorp-dc`
+
 We already have access to a privileged Kerberos authentication context for `svcadmin` from a previous learning objective. Now we need to use that existing access to reach the Domain Controller.
 
 
@@ -78,6 +86,12 @@ Now we are on `dcorp-dc` and we have all the tools.
 ---
 ## 3. Examine the DSRM Administrator credential material
 
+> [!warning] HINTS
+> When interpreting the SAM-related output, we should identify exactly which account and credential store the value belongs to. 
+> 
+> A local SAM credential is not automatically a domain credential.
+
+
 Now that we have reached `dcorp-dc`, we want to understand whether the local SAM contains the DSRM Administrator's NTLM credential material.
 
 We can run in the privileged DC context (`svcadmin`):
@@ -100,6 +114,12 @@ a102ad5753f4c441e3af31c97fad86fd
 ---
 
 ## 4. Change the DSRM logon behavior
+
+> [!warning] HINTS
+> This setting changes an important authentication boundary on a Domain Controller. 
+> 
+> We should document its prior value and recognize that the change represents a persistence risk, not a promotion to Domain Admin.
+
 
 The next objective is to understand why the DSRM credential cannot normally be used for regular remote authentication to a running Domain Controller, and what configuration change the lab records.
   
@@ -170,6 +190,11 @@ The notes report that the session reaches the Domain Controller.
   
 ---
 ## 8. Why this represents persistence
+
+> [!warning] HINTS
+> Persistence depends on more than an unchanged password: account state, logon policy, WinRM configuration, and network controls can all interrupt the path. 
+> 
+
 
 >[!warning] 
 >Now we can access every time using 

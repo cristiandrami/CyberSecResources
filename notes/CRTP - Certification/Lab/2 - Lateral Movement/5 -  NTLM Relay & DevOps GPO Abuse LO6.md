@@ -54,6 +54,12 @@ flowchart TD
 ---
 ## 1. Identify the GPO attack path in BloodHound
 
+> [!warning] HINTS
+> When BloodHound shows control over a GPO, we should trace the entire relationship: who can edit it, where it is linked, whether the target computer falls within scope, and which permissions actually apply. 
+> 
+> A graph edge is a lead to validate.
+
+
 From BloodHound, we have identified the following relationships
 - `DEVOPSADMIN` has **generic permissions** over **`DEVOPS POLICY`**.
 - **`DEVOPS POLICY`** affects the computer **`dcorp-ci`**.
@@ -74,6 +80,12 @@ From BloodHound, we have identified the following relationships
 
   
 ## 2. Prepare the shortcut that triggers an authenticated HTTP request
+
+> [!warning] HINTS
+> We should distinguish a writable share, execution of a shortcut, and an authenticated network request. 
+> 
+> They are separate events: placing a file in a share does not prove that another identity executed it.
+
 
  What we want to do here is to use a **Windows shortcut (`.lnk`)** placed in a writable network share. 
  Its target launches PowerShell and makes an HTTP request using the current user's default credentials.
@@ -253,7 +265,15 @@ nc 127.0.0.1 11000
 > **Non rappresenta ancora l'accesso amministrativo a `dcorp-ci`**; siamo nella fase in cui si tenta di usare i privilegi dell'identità autenticata per modificare Active Directory.
 
 ## 7. Obtain the ability to modify DevOps Policy
+
 The next objective is to change the GPO permissions so that `student555` can modify **DevOps Policy**.
+
+> [!warning] HINTS
+> The goal of this stage is control over the GPO object, not immediate administrator rights on `dcorp-ci`. 
+> 
+> We should distinguish permissions on a GPO from changes eventually applied by a computer.
+
+
 ### 7.1 Find the relevant GPO link
 
 ```powershell
@@ -295,6 +315,11 @@ write_gpo_dacl student555 {0BF8D01C-1F62-4BDC-958C-57140B67D147}
 ---
 ## 8. Prepare the modified GPO template using GPOddity
 
+> [!warning] HINTS
+> The important distinction is between `gPLink` (where a policy is linked) and `gPCFileSysPath` (where its files are stored). 
+> 
+> When reviewing the path, we should verify which attribute changed rather than assuming that the OU link was modified.
+
 Now that we have write permissions over the GPO, the next step is to prepare a Group Policy template intended to add `student555` to the target's local Administrators group.
 
 From the WSL shell:
@@ -310,15 +335,16 @@ sudo python3 gpoddity.py --gpo-id '0BF8D01C-1F62-4BDC-958C-57140B67D147' --domai
 - The password can be found in the lab details.
 - ![[Pasted image 20261119195638.png|453]]
 
-| Argument| Descriptiomn|
-| `--gpo-id` | Identifies the GPO by its GUID. |
-| `--domain` | Specifies the target Active Directory domain. |
-| `--username`, `--password` | Credentials provided to the lab tool (`zzzz` is the value recorded in the notes). |
-| `--command` | Defines the local group modification intended to be applied through the policy. |
-| `--rogue-smbserver-ip` | Specifies the workstation hosting the alternate GPO files. |
-| `--rogue-smbserver-share` | Names the SMB share where the generated template is to be made available. |
-| `--dc-ip` | Identifies the Domain Controller. |
-| `--smb-mode none` | Records that the SMB share is provided separately, rather than being launched by GPOddity. |
+| Argument                   | Descriptiomn                                                                               |
+| -------------------------- | ------------------------------------------------------------------------------------------ |
+| `--gpo-id`                 | Identifies the GPO by its GUID.                                                            |
+| `--domain`                 | Specifies the target Active Directory domain.                                              |
+| `--username`, `--password` | Credentials provided to the lab tool (`zzzz` is the value recorded in the notes).          |
+| `--command`                | Defines the local group modification intended to be applied through the policy.            |
+| `--rogue-smbserver-ip`     | Specifies the workstation hosting the alternate GPO files.                                 |
+| `--rogue-smbserver-share`  | Names the SMB share where the generated template is to be made available.                  |
+| `--dc-ip`                  | Identifies the Domain Controller.                                                          |
+| `--smb-mode none`          | Records that the SMB share is provided separately, rather than being launched by GPOddity. |
 
   
 
@@ -376,6 +402,13 @@ icacls "C:\AD\Tools\std555-gp" /grant Everyone:F /T
 >
 
 ## 10. Check the GPO configuration
+
+> [!warning] HINTS
+> We should verify the intended change from the directory object and consider policy processing separately. 
+> 
+> A changed path alone does not prove that the computer has downloaded or applied the template.
+
+
 After the template preparation, we check the Group Policy object:
 
 ```powershell
@@ -392,7 +425,16 @@ Get-DomainGPO -Identity 'DevOps Policy'
 >
 > `Get-DomainGPO` recupera le proprietà della policy specificata. Il collegamento della GPO a un'OU (`gPLink`) e il percorso dei file del template (`gPCFileSysPath`) sono **proprietà diverse**: non vanno confuse.
 >
+
+
 ## 11. Validate remote access to `dcorp-ci`
+
+> [!warning] HINTS
+> A successful WinRS response is valuable evidence of remote execution. 
+> 
+> To establish precisely which permission was gained, we should also distinguish remote authentication, the resulting process identity, and local Administrators membership.
+
+
 
 Finally, the lab verifies access to `dcorp-ci` using WinRS:
 ```powershell
@@ -401,13 +443,14 @@ winrs -r:dcorp-ci cmd /c "set computername && set username"
 ```
 - ![[Pasted image 20261119210228.png]]
 
-
-| `winrs` | Windows Remote Shell client. |
-| `-r:dcorp-ci` | Selects the remote computer. |
-| `cmd /c` | Runs a command remotely and exits. |
-| `set computername` | Prints the remote computer name. |
-| `&&` | Runs the next command when the previous one succeeds. |
-| `set username` | Prints the username in the remote command process. |
+| Argument           | Description                                           |
+| ------------------ | ----------------------------------------------------- |
+| `winrs`            | Windows Remote Shell client.                          |
+| `-r:dcorp-ci`      | Selects the remote computer.                          |
+| `cmd /c`           | Runs a command remotely and exits.                    |
+| `set computername` | Prints the remote computer name.                      |
+| `&&`               | Runs the next command when the previous one succeeds. |
+| `set username`     | Prints the username in the remote command process.    |
 
 
 ---

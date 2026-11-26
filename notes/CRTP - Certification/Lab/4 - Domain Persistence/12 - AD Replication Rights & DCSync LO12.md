@@ -61,6 +61,14 @@ First, we need PowerView to inspect the permissions stored in Active Directory. 
 
 ## 2. Check whether `student555` has DCSync rights
 
+
+> [!warning] HINTS
+> When checking domain ACLs, we should consider direct ACEs and rights inherited through group memberships. 
+> 
+> An empty result from a username-only filter is not conclusive evidence that the effective permission is absent.
+
+
+
 Now we need to inspect the access control list of the **domain root**:
 
 ```text
@@ -102,6 +110,11 @@ Get-DomainObjectAcl -SearchBase "DC=dollarcorp,DC=moneycorp,DC=local" -SearchSco
 > **Correzione importante:** nessun risultato non significa automaticamente “non abbiamo i permessi”. La query potrebbe non mostrare diritti assegnati a un gruppo di cui facciamo parte. Nel nostro laboratorio interpretiamo il risultato come *nessuna ACE corrispondente individuata*
 ### Which rights matter?
 
+> [!warning] HINTS
+> We should look for the relevant replication extended rights on the domain root and distinguish them from broad rights such as `GenericAll`. 
+> 
+> A single permission label does not always capture the complete effective-access picture.
+
 DCSync is associated with Active Directory replication permissions, particularly:
 - `DS-Replication-Get-Changes` — Replicating Directory Changes.
 - `DS-Replication-Get-Changes-All` — Replicating Directory Changes All, which is important for sensitive replicated attributes.
@@ -112,6 +125,7 @@ DCSync is associated with Active Directory replication permissions, particularly
   
 
 ## 3. Use the previously obtained `svcadmin` context
+
 Because our initial query produced no matching ACE, the lab now uses authentication material obtained in an earlier learning objective.
   
 Back on our Student VM, we use the following  **command** to create a network authentication context associated with `svcadmin`:
@@ -129,6 +143,12 @@ C:\AD\Tools\InviShell\RunWithPathAsAdmin.bat
 
 ---
 ## 4. Modify the domain root ACL in the lab
+
+> [!warning] HINTS
+> Here the important privilege boundary is the domain naming-context ACL. 
+> 
+> Replication permission is not the same as joining Domain Admins or becoming a local administrator on the Domain Controller.
+
 
 Now we reach the part where the domain root ACL is modified. The following is the **command recorded we can use**:
 
@@ -155,6 +175,12 @@ Add-DomainObjectAcl -targetIdentity 'DC=dollarcorp,DC=moneycorp,DC=local' -Princ
 
 ---
 ## 5. Verify the replication permissions again
+
+> [!warning] HINTS
+> We should compare the before-and-after ACE evidence rather than rely only on a successful status message. 
+> 
+> That helps separate an intended permission change from a verified effective change.
+
 
 We return to a normal PowerShell session on our Student VM and **run the same `Get-DomainObjectAcl`:
 

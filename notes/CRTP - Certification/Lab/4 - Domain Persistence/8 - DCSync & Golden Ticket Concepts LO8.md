@@ -48,7 +48,15 @@ The lab begins with InviShell and PowerView.
   
 
 ## 2. Establish the `svcadmin` Kerberos authentication context
+
+> [!warning] HINTS
+> We should distinguish preparing a network authentication context from opening a remote session. 
+> 
+> Creating a process with network-only credentials does not itself place us on `dcorp-mgmt` or the Domain Controller.
+
+
 First of all we need to get the access to `svcadmin`:
+
 ```powershell
 
 C:\AD\Tools\Loader.exe -path C:\AD\Tools\Rubeus.exe -args asktgt /user:svcadmin /aes256:6366243a657a4ea04e406f1abc27f1ada358ccd0138ec5ca2835067719dc7011 /opsec /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
@@ -63,11 +71,19 @@ C:\AD\Tools\Loader.exe -path C:\AD\Tools\Rubeus.exe -args asktgt /user:svcadmin 
   
 
 ## 3. Extract `krbtgt` secrets — DCSync
+
+> [!warning] HINTS
+> DCSync depends on directory replication rights, not simply on local administrator membership of the workstation. 
+> 
+> When interpreting a finding, we should identify the domain naming context and the account whose replication permissions are being used.
+
+
 The next step is: extract the `krbtgt` account tickets leveraging on `srvadmin` privileges.
+
 ```powershell
 C:\AD\Tools\Loader.exe -path C:\AD\Tools\SafetyKatz.exe -args "lsadump::evasive-dcsync /user:dcorp\krbtgt" "exit"
 ```
-- thi command works because we have a ticket in our shell for `svcadmin`, so these network requests are done by `svcadmin`
+- this command works because we have a ticket in our shell for `svcadmin`, so these network requests are done by `svcadmin`
 ![[Pasted image 20261123184116.png]]
 ### What happens conceptually?
 - `SafetyKatz.exe` is a Mimikatz-derived program used in the exercise.
@@ -83,18 +99,18 @@ It is not the same as locally reading the registry on `dcorp-mgmt`, and it does 
   
 > [!IMPORTANT] Why `krbtgt` matters
 > The `krbtgt` account is used by the Kerberos Key Distribution Center to protect Ticket Granting Tickets. Exposure of its key material can undermine the trustworthiness of TGTs issued for the domain.
+
+
+
 ## 4. Collect the values used in the Golden Ticket exercise
 
-  
+> [!warning] HINTS
+> We should check the data types carefully: a full SID and its final RID are different values, as are group SIDs and group RIDs. 
+> 
+> Collecting metadata is a separate task from validating the resulting Kerberos authorization.  
 
-Before the Golden Ticket step, the lab collects domain and account metadata.
 
-  
-
-> [!NOTE] Original enumeration reference
-
-> The table below preserves the **commands as written in the original notes**. Some outputs require interpretation or validation before being used as Rubeus argument values; in particular, a SID is not itself the same thing as a RID or a comma-separated list of group RIDs.
-
+Before the Golden Ticket step, we need to collect domain and account metadata:
   
 >[!Important]
 >We need to run these commands in our student shell in order to avoid noise on the DC
@@ -131,6 +147,12 @@ C:\AD\Tools\Rubeus.exe evasive-golden /aes256:154cb6624b1d859f7080a6615adc488f09
 - ![[Pasted image 20261123184848.png]]
 
 ## 6. Validate remote access to `dcorp-dc`
+
+> [!warning] HINTS
+> A successful remote shell is evidence that the target accepted the presented context. 
+> 
+> We should not describe it as proof of every claimed group membership unless the effective permissions or directory membership were separately verified.
+
 
 The final command to validate the access on the `Domain Controller` using the `Golden Ticket` (associated to the default `Administrator` user) is:
 
